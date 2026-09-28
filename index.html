@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Access by Design — Joshua Behymer, MPA Capstone Portfolio</title>
 <meta name="description" content="MPA Capstone Portfolio of Joshua Behymer, Western Michigan University. Access is infrastructure, not an exception.">
+<link rel="icon" type="image/png" href="favicon-48.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Access by Design — Joshua Behymer, MPA Capstone Portfolio">
+<meta property="og:description" content="Access is infrastructure, not an exception. A Western Michigan University MPA capstone portfolio.">
+<meta property="og:image" content="https://gimlidurin.github.io/MPA-Capstone/og-bronconav.jpg">
+<meta property="og:image:alt" content="The BroncoNav accessible shuttle parked on a walkway at Western Michigan University">
+<meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -621,6 +629,50 @@ html.contrast .rd,html.contrast .rd h3,html.contrast .rd h4,html.contrast .rd h5
   .rd-close{top:.75rem;right:.75rem}
 }
 
+
+/* ============================================================
+   BRONCONAV — flagship project
+   ============================================================ */
+#bronconav{padding-top:0}
+.pano{margin:0 0 clamp(3rem,7vh,5rem)}
+.pano img{width:100%;height:clamp(220px,30vw,520px);object-fit:cover;object-position:18% 62%}
+.pano figcaption{font-size:.86rem;color:var(--muted);margin-top:.85rem}
+.bn-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(2rem,5vw,4.2rem);align-items:start}
+@media(max-width:900px){.bn-grid{grid-template-columns:1fr}}
+.bn-photo{margin:0;position:sticky;top:84px}
+@media(max-width:900px){.bn-photo{position:static}}
+.bn-photo img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:3px}
+.bn-photo figcaption{font-size:.86rem;color:var(--muted);margin-top:.75rem}
+.bn-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.1rem 1.6rem;margin:1.8rem 0;padding-top:1.4rem;border-top:1px solid var(--line)}
+@media(max-width:520px){.bn-facts{grid-template-columns:1fr}}
+.bn-facts dt{font-size:.8rem;font-weight:700;color:var(--brown);margin-bottom:.2rem}
+.bn-facts dd{margin:0;font-size:.95rem;line-height:1.45}
+.bn-note{font-size:.88rem;color:var(--muted);margin-top:1rem}
+.bn-note a{color:var(--brown);font-weight:600}
+
+/* Placeholders — visible on purpose; search the source for INSERT */
+.ph{border-left:4px solid #8B1A1A;background:#FBEAEA;color:#8B1A1A;font-weight:700;
+  padding:.75rem 1rem;margin:0 0 1rem;font-size:.92rem;line-height:1.45}
+html.contrast .ph{background:#fff;color:#7A0000;border-color:#7A0000}
+
+/* Instructor line on artifact cards */
+.art .art-inst{font-size:.8rem;color:rgba(247,241,232,.55);margin:-.35rem 0 .75rem}
+a.art-open{text-decoration:none}
+
+/* Capstone milestones */
+.milestones{list-style:none;padding:0;margin:1.3rem 0 0;display:flex;flex-wrap:wrap;gap:.65rem}
+.milestones li{border:1px solid rgba(247,241,232,.24);border-radius:2px;padding:.6rem .95rem;font-size:.84rem;color:rgba(247,241,232,.72);min-width:10.5rem}
+.milestones li b{display:block;color:#FFF9EE;font-weight:700;font-size:.92rem}
+.milestones li.is-done{border-color:rgba(241,197,0,.5)}
+.milestones li.is-next{border-color:var(--gold);border-width:2px}
+.milestones .st{color:var(--gold);font-weight:600}
+html.contrast .milestones li{color:#fff;border-color:#fff}
+html.contrast .milestones li.is-next,html.contrast .milestones li.is-done{border-color:#FFE24D}
+
+/* Flagship card thumbnail */
+.card-img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:2px;margin-bottom:1.1rem;background:#8FC1EA}
+.card-link{display:inline-block;margin-top:1rem;font-size:.88rem;font-weight:700;color:var(--brown)}
+
 /* ============================================================
    PRINT — committees print things
    ============================================================ */
@@ -638,6 +690,8 @@ html.contrast .rd,html.contrast .rd h3,html.contrast .rd h4,html.contrast .rd h5
   .dom-statement,.art h4,.close-q,.contact-item a{color:#000}
   section{padding:1.1rem 0;break-inside:avoid}
   #panel{display:none}
+  .bn-photo{position:static}
+  .pano img{height:auto;max-height:2.2in}
   .print-all{display:block!important}
   .print-dom{break-inside:avoid;margin-bottom:1rem}
   .art{background:#fff;border:1px solid #999;break-inside:avoid}
@@ -689,6 +743,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
     <a class="mark" href="#top">Joshua Behymer <span>/ MPA Capstone</span></a>
     <div class="nav-links">
       <a href="#thesis">Thesis</a>
+      <a href="#bronconav">BroncoNav</a>
       <a href="#framework">Framework</a>
       <a href="#matrix">Competencies</a>
       <a href="#experience">Experience</a>
@@ -847,14 +902,16 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       <h2 class="h-sec">Ten years at the point where people meet systems</h2>
       <p>In February, the sidewalks on WMU's campus tell you who the campus was built for. Snow gets pushed off the main walkways and piled into the curb cuts. A student who could manage a route in September finds that the same route in February is not a route at all. Nothing about that student changed. The environment did.</p>
       <p>I spent nearly a decade in supported employment, helping adults with disabilities find community jobs and then keep them — the harder half of the work. When a placement failed, it was rarely because the person couldn't do the job. It was because one of the surrounding systems had no give in it.</p>
-      <p>Today I serve as a <strong>Deaf and Hard of Hearing Accommodation Specialist</strong> in Disability Services for Students at Western Michigan University, where I coordinate communication access, supervise student staff, manage program funds, and help lead BroncoNav.</p>
+      <p>Today I serve as a <strong>Deaf and Hard of Hearing Accommodation Specialist</strong> in Disability Services for Students at Western Michigan University, where I coordinate communication access, supervise a team of more than 20 staff, manage program funds, and lead BroncoNav, the accessible shuttle program I founded.</p>
     </div>
 
     <div class="grid-3 stagger">
       <article class="card">
+        <img class="card-img" src="bronconav-illustration.webp" width="900" height="600" alt="" loading="lazy">
         <span class="tag">Flagship project</span>
         <h3>BroncoNav</h3>
-        <p>WMU's accessible campus shuttle, built with the Energy Efficient Autonomous Vehicle Lab and Revision Autonomy. A structural response to a walkable-campus plan that pushed transit further from the academic core.</p>
+        <p>WMU's accessible campus shuttle, which I founded with the Energy Efficient Autonomous Vehicle Lab and Revision Autonomy. It now runs on its own ride-request platform, bronconav.com.</p>
+        <a class="card-link" href="#bronconav">See the project</a>
       </article>
       <article class="card">
         <span class="tag">Current practice</span>
@@ -867,6 +924,52 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
         <p>Moving from managing the consequences of structural conditions to working on the conditions themselves, in a governmental or nonprofit setting.</p>
       </article>
     </div>
+  </div>
+</section>
+
+<!-- ==================== BRONCONAV ==================== -->
+<section id="bronconav" aria-labelledby="bnTitle">
+  <figure class="pano">
+    <img src="bronconav-campus-panorama-1600.webp"
+         srcset="bronconav-campus-panorama-1600.webp 1600w, bronconav-campus-panorama-3200.webp 3200w"
+         sizes="100vw" width="3200" height="664" loading="lazy"
+         alt="Panoramic view of the center of WMU's campus on a sunny day. The BroncoNav van, dark gray with a gold W and blue and gold stripes, is parked at left beside a tree sculpture and fountains, with Sangren Hall behind it. Wide pedestrian paths curve away across open lawns toward residence halls, with no road in sight.">
+    <figcaption class="wrap">The walkable core. Great for anyone on foot, and a longer trip to the nearest vehicle for anyone who can't make that walk.</figcaption>
+  </figure>
+
+  <div class="wrap bn-grid">
+    <div class="rev">
+      <p class="eyebrow">Flagship project</p>
+      <h2 class="h-sec" id="bnTitle">From a shuttle to a system</h2>
+      <p>WMU's campus plan moved vehicles to the edges and gave the center to pedestrians. That works for most students. For a student with a mobility disability, it turned the distance between parking, transit, and class into a barrier. BroncoNav is the structural response: an accessible, on-demand shuttle I founded in Disability Services for Students. The van itself was a gift from WMU's Energy Efficient and Autonomous Vehicle Lab, and the service completed more than 1,500 rides in its first full semester.</p>
+      <p>Running it on Microsoft Bookings showed me exactly where an off-the-shelf tool stops fitting a public service. So BroncoNav now runs on its own platform, <a href="https://www.bronconav.com" target="_blank" rel="noopener">bronconav.com</a>, which I worked closely with a development team to build from the ground up. Students sign in with their WMU account, request one-time or recurring rides with at least an hour's notice, choose from 18 campus pickup and drop-off points, and track the rides they've requested.</p>
+      <p>Recurring rides are the thesis in miniature. A student with a fixed class schedule asks once for the semester instead of once for every ride. Each request a system no longer requires is a burden it no longer imposes.</p>
+
+      <p class="ph">INSERT: Your role in the build, in two or three sentences. What requirements did you define, which design decisions did you drive, and how did you test it with staff and riders?</p>
+      <p class="ph">INSERT: Credit for the development team, in the words you'd like to use.</p>
+
+      <dl class="bn-facts">
+        <div><dt>Launched</dt><dd>September 21, 2026</dd></div>
+        <div><dt>Replaced</dt><dd>Microsoft Bookings</dd></div>
+        <div><dt>Who can ride</dt><dd>Registered DSS students, signed in with a WMU account</dd></div>
+        <div><dt>Coverage</dt><dd>18 campus pickup and drop-off points, weekdays</dd></div>
+      </dl>
+
+      <p class="ph">INSERT: Early numbers since launch (accounts created, rides requested, recurring schedules set up).</p>
+
+      <div class="cta-row">
+        <a class="cta" href="https://www.bronconav.com" target="_blank" rel="noopener">Visit bronconav.com</a>
+      </div>
+      <p class="bn-note">Ride requests need a registered DSS account, so reviewers will see the public landing page. The <a href="https://www.bronconav.com/faq" target="_blank" rel="noopener">FAQ</a> is open to everyone.</p>
+    </div>
+
+    <figure class="bn-photo rev">
+      <img src="bronconav-van-sangren-900.webp"
+           srcset="bronconav-van-sangren-900.webp 900w, bronconav-van-sangren-1600.webp 1600w"
+           sizes="(max-width:900px) 100vw, 44vw" width="1600" height="1200" loading="lazy"
+           alt="The BroncoNav van, a dark gray high-roof van with a gold WMU W, blue and gold stripes, and the Revision Autonomy logo, parked on a curving campus walkway beside a tree sculpture, with Sangren Hall in the background.">
+      <figcaption>BroncoNav outside Sangren Hall, at the center of campus.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -905,7 +1008,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
     <div class="rev">
       <p class="eyebrow">Analytical design</p>
       <h2 class="h-sec">The competency matrix</h2>
-      <p class="lede" style="max-width:64ch">Twenty-one artifacts mapped to the five NASPAA domains. Each was selected to demonstrate a specific, identifiable element of its domain — not merely to relate to it topically. Select a domain to see its evidence.</p>
+      <p class="lede" style="max-width:64ch"><span id="artCount">Twenty</span> artifacts mapped to the five NASPAA domains. Each was selected to demonstrate a specific, identifiable element of its domain — not merely to relate to it topically. Select a domain to see its evidence.</p>
     </div>
 
     <div class="dom-tabs" role="tablist" aria-label="NASPAA competency domains" id="tabs"></div>
@@ -921,6 +1024,12 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       <span><b id="pDone">0</b> artifacts complete</span>
       <span><b id="pPend">0</b> in progress through Fall 2026</span>
     </div>
+
+    <ol class="milestones" aria-label="Capstone milestones">
+      <li class="is-done"><b>Proposal</b>September 26 &middot; <span class="st">Submitted</span></li>
+      <li class="is-next"><b>Progress portfolio</b>October 24 &middot; <span class="st">Next</span></li>
+      <li><b>Final portfolio</b>November 21</li>
+    </ol>
   </div>
 </section>
 
@@ -929,7 +1038,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
   <div class="narrow rev">
     <p class="eyebrow">Integration</p>
     <h2 class="h-sec">The domains are separable on paper only</h2>
-    <p>BroncoNav makes the point efficiently. The service required leadership to convene units that did not report to one another, policy work to set eligibility and service standards, analysis to define what it would measure, a public service perspective to justify investing in something most students would never use, and communication to make the case to a funder, to faculty, and to riders. Remove any one and the program does not exist.</p>
+    <p>BroncoNav makes the point efficiently. The service required leadership to convene units that did not report to one another, policy work to set eligibility and service standards, analysis to define what it would measure, a public service perspective to justify investing in something most students would never use, and communication to make the case to a funder, to faculty, and to riders. Remove any one and the program does not exist. Building bronconav.com repeated the lesson at a smaller scale: every service rule had to be defended to a development team, written into the system, and then made clear enough for a student to use without asking anyone.</p>
     <p>What I did not anticipate is how much the competencies would correct one another. My earliest instinct was advocacy — argue harder, escalate better, win more individual cases. Analytical training complicated that instinct productively. Ethics coursework complicated it in the opposite direction, by showing that rigorous analysis inside an institution with distorted priorities can rationalize nearly anything. Budgeting supplied the constraint neither can: good intentions with no funding mechanism are a well-documented preference.</p>
     <p>The most significant change was a change in <strong>unit of analysis</strong>. I entered thinking in terms of students, and I still do — the individual case is where harm shows up. But I now read individual outcomes as measurements of system performance. A student who can't get to class in February is data about snow removal, transit scheduling, and capital planning. That shift is the difference between the practitioner I was and the administrator I'm becoming.</p>
   </div>
@@ -983,7 +1092,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
         <p class="tl-when">August 2024 &ndash; Present</p>
         <h3 class="tl-role">Accommodation Specialist</h3>
         <p class="tl-org">Disability Services for Students &middot; Western Michigan University &middot; Kalamazoo, MI</p>
-        <p class="d">Directs a multi-functional team of 20+ staff — ASL interpreters, CART providers, sighted aides, drivers, and vendor partners. Manages BroncoNav, WMU's accessible campus shuttle, from concept through 1,500+ rides in its first full semester. Online scheduling initiative now accounts for over 80% of DSS appointments. Coordinates BSBP program elements including the Summer II Transition Program.</p>
+        <p class="d">Directs a multi-functional team of 20+ staff — ASL interpreters, CART providers, sighted aides, drivers, and vendor partners. Founded and manages BroncoNav, WMU's accessible campus shuttle, from concept through 1,500+ rides in its first full semester, and worked with a development team to build bronconav.com, the ride-request platform that replaced Microsoft Bookings in September 2026. Online scheduling initiative now accounts for over 80% of DSS appointments. Coordinates BSBP program elements including the Summer II Transition Program.</p>
       </div>
 
       <div class="tl-item">
@@ -1177,10 +1286,10 @@ const DOMAINS = [
        desc:"Defining the service and holding an engineering partner and a student services office to one definition of success. Neither party had authority over the other."},
       {src:"Professional", title:"Supervision and fiscal oversight, DSS student staff", status:"done",
        desc:"Direct supervisor and financial manager for more than a dozen student employees. A service is only as accessible as its staffing model permits."},
-      {src:"PADM 6290", title:"Sustaining effective leadership in urgent environments", status:"done", paper:"padm-6290",
+      {src:"PADM 6290", inst:"Dr. Kelly Gesmundo Clarke", title:"Sustaining effective leadership in urgent environments", status:"done", paper:"padm-6290",
        desc:"Self-awareness, transparency about cost, and psychological safety treated as one practice rather than three. Absorbing the cost of an urgent accommodation silently is what keeps an organization from learning it has a design problem."},
-      {src:"PADM 6400", title:"Managing Nonprofit Organizations", status:"pending",
-       desc:"Final project — fall 2026."}
+      {src:"PADM 6400", inst:"Dr. Gene McKay", title:"Managing Nonprofit Organizations", status:"pending",
+       desc:"Research paper on supported employment. In progress this fall."}
     ]
   },
   {
@@ -1188,14 +1297,16 @@ const DOMAINS = [
     statement:"Participate in and contribute to the public policy process.",
     note:"Policy is made in more places than a legislature — including the daily discretionary judgments of staff who apply written rules to specific human situations.",
     artifacts:[
-      {src:"PADM 6020", title:"The underdiagnosis of ADHD in women", status:"done", paper:"padm-6020",
+      {src:"PADM 6020", inst:"Dr. Daniela Schroeter", title:"The underdiagnosis of ADHD in women", status:"done", paper:"padm-6020",
        desc:"A policy brief tracing a five-year diagnostic gap to male-centered criteria and cultural expectation. Every diagnosis-gated accommodation system inherits the inequities of the diagnostic system feeding it."},
-      {src:"PADM 6000", title:"Michigan Higher Education Accessibility Assurance Board", status:"done", paper:"padm-6000",
+      {src:"PADM 6000", inst:"Dr. Abby Kinch", title:"Michigan Higher Education Accessibility Assurance Board", status:"done", paper:"padm-6000",
        desc:"An independent oversight body designed against a governance vacuum rather than a hostile decision. A protection with no designated owner has a short half-life."},
       {src:"Professional", title:"Accommodation determination under the ADA and Section 504", status:"done",
        desc:"Interpreting federal law at the point of service. A documentation standard isn't a fixed requirement I administer — it's a burden level I set."},
-      {src:"PADM 6010", title:"Economic Principles for Public Service", status:"pending",
-       desc:"Final project — fall 2026."}
+      {src:"Professional", title:"bronconav.com ride-request platform", status:"done", more:"#bronconav",
+       desc:"Service rules written into software: who can ride, how much notice, where the stops are. Recurring requests mean a student asks once a semester instead of once a ride. Designing the form is setting the burden."},
+      {src:"PADM 6010", inst:"Dr. Gene McKay", title:"Economic Principles for Public Service", status:"pending",
+       desc:"Final paper. In progress this fall."}
     ]
   },
   {
@@ -1203,11 +1314,11 @@ const DOMAINS = [
     statement:"Analyze, synthesize, think critically, and make evidence-informed decisions.",
     note:"Technical skill matters less than epistemic discipline. Evidence is only valuable to an organization willing to be told something it did not want to hear.",
     artifacts:[
-      {src:"PADM 6060", title:"WMU accessibility community needs assessment", status:"done", paper:"padm-6060",
+      {src:"PADM 6060", inst:"Dr. Daniela Schroeter", title:"WMU accessibility community needs assessment", status:"done", paper:"padm-6060",
        desc:"A convergent parallel mixed-methods design scoped deliberately beyond my own office — to transportation, facilities, and housing, which I don't control."},
-      {src:"PADM 6070", title:"SSDI participation and university enrollment", status:"done", paper:"padm-6070",
+      {src:"PADM 6070", inst:"Dr. Gene McKay", title:"SSDI participation and university enrollment", status:"done", paper:"padm-6070",
        desc:"Twenty years of time-series data, r = .13, p = .59. Included precisely because it failed: reporting an unwanted result honestly is the competency."},
-      {src:"PADM 5120", title:"Village of Berrien Springs budget review", status:"done", paper:"padm-5120",
+      {src:"PADM 5120", inst:"Michael Hart", title:"Village of Berrien Springs budget review", status:"done", paper:"padm-5120",
        desc:"A technically sound document that failed as communication — scanned, unsearchable, and unreadable to a screen reader. Access isn't a topic area. It's a lens."},
       {src:"Professional", title:"BroncoNav evaluation framework", status:"done",
        desc:"Ridership tells you the vehicle is running. It says nothing about whether a student made it to an exam. Pairing telemetry with rider surveys keeps the human outcome in view."}
@@ -1218,16 +1329,14 @@ const DOMAINS = [
     statement:"Articulate, apply, and advance a public service perspective grounded in equity and democratic governance.",
     note:"A public service perspective has to include some account of what you'll do when institutional pressure runs against it.",
     artifacts:[
-      {src:"PADM 6000", title:"Ethics futures analysis: administrative evil", status:"done", paper:"padm-6000",
+      {src:"PADM 6000", inst:"Dr. Abby Kinch", title:"Ethics futures analysis: administrative evil", status:"done", paper:"padm-6000",
        desc:"A 2035 scenario in which the ADA falls and DSS is dissolved. Writing it required imagining my own office dismantled — and how ordinary incentives would pull my colleagues toward compliance."},
-      {src:"PADM 6001", title:"Competency exercise", status:"done", paper:"padm-6001-comp",
+      {src:"PADM 6001", inst:"Dr. Matthew Mingus", title:"Competency exercise", status:"done", paper:"padm-6001-comp",
        desc:"Included as a baseline, not a demonstration. The distance between this and the ethics analysis is the clearest evidence of growth the portfolio contains."},
-      {src:"PADM 6001", title:"MPA and beyond", status:"done", paper:"padm-6001-mpa",
+      {src:"PADM 6001", inst:"Dr. Matthew Mingus", title:"MPA and beyond", status:"done", paper:"padm-6001-mpa",
        desc:"Career goals in disability policy grounded in specific experience rather than abstraction — though it treated public service values as motivations rather than commitments to be defended."},
       {src:"Professional", title:"Supported employment practice", status:"done",
-       desc:"Nearly a decade helping adults with disabilities keep community jobs. Sustained direct service eventually produces a structural analysis in anyone paying attention."},
-      {src:"PADM 7120", title:"Professional Field Experience", status:"pending",
-       desc:"Placement deliverable — fall 2026."}
+       desc:"Nearly a decade helping adults with disabilities keep community jobs. Sustained direct service eventually produces a structural analysis in anyone paying attention."}
     ]
   },
   {
@@ -1235,14 +1344,12 @@ const DOMAINS = [
     statement:"Communicate and interact productively and in culturally responsive ways with a diverse and changing citizenry.",
     note:"A policy no one can understand is not a policy anyone can use. A budget that cannot be read is not transparent, however publicly it is posted.",
     artifacts:[
-      {src:"PADM 5830", title:"BroncoNav grant proposal, Kalamazoo Community Foundation", status:"done", paper:"padm-5830",
+      {src:"PADM 5830", inst:"Dr. Daniela Schroeter", title:"BroncoNav grant proposal, Kalamazoo Community Foundation", status:"done", paper:"padm-5830",
        desc:"A $30,000 request framed against the funder's own stated goals. A persuasive case for access is rarely made by asserting that access matters — it's made by showing the reader's commitments already imply it."},
       {src:"Professional", title:"Deaf and hard of hearing service coordination", status:"done",
        desc:"Deaf culture is a linguistic community, not a medical category. The right service is determined by a person's language and preference, not by an audiogram."},
       {src:"Professional", title:"DSS outreach presentations to academic departments", status:"done",
-       desc:"Learning to distinguish resistance from confusion. Faculty objections arrive as principled concerns about rigor and are usually anxieties about implementation."},
-      {src:"Elective", title:"Remaining elective coursework", status:"pending",
-       desc:"Artifact to be selected — fall 2026."}
+       desc:"Learning to distinguish resistance from confusion. Faculty objections arrive as principled concerns about rigor and are usually anxieties about implementation."}
     ]
   }
 ];
@@ -1386,7 +1493,10 @@ function select(i,userAction){
         '<span class="art-src">'+a.src+'</span>'+
         '<span class="chip '+chipClass+'">'+chipText+'</span>'+
       '</div>'+
-      '<h4>'+a.title+'</h4><p>'+a.desc+'</p>'+
+      '<h4>'+a.title+'</h4>'+
+      (a.inst ? '<p class="art-inst">Course instructor: '+a.inst+'</p>' : '')+
+      '<p>'+a.desc+'</p>'+
+      (a.more ? '<a class="art-open" href="'+a.more+'">See the project <span class="ar" aria-hidden="true">&rarr;</span></a>' : '')+
       (a.paper
         ? '<button class="art-open" type="button" aria-haspopup="dialog" data-paper="'+a.paper+'" '+
           'aria-label="Read the full paper: '+a.title.replace(/"/g,'&quot;')+'">'+
@@ -1436,7 +1546,7 @@ printAll.innerHTML=DOMAINS.map(d=>
     '<article class="art"><div class="art-top"><span class="art-src">'+a.src+'</span>'+
     '<span class="chip '+(a.status==='done'?'done':'pend')+'">'+
     (a.status==='done'?'Complete':'Fall 2026')+'</span></div>'+
-    '<h4>'+a.title+'</h4><p>'+a.desc+'</p></article>').join('')+
+    '<h4>'+a.title+'</h4>'+(a.inst?'<p class="art-inst">Course instructor: '+a.inst+'</p>':'')+'<p>'+a.desc+'</p></article>').join('')+
   '</div></div>').join('');
 document.getElementById('panel').insertAdjacentElement('afterend',printAll);
 
@@ -1444,6 +1554,10 @@ document.getElementById('panel').insertAdjacentElement('afterend',printAll);
 const all=DOMAINS.flatMap(d=>d.artifacts);
 document.getElementById('pDone').textContent=all.filter(a=>a.status==='done').length;
 document.getElementById('pPend').textContent=all.filter(a=>a.status==='pending').length;
+(function(){ /* keep the intro count honest as artifacts are added or removed */
+  const w=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty','Twenty-one','Twenty-two','Twenty-three','Twenty-four','Twenty-five'];
+  const el=document.getElementById('artCount'); if(el) el.textContent=w[all.length]||String(all.length);
+})();
 
 /* ============================================================
    DISPLAY SETTINGS
