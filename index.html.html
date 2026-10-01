@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Access by Design — Joshua Behymer, MPA Capstone Portfolio</title>
+<meta name="description" content="MPA Capstone Portfolio of Joshua Behymer, Western Michigan University. Access is infrastructure, not an exception.">
+<link rel="icon" type="image/png" href="favicon-48.png">
+<script>
+/* Set the theme before first paint so dark-mode visitors never see a white flash */
+try{var s=JSON.parse(localStorage.getItem('jb-display-v1')||'{}'),t=s.theme||'auto',d=document.documentElement;
+if(t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))d.classList.add('dark');
+if(s.contrast)d.classList.add('contrast');}catch(e){}
+</script>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Access by Design — Joshua Behymer, MPA Capstone Portfolio">
+<meta property="og:description" content="Access is infrastructure, not an exception. A Western Michigan University MPA capstone portfolio.">
+<meta property="og:image" content="https://gimlidurin.github.io/MPA-Capstone/og-bronconav.jpg">
+<meta property="og:image:alt" content="The BroncoNav accessible shuttle parked on a walkway at Western Michigan University">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --bark:#20100A;
+  --bark-2:#2E1810;
+  --brown:#532E1F;
+  --brown-lift:#6E4331;
+  --gold:#F1C500;
+  --gold-deep:#7A5F00;   /* 5.5:1 on paper; was #B08E00 (2.6:1) */
+  --brown-ink:#532E1F;   /* brown used as text or outline; lifts in dark mode */
+  --card:#FFFFFF;
+  --paper:#F8F4ED;
+  --paper-2:#EFE7DA;
+  --ink:#1E1310;
+  --muted:#6E5B50;
+  --line:rgba(83,46,31,.18);
+
+  --display:"Fraunces",Georgia,serif;
+  --body:"Public Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --wrap:1160px;
+  --ease:cubic-bezier(.22,1,.36,1);
+
+  /* curb-cut scene */
+  --walk:#D8CCBA;--edge:#B7A690;--street:#5A4A40;--stripe:#F8F4ED;
+}
+html{color-scheme:light}
+
+/* Dark mode — follows the device until the visitor picks a theme.
+   Screen only: print always uses the light tokens. */
+@media screen{
+  html.dark{
+    color-scheme:dark;
+    --paper:#1A0F0A;
+    --paper-2:#24160F;
+    --card:#2B1B13;
+    --ink:#F5EDE2;
+    --muted:#CDBBAA;
+    --line:rgba(245,237,226,.16);
+    --gold-deep:#F1C500;
+    --brown-ink:#EACB8C;
+    --walk:#4A3528;--edge:#6E5240;--street:#0F0805;--stripe:#CDBBAA;
+  }
+  html.dark .nav{background:rgba(26,15,10,.88)}
+  html.dark .sec-dark{background:#3A2016}
+  html.dark .card:hover{box-shadow:0 14px 34px rgba(0,0,0,.45);border-color:rgba(234,203,140,.45)}
+  html.dark .ph{background:#3A1515;color:#FFC9C9;border-color:#FF8A8A}
+  html.dark .sw{background:#6E5B50}
+  html.dark .cc-also span{background:rgba(241,197,0,.12);border-color:rgba(241,197,0,.4)}
+  html.dark footer{border-top:1px solid var(--line)}
+  /* dark + high contrast */
+  html.dark.contrast{
+    --paper:#000000;--paper-2:#0D0D0D;--card:#000000;
+    --ink:#FFFFFF;--muted:#F2EAE0;--line:rgba(255,255,255,.6);
+    --gold:#FFE24D;--gold-deep:#FFE24D;--brown-ink:#FFE24D;--brown:#33190B;
+    --walk:#FFFFFF;--edge:#FFE24D;--street:#000000;--stripe:#FFFFFF;
+  }
+  html.dark.contrast .nav,html.dark.contrast .a11y-panel,html.dark.contrast .reader-panel{background:#000}
+  html.dark.contrast .card{border-color:#FFFFFF}
+  html.dark.contrast .a11y-panel h2,html.dark.contrast .a11y-row .lab,
+  html.dark.contrast .rd,html.dark.contrast .rd h3,html.dark.contrast .rd h4,html.dark.contrast .rd h5{color:#FFF}
+  html.dark.contrast .a11y-panel .hint,html.dark.contrast .a11y-row .sub{color:#F2EAE0}
+  html.dark.contrast .a11y-panel{border-color:#FFE24D}
+  html.dark.contrast .rd a{color:#FFE24D}
+  html.dark.contrast .ph{background:#000;color:#FFB3B3;border-color:#FFB3B3}
+  html.dark.contrast .cc-also span{background:#000;border-color:#FFE24D;color:#fff}
+}
+
+/* High-contrast mode (user toggle).
+   The light sections only needed darker tokens. The dark sections were the real
+   problem: their text is set in low-opacity rgba, which no token override reaches. */
+html.contrast{
+  --paper:#FFFFFF;
+  --paper-2:#F2ECE1;
+  --ink:#000000;
+  --muted:#2B211C;
+  --line:rgba(0,0,0,.55);
+  --gold:#FFE24D;
+  --gold-deep:#7A5F00;
+  --brown:#33190B;
+  --bark:#000000;
+  --bark-2:#000000;
+}
+html.contrast .hero,html.contrast .sec-dark,html.contrast footer{background:#000}
+html.contrast .hero::before,html.contrast .hero::after{display:none!important}
+html.contrast .hero-sub,html.contrast .hero-meta,html.contrast .hero-meta span,
+html.contrast .sec-dark .lede,html.contrast .dom-note,html.contrast .art p,
+html.contrast .art.is-pending h4,html.contrast .contact-item .v,
+html.contrast footer,html.contrast .progress,html.contrast .ctrl > span,
+html.contrast .chip.pend{color:#FFFFFF}
+html.contrast .art{background:#000;border-color:#FFE24D}
+html.contrast .art.is-pending{border-style:dashed;opacity:1}
+html.contrast .chip.done{background:#FFE24D;color:#000;border-color:#FFE24D}
+html.contrast .chip.pend{background:#000;border-color:#FFFFFF}
+html.contrast .btn-a{color:#FFFFFF;border-color:#FFFFFF}
+html.contrast .btn-a[aria-pressed="true"]{background:#FFE24D;color:#000;border-color:#FFE24D}
+html.contrast .dom-tab{color:#FFFFFF}
+html.contrast .dom-tab[aria-selected="true"]{color:#000;background:#FFE24D}
+html.contrast .access{border-color:#FFE24D;background:#000}
+html.contrast .sec-dark a,html.contrast footer a{color:#FFE24D}
+html.contrast .sec-dark a.cta:not(.ghost){color:#000}
+html.contrast .reader-panel{background:#FFF;color:#000}
+html.contrast .rd,html.contrast .rd h3,html.contrast .rd h4,html.contrast .rd h5{color:#000}
+html.contrast .rd a{color:#00308F}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:17px}
+html.no-motion{scroll-behavior:auto}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:1rem;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+
+.wrap{width:min(100% - 2.5rem,var(--wrap));margin-inline:auto}
+.narrow{width:min(100% - 2.5rem,760px);margin-inline:auto}
+
+/* Focus — always visible, never removed */
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:3px;
+  border-radius:2px;
+}
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:999;
+  background:var(--gold);color:var(--bark);
+  padding:.85rem 1.4rem;font-weight:700;font-family:var(--body);
+}
+.skip:focus{left:1rem;top:1rem}
+
+/* ============================================================
+   TYPE
+   ============================================================ */
+h1,h2,h3{font-family:var(--display);font-weight:900;line-height:1.05;letter-spacing:-.022em;margin:0;text-wrap:balance}
+p,li,dd{text-wrap:pretty}
+.close-q,.dom-statement,.thesis blockquote{text-wrap:balance}
+.eyebrow{
+  font-family:var(--mono);font-size:.7rem;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);
+  margin:0 0 1.1rem;
+}
+.hero .eyebrow{color:var(--gold)}
+.lede{font-size:1.22rem;line-height:1.6;color:var(--muted)}
+.h-sec{font-size:clamp(2rem,4.4vw,3.1rem);margin-bottom:1.4rem}
+p{margin:0 0 1.15rem}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:sticky;top:0;z-index:80;
+  background:rgba(248,244,237,.86);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+html.contrast .nav{background:#fff}
+.nav-in{display:flex;align-items:center;gap:1.5rem;height:60px}
+.mark{
+  font-family:var(--display);font-weight:900;font-size:1.02rem;
+  letter-spacing:-.02em;text-decoration:none;white-space:nowrap;
+}
+.mark span{color:var(--brown-ink)}
+.nav-links{display:flex;gap:1.6rem;margin-left:auto;align-items:center}
+.nav-links a{
+  font-size:.82rem;font-weight:600;text-decoration:none;color:var(--muted);
+  transition:color .2s;white-space:nowrap;
+}
+.nav-links a:hover{color:var(--brown-ink)}
+@media(max-width:820px){.nav-links{display:none}}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative;
+  background:
+    radial-gradient(120% 90% at 78% 8%, rgba(241,197,0,.16) 0%, transparent 55%),
+    radial-gradient(100% 80% at 12% 92%, rgba(110,67,49,.55) 0%, transparent 60%),
+    linear-gradient(168deg, var(--bark-2) 0%, var(--bark) 58%, #180B06 100%);
+  color:#F5EDE2;
+  padding:clamp(5rem,13vh,8.5rem) 0 clamp(3.5rem,8vh,5.5rem);
+  overflow:hidden;
+}
+/* ambient drifting glow */
+.hero::before{
+  content:"";position:absolute;inset:-30%;
+  background:radial-gradient(closest-side, rgba(241,197,0,.15), transparent 70%);
+  width:70vw;height:70vw;top:-22vw;right:-14vw;
+  animation:drift 22s var(--ease) infinite alternate;
+  pointer-events:none;
+}
+@keyframes drift{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(-6vw,7vh,0) scale(1.18)}
+}
+/* film grain */
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.055;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.hero .wrap{position:relative;z-index:2}
+.hero h1{
+  font-size:clamp(2.9rem,8.4vw,6.2rem);
+  max-width:15ch;margin-bottom:1.5rem;color:#FFF9EE;
+}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{
+  font-size:clamp(1.05rem,2.1vw,1.32rem);
+  max-width:56ch;color:rgba(245,237,226,.76);line-height:1.55;margin-bottom:2.6rem;
+}
+.hero-meta{
+  display:flex;flex-wrap:wrap;gap:.6rem 2rem;
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.09em;
+  text-transform:uppercase;color:rgba(245,237,226,.5);
+  padding-top:1.8rem;border-top:1px solid rgba(241,197,0,.22);
+}
+
+/* ============================================================
+   DISPLAY OPTIONS — spacing, font, links, reading ruler
+   ============================================================ */
+
+/* WCAG 1.4.12 text spacing, applied as a user preference */
+html.a11y-spacing body{line-height:1.9;letter-spacing:.055em;word-spacing:.11em}
+html.a11y-spacing p,html.a11y-spacing li{margin-bottom:1.5em;line-height:1.9}
+html.a11y-spacing .rd p,html.a11y-spacing .rd li{line-height:2}
+html.a11y-spacing h1,html.a11y-spacing h2,html.a11y-spacing h3,html.a11y-spacing h4{
+  line-height:1.4;letter-spacing:normal}
+
+/* Plain, high-x-height typeface throughout — no display serif, no mono */
+html.a11y-font,html.a11y-font body{
+  --display:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Public Sans",system-ui,-apple-system,sans-serif;
+}
+html.a11y-font .hero h1,html.a11y-font .hero h1 em{letter-spacing:normal;font-style:normal}
+html.a11y-font .art-src,html.a11y-font .chip,html.a11y-font .eyebrow,
+html.a11y-font .tl-when,html.a11y-font .progress{letter-spacing:.04em;text-transform:none}
+
+/* Links visibly marked, not carried by colour alone */
+html.a11y-underline a{text-decoration:underline!important;text-underline-offset:3px}
+html.a11y-underline .cta,html.a11y-underline .dom-tab{text-decoration:none!important}
+
+/* Reading ruler — dims everything but a band at the pointer */
+.ruler{position:fixed;left:0;right:0;z-index:250;pointer-events:none;
+  background:rgba(8,4,2,.62);display:none}
+html.a11y-ruler .ruler{display:block}
+#rulerTop{top:0}
+#rulerBottom{bottom:0}
+html.contrast .ruler{background:rgba(0,0,0,.82)}
+
+/* ---- SIGNATURE: access controls, in the front door ---- */
+.access{
+  margin-top:2.8rem;padding:1.15rem 1.3rem;
+  border:1px solid rgba(241,197,0,.3);
+  border-radius:3px;
+  background:rgba(255,249,238,.045);
+  display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.6rem;
+  max-width:640px;
+}
+.access-label{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--gold);flex-basis:100%;
+}
+.ctrl{display:flex;align-items:center;gap:.5rem}
+.ctrl > span{
+  font-size:.74rem;color:rgba(245,237,226,.62);
+  font-family:var(--mono);letter-spacing:.05em;
+}
+.btn-a{
+  font-family:var(--body);font-weight:600;font-size:.82rem;
+  background:transparent;color:#F5EDE2;
+  border:1px solid rgba(245,237,226,.28);
+  padding:.36rem .72rem;border-radius:2px;cursor:pointer;
+  transition:background .18s,border-color .18s,color .18s;
+  min-width:2.1rem;
+}
+.btn-a:hover{border-color:var(--gold);color:var(--gold)}
+.btn-a[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--bark)}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+section{padding:clamp(4.5rem,10vh,7.5rem) 0}
+.sec-dark{background:var(--brown);color:#F7F1E8}
+.sec-dark + .sec-dark{padding-top:0}
+.sec-dark .eyebrow{color:var(--gold)}
+.sec-dark .lede{color:rgba(247,241,232,.74)}
+.sec-alt{background:var(--paper-2)}
+
+/* Thesis */
+.thesis{
+  border-left:4px solid var(--gold);padding-left:clamp(1.4rem,4vw,2.6rem);
+}
+.thesis blockquote{
+  margin:0 0 1.8rem;font-family:var(--display);font-weight:700;
+  font-size:clamp(1.6rem,3.6vw,2.5rem);line-height:1.24;letter-spacing:-.02em;
+}
+.thesis blockquote em{
+  font-style:italic;color:inherit;padding:0 .08em;
+  background:linear-gradient(transparent 56%,rgba(241,197,0,.62) 56%,rgba(241,197,0,.62) 90%,transparent 90%);
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
+}
+html.dark .thesis blockquote em{background:linear-gradient(transparent 56%,rgba(241,197,0,.42) 56%,rgba(241,197,0,.42) 90%,transparent 90%)}
+html.contrast .thesis blockquote em{background:linear-gradient(transparent 56%,#FFE24D 56%,#FFE24D 90%,transparent 90%);color:#000}
+@media screen{html.dark.contrast .thesis blockquote em{background:none;color:#FFF;text-decoration:underline;text-decoration-color:#FFE24D;text-decoration-thickness:.12em;text-underline-offset:.14em}}
+@media print{.thesis blockquote em{background:none;color:#000;font-style:italic}}
+
+/* Framework cards */
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:1.4rem;margin-top:2.8rem}
+.card{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:3px;padding:1.7rem 1.6rem;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s;
+}
+.sec-alt .card{background:var(--card)}
+.card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(37,19,9,.11);border-color:rgba(83,46,31,.4)}
+html.no-motion .card:hover{transform:none}
+.card h3{font-size:1.16rem;margin-bottom:.7rem;letter-spacing:-.015em}
+.card p{font-size:.94rem;color:var(--muted);margin:0}
+.card .tag{
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold-deep);display:block;margin-bottom:.8rem;
+}
+
+/* ============================================================
+   COMPETENCY MATRIX — the core
+   ============================================================ */
+.dom-tabs{
+  display:flex;flex-wrap:wrap;gap:.55rem;margin:2.6rem 0 2.2rem;
+  border-bottom:1px solid rgba(247,241,232,.2);padding-bottom:1.5rem;
+}
+.dom-tab{
+  font-family:var(--body);cursor:pointer;
+  background:transparent;color:rgba(247,241,232,.68);
+  border:1px solid rgba(247,241,232,.24);
+  padding:.6rem .95rem;border-radius:2px;
+  display:flex;align-items:center;gap:.6rem;
+  transition:all .22s var(--ease);
+  font-size:.86rem;font-weight:600;text-align:left;
+}
+.dom-tab .n{font-family:var(--mono);font-size:.72rem;color:var(--gold);letter-spacing:.05em}
+.dom-tab:hover{border-color:var(--gold);color:#FFF9EE}
+.dom-tab[aria-selected="true"]{background:var(--gold);border-color:var(--gold);color:var(--bark)}
+.dom-tab[aria-selected="true"] .n{color:var(--brown)}
+
+.dom-statement{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(1.25rem,2.6vw,1.65rem);line-height:1.35;
+  letter-spacing:-.018em;max-width:60ch;margin-bottom:.9rem;color:#FFF9EE;
+}
+.dom-note{color:rgba(247,241,232,.68);max-width:62ch;font-size:.98rem}
+
+.arts{display:grid;grid-template-columns:repeat(auto-fill,minmax(292px,1fr));gap:1.15rem;margin-top:2.4rem}
+.art{
+  background:rgba(255,249,238,.055);
+  border:1px solid rgba(247,241,232,.16);
+  border-radius:3px;padding:1.4rem 1.35rem;
+  display:flex;flex-direction:column;
+  transition:transform .32s var(--ease),background .32s,border-color .32s;
+}
+.art:hover{transform:translateY(-4px);background:rgba(255,249,238,.1);border-color:rgba(241,197,0,.5)}
+html.no-motion .art:hover{transform:none}
+.art-top{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.85rem}
+.art-src{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--gold);
+}
+.chip{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.22rem .5rem;border-radius:2px;white-space:nowrap;
+}
+.chip.done{background:transparent;color:var(--gold);border:1px solid rgba(241,197,0,.55)}
+.chip.pend{background:transparent;color:rgba(247,241,232,.82);border:1px dashed rgba(247,241,232,.45)}
+.art h4{
+  font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.3;
+  margin:0 0 .7rem;letter-spacing:-.012em;color:#FFF9EE;
+}
+.art p{font-size:.9rem;line-height:1.58;color:rgba(247,241,232,.68);margin:0}
+.art.is-pending{border-style:dashed;border-color:rgba(247,241,232,.3)}
+.art.is-pending h4{color:rgba(247,241,232,.86)}
+
+/* Progress readout */
+.progress{
+  display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;
+  margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid rgba(247,241,232,.18);
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;
+  text-transform:uppercase;color:rgba(247,241,232,.8);
+}
+.progress b{color:var(--gold);font-size:1rem}
+
+/* ============================================================
+   VALUES / CLOSING
+   ============================================================ */
+.values{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.4rem;margin-top:2.6rem}
+.value{border-top:3px solid var(--gold);padding-top:1.3rem}
+.value h3{font-size:1.24rem;margin-bottom:.6rem}
+.value p{font-size:.94rem;color:var(--muted);margin:0}
+
+.close-q{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(1.45rem,3.4vw,2.25rem);line-height:1.3;
+  letter-spacing:-.02em;max-width:26ch;
+}
+
+.cta{
+  display:inline-flex;align-items:center;gap:.7rem;
+  background:var(--gold);color:var(--bark);
+  font-weight:700;font-size:.95rem;text-decoration:none;
+  padding:.95rem 1.7rem;border-radius:2px;margin-top:1.6rem;
+  transition:transform .25s var(--ease),box-shadow .25s;
+}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(241,197,0,.3)}
+html.no-motion .cta:hover{transform:none}
+
+footer{background:var(--bark);color:rgba(245,237,226,.6);padding:3.2rem 0;font-size:.86rem}
+.foot-in{display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:space-between;align-items:center}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* ============================================================
+   CURB CUT EFFECT
+   ============================================================ */
+.cc{margin:2.8rem auto 0}
+.cc-row{
+  display:grid;grid-template-columns:minmax(140px,.85fr) auto minmax(0,2.3fr);
+  gap:1.3rem;align-items:center;
+  padding:1.35rem 0;border-top:1px solid var(--line);
+}
+.cc-row:last-child{border-bottom:1px solid var(--line)}
+.cc-for{font-family:var(--display);font-weight:700;font-size:1.06rem;margin:0;letter-spacing:-.012em}
+.cc-arrow{color:var(--gold-deep);font-family:var(--mono);font-size:1rem;line-height:1}
+.cc-also{display:flex;flex-wrap:wrap;gap:.45rem;margin:0}
+.cc-also span{
+  font-size:.83rem;padding:.32rem .75rem;border-radius:100px;
+  background:rgba(241,197,0,.18);border:1px solid rgba(176,142,0,.4);
+  color:var(--ink);white-space:nowrap;
+}
+html.contrast .cc-also span{background:rgba(241,197,0,.34);border-color:var(--gold-deep)}
+@media(max-width:720px){
+  .cc-row{grid-template-columns:minmax(0,1fr);gap:.7rem}
+  .cc-also span{white-space:normal}
+  .cc-arrow{display:none}
+}
+
+/* ============================================================
+   EXPERIENCE TIMELINE
+   ============================================================ */
+.tl{margin-top:2.6rem;border-left:2px solid var(--line);padding-left:1.9rem}
+.tl-item{position:relative;padding-bottom:2.3rem}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:"";position:absolute;left:calc(-1.9rem - 6px);top:.6rem;
+  width:11px;height:11px;border-radius:50%;background:var(--gold);
+  border:2px solid var(--brown);
+}
+.tl-when{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--gold-deep);margin:0 0 .35rem;
+}
+.tl-role{font-family:var(--display);font-weight:700;font-size:1.16rem;margin:0 0 .2rem;letter-spacing:-.014em}
+.tl-org{font-size:.92rem;color:var(--muted);margin:0 0 .6rem;font-weight:500}
+.tl-item .d{font-size:.94rem;color:var(--muted);margin:0}
+
+/* inline "fill this in" marker */
+.fill{
+  background:rgba(241,197,0,.3);border-bottom:1px dashed var(--gold-deep);
+  padding:0 .28rem;font-style:italic;
+}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-grid{display:flex;flex-wrap:wrap;gap:1.6rem 3rem;margin-top:2.6rem}
+.contact-item{min-width:0;max-width:100%}
+.contact-item a{overflow-wrap:anywhere}
+.contact-item .k{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold);margin:0 0 .5rem;
+}
+.contact-item a,.contact-item .v{
+  font-size:1rem;font-weight:600;text-decoration:none;color:#FFF9EE;
+  border-bottom:1px solid rgba(241,197,0,.45);padding-bottom:2px;
+  display:inline-block;overflow-wrap:normal;word-break:normal;
+}
+.contact-item a:hover{border-color:var(--gold);color:var(--gold)}
+.contact-item .v{border-bottom:none;color:rgba(247,241,232,.7);font-weight:500}
+
+.cta-row{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:1.8rem}
+.cta.ghost{background:transparent;color:var(--brown-ink);border:2px solid var(--brown-ink);box-shadow:none}
+.cta.ghost:hover{background:var(--brown-ink);color:var(--paper)}
+.sec-dark .cta.ghost{color:var(--gold);border-color:var(--gold)}
+.sec-dark .cta.ghost:hover{background:var(--gold);color:var(--bark)}
+
+
+/* ============================================================
+   DISPLAY PANEL — the same controls, reachable from anywhere
+   ============================================================ */
+.a11y-fab{
+  position:fixed;right:1.15rem;bottom:1.15rem;z-index:260;
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--brown);color:#FFF9EE;
+  border:2px solid var(--gold);border-radius:2.2rem;
+  padding:.7rem 1.05rem;cursor:pointer;
+  font-family:var(--body);font-weight:600;font-size:.85rem;
+  box-shadow:0 6px 26px rgba(0,0,0,.32);
+  transition:background .25s,transform .25s var(--ease);
+}
+.a11y-fab:hover{background:var(--bark);transform:translateY(-2px)}
+html.no-motion .a11y-fab:hover{transform:none}
+.a11y-fab:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.a11y-fab svg{width:1.15rem;height:1.15rem;flex:0 0 auto}
+
+.a11y-panel{
+  position:fixed;right:1.15rem;bottom:5rem;z-index:261;
+  width:min(23rem,calc(100vw - 2.3rem));max-height:min(34rem,calc(100vh - 7rem));
+  overflow-y:auto;display:none;
+  background:var(--paper);color:var(--ink);
+  border:2px solid var(--brown-ink);border-radius:4px;
+  box-shadow:0 18px 60px rgba(0,0,0,.4);
+  padding:1.25rem 1.3rem 1.4rem;
+}
+.a11y-panel.open{display:block}
+.a11y-panel h2{
+  font-family:var(--display);font-size:1.1rem;font-weight:700;
+  margin:0 0 .25rem;color:var(--brown-ink);letter-spacing:-.01em;
+}
+.a11y-panel .hint{font-size:.82rem;color:var(--muted);margin:0 0 1.1rem;line-height:1.5}
+.a11y-row{
+  display:flex;align-items:center;justify-content:space-between;gap:.9rem;
+  padding:.72rem 0;border-top:1px solid var(--line);
+}
+.a11y-row:first-of-type{border-top:0}
+.a11y-row .lab{font-size:.92rem;font-weight:600;line-height:1.35}
+.a11y-row .sub{display:block;font-weight:400;font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.a11y-size{display:flex;align-items:center;gap:.4rem}
+.a11y-size output{
+  font-family:var(--mono);font-size:.78rem;min-width:3.2rem;text-align:center;color:var(--brown-ink);
+}
+.sw{
+  flex:0 0 auto;width:3.1rem;height:1.65rem;border-radius:1rem;cursor:pointer;
+  background:#C9BDB0;border:2px solid var(--brown-ink);position:relative;
+  transition:background .22s;
+}
+.sw::after{
+  content:"";position:absolute;top:.1rem;left:.1rem;
+  width:1.15rem;height:1.15rem;border-radius:50%;background:var(--brown-ink);
+  transition:transform .22s var(--ease);
+}
+.sw[aria-pressed="true"]{background:var(--gold)}
+.sw[aria-pressed="true"]::after{transform:translateX(1.45rem)}
+html.no-motion .sw,html.no-motion .sw::after{transition:none}
+.sw:focus-visible{outline:3px solid var(--brown-ink);outline-offset:3px}
+.a11y-btn{
+  font-family:var(--body);font-weight:600;font-size:.82rem;
+  background:transparent;color:var(--brown-ink);border:1px solid var(--brown-ink);
+  border-radius:2px;padding:.34rem .6rem;cursor:pointer;min-width:2.2rem;
+}
+.a11y-btn:hover{background:var(--brown-ink);color:var(--paper)}
+.a11y-btn:focus-visible{outline:3px solid var(--brown-ink);outline-offset:2px}
+.a11y-foot{display:flex;gap:.6rem;margin-top:1.1rem;padding-top:.9rem;border-top:1px solid var(--line)}
+.a11y-foot button{flex:1}
+html.contrast .a11y-panel{background:#FFF;border-color:#000}
+html.contrast .a11y-panel h2,html.contrast .a11y-row .lab{color:#000}
+html.contrast .a11y-panel .hint,html.contrast .a11y-row .sub{color:#2B211C}
+html.contrast .a11y-fab{background:#000;color:#FFF;border-color:#FFE24D}
+@media print{.a11y-fab,.a11y-panel,.ruler{display:none!important}}
+
+/* ============================================================
+   READER — the artifacts themselves, readable in the page
+   ============================================================ */
+.art.has-paper{cursor:pointer}
+.art.has-paper:hover{border-color:rgba(241,197,0,.62)}
+.art-open{
+  margin-top:1rem;align-self:flex-start;background:none;border:0;padding:.35rem 0 0;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);cursor:pointer;border-bottom:1px solid rgba(241,197,0,.35);
+  transition:border-color .25s,color .25s;
+}
+.art-open:hover{border-bottom-color:var(--gold)}
+.art-open:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.art-open .ar{transition:transform .25s var(--ease);display:inline-block}
+.art-open:hover .ar{transform:translateX(3px)}
+html.no-motion .art-open .ar{transition:none}
+.art{justify-content:flex-start}
+.art p{margin-bottom:0}
+
+.reader{position:fixed;inset:0;z-index:300;display:none}
+.reader.open{display:block}
+.reader-scrim{position:absolute;inset:0;background:rgba(12,7,4,.74);backdrop-filter:blur(2px)}
+.reader-panel{
+  position:relative;margin:0 auto;height:100%;max-width:860px;
+  background:var(--paper);color:var(--ink);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 90px rgba(0,0,0,.55);
+}
+.reader-head{
+  padding:1.5rem 2.2rem 1.2rem;border-bottom:1px solid var(--line);
+  background:var(--paper-2);flex:0 0 auto;
+}
+.reader-head .rd-src{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--brown-ink);display:block;margin-bottom:.55rem;
+}
+.reader-head h2{
+  font-family:var(--display);font-weight:900;letter-spacing:-.02em;line-height:1.15;
+  font-size:clamp(1.25rem,2.6vw,1.7rem);margin:0 0 .4rem;color:var(--ink);
+}
+.reader-head .rd-sub{font-size:.95rem;color:var(--muted);margin:0 0 .7rem;line-height:1.45}
+.reader-head .rd-meta{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0;
+}
+.rd-close{
+  position:absolute;top:1.05rem;right:1.05rem;
+  width:2.4rem;height:2.4rem;border-radius:50%;
+  background:var(--brown);color:#FFF9EE;border:0;cursor:pointer;
+  font-size:1.15rem;line-height:1;display:grid;place-items:center;
+  transition:background .25s,transform .25s var(--ease);
+}
+.rd-close:hover{background:var(--bark);transform:rotate(90deg)}
+html.no-motion .rd-close:hover{transform:none}
+.rd-close:focus-visible{outline:2px solid var(--brown-ink);outline-offset:3px}
+.reader-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+.rd-act{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.11em;text-transform:uppercase;
+  padding:.5rem .85rem;border:1px solid var(--brown-ink);border-radius:2px;
+  background:transparent;color:var(--brown-ink);cursor:pointer;text-decoration:none;
+  transition:background .25s,color .25s;
+}
+.rd-act:hover{background:var(--brown-ink);color:var(--paper)}
+.rd-act:focus-visible{outline:2px solid var(--brown-ink);outline-offset:3px}
+
+.reader-body{flex:1 1 auto;overflow-y:auto;padding:2.1rem 2.2rem 4rem;-webkit-overflow-scrolling:touch}
+.rd{max-width:68ch;font-size:1.02rem;line-height:1.72;color:var(--ink)}
+.rd h3{
+  font-family:var(--display);font-weight:700;font-size:1.22em;line-height:1.25;
+  margin:2.3em 0 .7em;color:var(--brown-ink);letter-spacing:-.012em;
+}
+.rd h4{font-family:var(--display);font-weight:700;font-size:1.06em;margin:1.9em 0 .55em;color:var(--brown-ink)}
+.rd h5{font-family:var(--body);font-weight:700;font-size:.97em;margin:1.6em 0 .45em;color:var(--brown-ink)}
+.rd > :first-child{margin-top:0}
+.rd p{margin:0 0 1.15em}
+.rd ul,.rd ol{margin:0 0 1.15em;padding-left:1.35em}
+.rd li{margin-bottom:.5em}
+.rd a{color:var(--brown-ink);text-decoration:underline;text-underline-offset:2px;word-break:break-word}
+.rd a:hover{color:var(--ink)}
+.rd strong{font-weight:700}
+.rd-tablewrap{overflow-x:auto;margin:0 0 1.4em}
+.rd table{border-collapse:collapse;font-size:.86em;min-width:100%}
+.rd th,.rd td{border:1px solid var(--line);padding:.45em .65em;text-align:left;vertical-align:top}
+.rd th{background:var(--paper-2);font-weight:700}
+.rd-end{
+  margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
+}
+html.contrast .reader-panel{background:#fff;color:#000}
+html.contrast .rd,html.contrast .rd h3,html.contrast .rd h4,html.contrast .rd h5{color:#000}
+
+@media (max-width:760px){
+  .reader-head{padding:1.25rem 1.2rem 1rem}
+  .reader-body{padding:1.5rem 1.2rem 3.5rem}
+  .rd-close{top:.75rem;right:.75rem}
+}
+
+
+/* ============================================================
+   BRONCONAV — flagship project
+   ============================================================ */
+#bronconav{padding-top:0}
+.pano{margin:0 0 clamp(3rem,7vh,5rem)}
+.pano img{width:100%;height:clamp(220px,30vw,520px);object-fit:cover;object-position:18% 62%}
+.pano figcaption{font-size:.86rem;color:var(--muted);margin-top:.85rem}
+.bn-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(2rem,5vw,4.2rem);align-items:start}
+@media(max-width:900px){.bn-grid{grid-template-columns:1fr}}
+.bn-photo{margin:0;position:sticky;top:84px}
+@media(max-width:900px){.bn-photo{position:static}}
+.bn-photo img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:3px}
+.bn-photo figcaption{font-size:.86rem;color:var(--muted);margin-top:.75rem}
+.bn-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.1rem 1.6rem;margin:1.8rem 0;padding-top:1.4rem;border-top:1px solid var(--line)}
+@media(max-width:520px){.bn-facts{grid-template-columns:1fr}}
+.bn-facts dt{font-size:.8rem;font-weight:700;color:var(--brown-ink);margin-bottom:.2rem}
+.bn-facts dd{margin:0;font-size:.95rem;line-height:1.45}
+.bn-note{font-size:.88rem;color:var(--muted);margin-top:1rem}
+.bn-note a{color:var(--brown-ink);font-weight:600}
+
+/* Placeholders — visible on purpose; search the source for INSERT */
+.ph{border-left:4px solid #8B1A1A;background:#FBEAEA;color:#8B1A1A;font-weight:700;
+  padding:.75rem 1rem;margin:0 0 1rem;font-size:.92rem;line-height:1.45}
+html.contrast .ph{background:#fff;color:#7A0000;border-color:#7A0000}
+
+/* Instructor line on artifact cards */
+.art .art-inst{font-size:.8rem;color:rgba(247,241,232,.76);margin:-.35rem 0 .75rem}
+a.art-open{text-decoration:none}
+
+/* Capstone milestones */
+.milestones{list-style:none;padding:0;margin:1.3rem 0 0;display:flex;flex-wrap:wrap;gap:.65rem}
+.milestones li{border:1px solid rgba(247,241,232,.24);border-radius:2px;padding:.6rem .95rem;font-size:.84rem;color:rgba(247,241,232,.72);min-width:10.5rem}
+.milestones li b{display:block;color:#FFF9EE;font-weight:700;font-size:.92rem}
+.milestones li.is-done{border-color:rgba(241,197,0,.5)}
+.milestones li.is-next{border-color:var(--gold);border-width:2px}
+.milestones .st{color:var(--gold);font-weight:600}
+html.contrast .milestones li{color:#fff;border-color:#fff}
+html.contrast .milestones li.is-next,html.contrast .milestones li.is-done{border-color:#FFE24D}
+
+/* Flagship card thumbnail */
+.card-img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:2px;margin-bottom:1.1rem;background:#8FC1EA;display:block}
+.card-link{display:inline-block;margin-top:1rem;font-size:.88rem;font-weight:700;color:var(--brown-ink)}
+
+/* ============================================================
+   PRINT — committees print things
+   ============================================================ */
+.print-all{display:none}
+@media print{
+  .nav,.access,.dom-tabs,.cta,.cta-row,.skip,.progress{display:none!important}
+  body{background:#fff;color:#000;font-size:10.5pt;line-height:1.45}
+  .hero{background:#fff;color:#000;padding:0 0 1rem}
+  .hero::before,.hero::after{display:none}
+  .hero h1,.hero h1 em{color:#000}
+  .hero-sub,.hero-meta{color:#333}
+  .sec-dark{background:#fff;color:#000}
+  .sec-dark .eyebrow,.eyebrow{color:#6b5300}
+  .sec-dark .lede,.dom-note,.art p,.contact-item .v{color:#333}
+  .dom-statement,.art h4,.close-q,.contact-item a{color:#000}
+  section{padding:1.1rem 0;break-inside:avoid}
+  #panel{display:none}
+  .bn-photo{position:static}
+  .pano img{height:auto;max-height:2.2in}
+  .print-all{display:block!important}
+  .print-dom{break-inside:avoid;margin-bottom:1rem}
+  .art{background:#fff;border:1px solid #999;break-inside:avoid}
+  .card,.value{border:1px solid #bbb;break-inside:avoid}
+  .rev,.stagger>*{opacity:1!important;transform:none!important}
+  a[href^="mailto"]::after,a[href^="http"]::after{content:" (" attr(href) ")";font-size:8.5pt;color:#555}
+
+  /* with a paper open, print the paper and nothing else */
+  body.reading > *:not(.reader){display:none!important}
+  body.reading .reader{display:block;position:static}
+  body.reading .reader-scrim,body.reading .rd-close,body.reading .reader-actions{display:none!important}
+  body.reading .reader-panel{max-width:none;height:auto;box-shadow:none;background:#fff}
+  body.reading .reader-head{background:#fff;border-bottom:1px solid #999;padding:0 0 .8rem}
+  body.reading .reader-body{overflow:visible;padding:1rem 0 0}
+  body.reading .rd{max-width:none;font-size:10.5pt;color:#000}
+  body.reading .rd h3,body.reading .rd h4,body.reading .rd h5{color:#000;break-after:avoid}
+  body.reading .rd-tablewrap,body.reading .rd table{break-inside:avoid}
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.rev{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rev.in{opacity:1;transform:none}
+.stagger > *{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.stagger.in > *{opacity:1;transform:none}
+.stagger.in > *:nth-child(1){transition-delay:.05s}
+.stagger.in > *:nth-child(2){transition-delay:.13s}
+.stagger.in > *:nth-child(3){transition-delay:.21s}
+.stagger.in > *:nth-child(4){transition-delay:.29s}
+.stagger.in > *:nth-child(5){transition-delay:.37s}
+
+
+/* ============================================================
+   ADDED OCTOBER 2026 — new components
+   ============================================================ */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Plain-language summaries (display setting) */
+.plain{display:none;margin:0 0 1.6rem;padding:1rem 1.2rem;border-left:4px solid var(--gold-deep);
+  background:var(--card);border-radius:0 3px 3px 0;font-size:1.05rem;line-height:1.6;color:var(--ink);
+  font-family:var(--body)}
+.plain-k{font-weight:700;font-size:.86rem;margin:0 0 .3rem;color:var(--brown-ink)}
+.plain p:last-child{margin:0}
+html.a11y-plain .plain{display:block}
+.sec-dark .plain{background:rgba(255,249,238,.08);border-color:var(--gold);color:#FFF9EE}
+.sec-dark .plain-k{color:var(--gold)}
+html.contrast .sec-dark .plain{background:#000;border-color:#FFE24D}
+
+/* Visible image descriptions (display setting) */
+.alt-cap{display:none;font-size:.88rem;line-height:1.5;color:var(--ink);
+  border-left:3px solid var(--gold-deep);padding-left:.8rem;margin:.7rem 0 0}
+html.a11y-alts .alt-cap{display:block}
+.pano .alt-cap{margin-top:.7rem}
+
+/* Theme picker in the display panel */
+.seg{display:inline-flex;border:1px solid var(--brown-ink);border-radius:2px;overflow:hidden;flex:0 0 auto}
+.seg button{font:600 .8rem var(--body);background:transparent;color:var(--brown-ink);border:0;
+  padding:.36rem .62rem;cursor:pointer}
+.seg button + button{border-left:1px solid var(--brown-ink)}
+.seg button[aria-pressed="true"]{background:var(--brown-ink);color:var(--paper)}
+.seg button:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
+
+/* ---------- Curb-cut scene: one scroll-linked moment ---------- */
+.cc-scene{margin:2.6rem auto 0;max-width:980px}
+.cc-scene svg{width:100%;height:auto;display:block;overflow:hidden}
+.cc-scene .walk{fill:var(--walk)}
+.cc-scene .street{fill:var(--street)}
+.cc-scene .edge{fill:none;stroke:var(--edge);stroke-width:4;stroke-linejoin:round}
+.cc-scene .stripe{fill:none;stroke:var(--stripe);stroke-width:7;stroke-dasharray:26 14}
+.cc-scene .lab{font:600 13px var(--body);fill:var(--ink);text-anchor:middle}
+.cc-scene .fg{fill:none;stroke:var(--ink);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cc-scene .fg .acc{fill:var(--gold)}
+.cc-scene .fg .solid{fill:var(--ink)}
+.cc-scene figcaption{font-size:.86rem;color:var(--muted);margin-top:.6rem;text-align:center}
+
+/* ---------- Kalamazoo timeline ---------- */
+.kzt{list-style:none;padding:0;margin:2.4rem 0 2.6rem;display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));position:relative}
+.kzt::before{content:"";position:absolute;left:0;right:0;top:3.05rem;height:2px;background:var(--line)}
+.kzt li{position:relative;padding-right:1.1rem}
+.kzt-y{display:block;font-family:var(--display);font-weight:900;font-size:1.9rem;line-height:1;
+  letter-spacing:-.02em;margin-bottom:2rem}
+.kzt-dot{position:absolute;top:2.62rem;left:0;width:.95rem;height:.95rem;border-radius:50%;
+  background:var(--paper-2);border:2px solid var(--brown-ink)}
+.kzt li.is-local .kzt-dot{background:var(--gold);border-color:var(--brown-ink)}
+.kzt-where{display:block;font-size:.76rem;font-weight:700;color:var(--brown-ink);margin:0 0 .3rem}
+.kzt-what{font-size:.9rem;line-height:1.5;color:var(--muted);margin:0}
+@media(max-width:860px){
+  .kzt{grid-template-columns:1fr;gap:1.4rem;padding-left:1.8rem}
+  .kzt::before{top:.4rem;bottom:.4rem;left:.45rem;right:auto;width:2px;height:auto}
+  .kzt li{padding-right:0}
+  .kzt-y{font-size:1.5rem;margin-bottom:.35rem}
+  .kzt-dot{top:.3rem;left:-1.8rem}
+}
+
+/* ---------- Integration hub ---------- */
+.hub{position:relative;width:min(100% - 2.5rem,960px);margin:2.2rem auto 2.8rem;aspect-ratio:960/520}
+.hub-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.hub-lines line{stroke:var(--gold-deep);stroke-width:2;stroke-dasharray:5 6;vector-effect:non-scaling-stroke}
+.hub-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;
+  width:9.2rem;height:9.2rem;border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  background:var(--brown);color:#FFF9EE;border:3px solid var(--gold);
+  font-family:var(--display);font-weight:900;font-size:1.3rem;letter-spacing:-.015em;line-height:1.1}
+.hub-core small{display:block;font-family:var(--body);font-weight:600;font-size:.7rem;letter-spacing:0;
+  color:rgba(255,249,238,.8);margin-top:.3rem}
+.hub-nodes{list-style:none;margin:0;padding:0}
+.hub-nodes li{position:absolute;transform:translate(-50%,-50%);width:14rem}
+.hub-nodes li:nth-child(1){left:50%;top:12%}
+.hub-nodes li:nth-child(2){left:86%;top:41%}
+.hub-nodes li:nth-child(3){left:72%;top:86%}
+.hub-nodes li:nth-child(4){left:28%;top:86%}
+.hub-nodes li:nth-child(5){left:14%;top:41%}
+.hub-node{display:block;background:var(--card);border:1px solid var(--line);border-radius:3px;
+  padding:.8rem .95rem .85rem;text-decoration:none;color:var(--ink);
+  transition:border-color .25s,transform .3s var(--ease),box-shadow .3s var(--ease)}
+.hub-node:hover{border-color:var(--gold-deep);transform:translateY(-3px);box-shadow:0 10px 26px rgba(37,19,9,.12)}
+html.no-motion .hub-node:hover{transform:none}
+.hub-node .t{display:flex;gap:.5rem;align-items:baseline;font-family:var(--display);font-weight:700;font-size:1.04rem;letter-spacing:-.012em}
+.hub-node .n{font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--gold-deep)}
+.hub-node .d{display:block;font-size:.84rem;line-height:1.42;color:var(--muted);margin-top:.3rem}
+.hub-node .go{display:block;font-size:.76rem;font-weight:700;color:var(--brown-ink);margin-top:.45rem;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:820px){
+  .hub{aspect-ratio:auto;display:flex;flex-direction:column;gap:.7rem}
+  .hub-lines{display:none}
+  .hub-core{position:static;transform:none;width:auto;height:auto;border-radius:3px;padding:.9rem 1rem;font-size:1.15rem}
+  .hub-nodes{display:grid;gap:.7rem}
+  .hub-nodes li{position:static;transform:none;width:auto}
+}
+
+/* ---------- BroncoNav: continuous improvement ---------- */
+.improve{margin-top:clamp(3rem,6vh,4.5rem);padding-top:2.2rem;border-top:1px solid var(--line)}
+.improve h3{font-size:clamp(1.4rem,2.8vw,1.95rem);margin-bottom:.7rem}
+.improve > p{max-width:62ch;color:var(--muted)}
+.improve-grid{list-style:none;padding:0;margin:1.8rem 0 0;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1rem}
+.improve-item{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--gold-deep);
+  border-radius:3px;padding:1.3rem 1.35rem 1.4rem;display:flex;flex-direction:column;gap:.4rem}
+.improve-item .k{font-size:.8rem;font-weight:700;color:var(--brown-ink)}
+.improve-item .big{font-family:var(--display);font-weight:900;font-size:1.45rem;line-height:1.15;letter-spacing:-.018em;color:var(--ink)}
+.improve-item .d{font-size:.92rem;line-height:1.5;color:var(--muted)}
+.improve-item.is-stat{background:var(--brown);border-color:var(--brown);border-top-color:var(--gold)}
+.improve-item.is-stat .k{color:var(--gold)}
+.improve-item.is-stat .big{font-size:clamp(2.4rem,5vw,3.2rem);color:#FFF9EE;line-height:1}
+.improve-item.is-stat .d{color:rgba(255,249,238,.85)}
+html.contrast .improve-item{border-color:var(--ink)}
+html.contrast .improve-item.is-stat{background:#000;border-color:#FFE24D}
+html.contrast .improve-item.is-stat .d{color:#fff}
+
+/* ---------- Accessibility statement ---------- */
+#accessibility .wrap{border-top:1px solid rgba(247,241,232,.18);padding-top:clamp(3rem,7vh,4.5rem)}
+.a11y-dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:1.6rem 2.2rem;margin:2.2rem auto 0}
+.a11y-dl dt{font-family:var(--display);font-weight:700;font-size:1.06rem;color:#FFF9EE;margin:0 0 .35rem}
+.a11y-dl dd{margin:0;font-size:.94rem;line-height:1.6;color:rgba(247,241,232,.8)}
+.a11y-dl dd a{color:var(--gold)}
+html.contrast .a11y-dl dd{color:#fff}
+
+/* ---------- Motion that answers an action: the paper reader ---------- */
+.reader.open .reader-panel{view-transition-name:reader}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
+::view-transition-new(reader){animation:rd-in .34s var(--ease) both}
+::view-transition-old(reader){animation:rd-out .2s ease-in both}
+@keyframes rd-in{from{opacity:0;transform:translateY(34px)}}
+@keyframes rd-out{to{opacity:0;transform:translateY(22px)}}
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}
+
+@media print{
+  .cc-scene,.hub-lines,.seg{display:none!important}
+  .improve-item.is-stat{background:#fff}.improve-item.is-stat .big,.improve-item.is-stat .d,.improve-item.is-stat .k{color:#000}
+  .hub{aspect-ratio:auto}.hub-core,.hub-nodes li{position:static;transform:none;width:auto}
+  #accessibility{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rev,.stagger > *{opacity:1!important;transform:none!important}
+}
+html.no-motion *,html.no-motion *::before,html.no-motion *::after{
+  animation:none!important;transition:none!important;
+}
+html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:none!important}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="#top">Joshua Behymer <span>/ MPA Capstone</span></a>
+    <div class="nav-links">
+      <a href="#thesis">Thesis</a>
+      <a href="#bronconav">BroncoNav</a>
+      <a href="#framework">Framework</a>
+      <a href="#matrix">Competencies</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Capstone Portfolio &middot; Master of Public Administration</p>
+    <h1>Access by <em>Design</em></h1>
+    <p class="hero-sub">Building public systems that anticipate disability — instead of making people ask permission to participate.</p>
+
+    <!-- SIGNATURE: real accessibility controls, at the front door -->
+    <div class="access" role="group" aria-label="Display preferences">
+      <span class="access-label">Set this page up the way you need it</span>
+      <div class="ctrl">
+        <span>Text</span>
+        <button class="btn-a" id="tDown" aria-label="Decrease text size">A&minus;</button>
+        <output class="btn-a" id="tOut" style="cursor:default" aria-live="polite">100%</output>
+        <button class="btn-a" id="tUp" aria-label="Increase text size">A+</button>
+      </div>
+      <div class="ctrl">
+        <button class="btn-a" id="cToggle" aria-pressed="false">High contrast</button>
+      </div>
+      <div class="ctrl">
+        <button class="btn-a" id="mToggle" aria-pressed="false">Reduce motion</button>
+      </div>
+      <div class="ctrl">
+        <button class="btn-a" id="plToggle" aria-pressed="false">Plain-language summaries</button>
+      </div>
+      <div class="ctrl">
+        <button class="btn-a" id="dToggle" aria-pressed="false">Dark mode</button>
+      </div>
+    </div>
+
+    <div class="hero-meta">
+      <span>Joshua Behymer</span>
+      <span>Western Michigan University</span>
+      <span>School of Public Affairs &amp; Administration</span>
+      <span>Expected Fall 2026</span>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ==================== THESIS ==================== -->
+<section id="thesis">
+  <div class="narrow rev">
+    <p class="eyebrow">The argument</p>
+    <div class="thesis">
+      <blockquote>Access is <em>infrastructure</em>, not an exception.</blockquote>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>Access should be built into public systems from the start. My job as an administrator is to design systems where fewer people have to ask for special permission.</p></aside>
+      <p class="lede">It is not a benefit granted to individuals through petition and review. It is a property of systems — arising from how policies, budgets, facilities, and communication are designed in the first place.</p>
+      <p>The administrator's job is not primarily to grant exceptions well. It is to reduce the number of exceptions the system requires. Every artifact in this portfolio, from a village budget in Berrien Springs to a shuttle route on a hilly campus in Kalamazoo, is an application of that idea.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CURB CUT EFFECT ==================== -->
+<section class="sec-alt" id="curbcut">
+  <div class="wrap">
+    <div class="narrow rev">
+      <p class="eyebrow">Why this is everyone's problem</p>
+      <h2 class="h-sec">The curb cut effect</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>Things built for disabled people usually end up helping almost everyone. Curb cuts, which Kalamazoo installed in 1945, are the best-known example.</p></aside>
+      <p class="lede">Curb cuts were mandated for wheelchair users. Look at who actually uses them.</p>
+      <p>This is the strongest practical argument for designing access in rather than bolting it on: accommodations built for a specific group reliably turn out to serve a much larger one. The narrow case pays for the broad benefit. An administrator who can only justify access on equity grounds is leaving most of the argument on the table.</p>
+    </div>
+
+
+    <figure class="cc-scene" id="ccScene">
+      <svg viewBox="0 50 900 170" role="img" aria-labelledby="ccSceneT">
+        <title id="ccSceneT">A wheelchair user, a stroller, a rolling suitcase, a bicycle, and a delivery hand truck all cross the street using the same pair of curb cuts.</title>
+        <path class="walk" d="M0 150 H230 L300 185 V220 H0 Z"/>
+        <path class="walk" d="M600 185 L670 150 H900 V220 H600 Z"/>
+        <rect class="street" x="300" y="185" width="300" height="35"/>
+        <path class="stripe" d="M312 196 H592"/>
+        <path class="edge" d="M0 150 H230 L300 185 M600 185 L670 150 H900"/>
+        <text class="lab" x="258" y="212">curb cut</text>
+        <text class="lab" x="642" y="212">curb cut</text>
+        <path class="cc-track" d="M-320 150 H230 L300 185 H600 L670 150 H1220" fill="none" stroke="none"/>
+        <!-- hand truck -->
+        <g class="fg" transform="translate(90 150)">
+          <rect class="acc" x="-12" y="-40" width="26" height="34" rx="2"/>
+          <rect class="acc" x="-10" y="-70" width="22" height="28" rx="2"/>
+          <path d="M-16 -4 V-80 Q-16 -90 -26 -90 M-16 -4 H18"/>
+          <circle class="solid" cx="-18" cy="-7" r="7"/>
+        </g>
+        <!-- bicycle -->
+        <g class="fg" transform="translate(265 167.5) rotate(26.57)">
+          <circle cx="-24" cy="-17" r="17"/><circle cx="24" cy="-17" r="17"/>
+          <path d="M-24 -17 H-4 L14 -40 H-10 Z M-4 -17 L-13 -47 M14 -40 L24 -17 M-19 -47 H-7 M14 -40 L11 -52 H21"/>
+        </g>
+        <!-- rolling suitcase -->
+        <g class="fg" transform="translate(450 185)">
+          <rect class="acc" x="-17" y="-60" width="34" height="46" rx="5"/>
+          <path d="M-7 -60 V-14 M7 -60 V-14 M0 -60 V-84 M-9 -84 H9"/>
+          <circle cx="-10" cy="-8" r="5"/><circle cx="10" cy="-8" r="5"/>
+        </g>
+        <!-- stroller -->
+        <g class="fg" transform="translate(635 167.5) rotate(-26.57)">
+          <path class="acc" d="M-24 -46 A24 24 0 0 1 0 -70 V-46 Z"/>
+          <path d="M-24 -46 H14 Q14 -24 -6 -24 H-14 Q-24 -24 -24 -46 Z M14 -46 L30 -72 H38 M-10 -24 L-13 -16 M4 -24 L7 -16"/>
+          <circle cx="-14" cy="-9" r="8"/><circle cx="8" cy="-9" r="8"/>
+        </g>
+        <!-- wheelchair user -->
+        <g class="fg" transform="translate(800 150)">
+          <circle cx="-4" cy="-19" r="18"/>
+          <circle class="solid" cx="-4" cy="-19" r="3"/>
+          <circle cx="20" cy="-5" r="5"/>
+          <path d="M-12 -36 H12 L18 -12 H24 M-12 -36 L-16 -60"/>
+          <circle class="solid" cx="-9" cy="-80" r="8"/>
+          <path class="acc" d="M-15 -70 Q-8 -73 -4 -68 L-2 -42 H12 L14 -34 H-10 Z"/>
+          <path d="M-8 -60 L6 -49 M12 -38 L16 -18"/>
+        </g>
+      </svg>
+    </figure>
+
+    <dl class="cc narrow rev">
+      <div class="cc-row">
+        <dt class="cc-for">Curb cuts</dt>
+        <dd class="cc-arrow" aria-hidden="true">&rarr;</dd>
+        <dd class="cc-also">
+          <span>Strollers</span><span>Rolling luggage</span><span>Delivery carts</span>
+          <span>Bicycles</span><span>Walkers</span><span>Anyone on ice</span>
+        </dd>
+      </div>
+      <div class="cc-row">
+        <dt class="cc-for">Captions</dt>
+        <dd class="cc-arrow" aria-hidden="true">&rarr;</dd>
+        <dd class="cc-also">
+          <span>Noisy rooms</span><span>Silent rooms</span><span>Second-language viewers</span>
+          <span>Searchable transcripts</span><span>Anyone taking notes</span>
+        </dd>
+      </div>
+      <div class="cc-row">
+        <dt class="cc-for">Automatic doors</dt>
+        <dd class="cc-arrow" aria-hidden="true">&rarr;</dd>
+        <dd class="cc-also">
+          <span>Full hands</span><span>Movers</span><span>Parents with kids</span><span>Infection control</span>
+        </dd>
+      </div>
+      <div class="cc-row">
+        <dt class="cc-for">Plain-language documents</dt>
+        <dd class="cc-arrow" aria-hidden="true">&rarr;</dd>
+        <dd class="cc-also">
+          <span>Screen reader users</span><span>Anyone in a hurry</span><span>Anyone under stress</span>
+          <span>New employees</span><span>Elected officials</span>
+        </dd>
+      </div>
+      <div class="cc-row">
+        <dt class="cc-for">BroncoNav</dt>
+        <dd class="cc-arrow" aria-hidden="true">&rarr;</dd>
+        <dd class="cc-also">
+          <span>Students with mobility disabilities</span><span>Anyone who needs a ride in inclement weather</span>
+          <span>Any DSS-registered student, no questions asked</span>
+          <span>Closer to campus than city busing</span>
+        </dd>
+      </div>
+      <div class="cc-row">
+        <dt class="cc-for">On-demand scheduling</dt>
+        <dd class="cc-arrow" aria-hidden="true">&rarr;</dd>
+        <dd class="cc-also">
+          <span>Students with disabilities</span><span>Faculty</span>
+          <span>Now accounts for 80%+ of DSS appointments</span>
+          <span>Built for one group, adopted by the whole office</span>
+        </dd>
+      </div>
+        </dl>
+
+    <div class="narrow rev" style="margin-top:2.8rem">
+      <p class="eyebrow">Kalamazoo's accessibility legacy</p>
+      <h3 style="font-size:1.7rem;margin-bottom:1rem">A local idea with a global impact</h3>
+      <p>
+        The curb cut effect has a special connection to Kalamazoo. In 1945,
+        the City of Kalamazoo installed what are widely recognized as the
+        first modern curb cuts in the United States. The project was designed
+        to improve mobility for wheelchair users, including injured World War II
+        veterans returning to their communities.
+      </p>
+    </div>
+
+    <ol class="kzt rev" aria-label="From Kalamazoo's curb cuts to bronconav.com">
+      <li class="is-local"><span class="kzt-y">1945</span><span class="kzt-dot" aria-hidden="true"></span>
+        <span class="kzt-where">Kalamazoo</span>
+        <p class="kzt-what">The city installs the first modern curb cuts in the U.S., with returning World War II veterans in mind.</p></li>
+      <li><span class="kzt-y">1968</span><span class="kzt-dot" aria-hidden="true"></span>
+        <span class="kzt-where">Federal</span>
+        <p class="kzt-what">The Architectural Barriers Act requires federally funded buildings to be accessible.</p></li>
+      <li><span class="kzt-y">1973</span><span class="kzt-dot" aria-hidden="true"></span>
+        <span class="kzt-where">Federal</span>
+        <p class="kzt-what">Section 504 of the Rehabilitation Act bars disability discrimination in federally funded programs, universities included.</p></li>
+      <li><span class="kzt-y">1990</span><span class="kzt-dot" aria-hidden="true"></span>
+        <span class="kzt-where">Federal</span>
+        <p class="kzt-what">The Americans with Disabilities Act makes access a civil right across public life.</p></li>
+      <li><span class="kzt-y">2024</span><span class="kzt-dot" aria-hidden="true"></span>
+        <span class="kzt-where">Federal</span>
+        <p class="kzt-what">A Justice Department rule sets web accessibility standards for state and local governments, public universities included.</p></li>
+      <li class="is-local"><span class="kzt-y">2026</span><span class="kzt-dot" aria-hidden="true"></span>
+        <span class="kzt-where">Kalamazoo &middot; WMU</span>
+        <p class="kzt-what">BroncoNav moves to its own ride-request platform, bronconav.com.</p></li>
+    </ol>
+
+    <div class="narrow rev">
+      <p>
+        At the time, a curb was a significant barrier. Today, curb cuts are so
+        common that they can be easy to overlook, but they represent a major
+        shift in how communities think about access. A change created for
+        disabled residents became infrastructure that benefits parents with
+        strollers, travelers with luggage, delivery workers, and anyone
+        navigating the built environment.
+      </p>
+      <p>
+        Kalamazoo's history demonstrates a central principle of accessibility:
+        designing for people who experience barriers often creates better
+        systems for everyone.
+      </p>
+    </div>
+
+    <div class="narrow rev" style="margin-top:2.2rem">
+      <p style="margin:0">I found this in my own budgeting coursework, in a course that had nothing to do with disability. A village had posted its budget as a scanned image — unsearchable, and unreadable to a screen reader. Fixing that would have served every resident who has ever tried to find a single number in a hundred-page PDF.</p>
+    </div>
+  </div>
+</section>
+<!-- ==================== PRACTITIONER ==================== -->
+<section id="who">
+  <div class="wrap">
+    <div class="narrow rev">
+      <p class="eyebrow">Where this comes from</p>
+      <h2 class="h-sec">Ten years at the point where people meet systems</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>I have spent about ten years helping people with disabilities work and study. Today I run accommodation services at WMU, including more than 20 staff and the BroncoNav shuttle.</p></aside>
+      <p>In snowy seasons, the sidewalks on WMU's campus tell you who the campus was built for. Snow gets pushed off the main walkways and piled into the curb cuts. A student who could manage a route in the fall finds that the same route after a snowfall is not a route at all. Nothing about that student changed. The environment did.</p>
+      <p>I spent nearly a decade in supported employment, helping adults with disabilities find community jobs and then keep them — the harder half of the work. When a placement failed, it was rarely because the person couldn't do the job. It was because one of the surrounding systems had no give in it.</p>
+      <p>Today I serve as a <strong>Deaf and Hard of Hearing Accommodation Specialist</strong> in Disability Services for Students at Western Michigan University, where I coordinate communication access, supervise more than 20 staff across three areas (ASL interpreters, Sighted Aides, and BroncoNav Drivers), manage program funds, and lead BroncoNav, the accessible shuttle program I helped create.</p>
+    </div>
+
+    <div class="grid-3 stagger">
+      <article class="card">
+        <img class="card-img" src="bronconav-illustration.webp" width="900" height="600" alt="" loading="lazy">
+        <span class="tag">Flagship project</span>
+        <h3>BroncoNav</h3>
+        <p>WMU's accessible campus shuttle, which I helped create with Dr. Zach Asher's Energy Efficient and Autonomous Vehicle Lab and Revision Autonomy. It now runs on its own ride-request platform, bronconav.com.</p>
+        <a class="card-link" href="#bronconav">See the project</a>
+      </article>
+      <article class="card">
+        <svg class="card-img" viewBox="0 0 900 600" aria-hidden="true" focusable="false">
+          <rect width="900" height="600" fill="#8FC1EA"/>
+          <rect x="70" y="60" width="150" height="26" rx="13" fill="#A8D0F0"/><rect x="640" y="90" width="170" height="26" rx="13" fill="#A8D0F0"/>
+          <rect y="490" width="900" height="110" fill="#6B7A8C"/>
+          <rect x="300" y="420" width="30" height="72" fill="#33363D"/><rect x="250" y="482" width="130" height="12" rx="6" fill="#33363D"/>
+          <rect x="90" y="120" width="450" height="305" rx="12" fill="#33363D"/>
+          <rect x="110" y="140" width="410" height="205" fill="#F5F7FA"/>
+          <rect x="140" y="168" width="200" height="20" rx="4" fill="#3A8AD8"/>
+          <rect x="140" y="212" width="320" height="11" rx="5" fill="#C9D3DE"/>
+          <rect x="140" y="238" width="270" height="11" rx="5" fill="#C9D3DE"/>
+          <rect x="140" y="264" width="300" height="11" rx="5" fill="#C9D3DE"/>
+          <rect x="140" y="290" width="190" height="11" rx="5" fill="#C9D3DE"/>
+          <rect x="110" y="345" width="410" height="62" fill="#1F2126"/>
+          <rect x="140" y="361" width="250" height="10" rx="5" fill="#F1C500"/>
+          <rect x="140" y="381" width="190" height="10" rx="5" fill="#FFFFFF" opacity=".85"/>
+          <rect x="452" y="360" width="46" height="32" rx="5" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+          <text x="475" y="382" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#FFFFFF">CC</text>
+          <path d="M620 492 L632 342 Q700 306 768 342 L780 492 Z" fill="#33363D"/>
+          <rect x="690" y="300" width="20" height="30" fill="#33363D"/>
+          <circle cx="700" cy="262" r="40" fill="#33363D"/>
+          <path d="M648 352 L606 326 L634 276" stroke="#33363D" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M752 352 L790 318 L758 270" stroke="#33363D" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="636" cy="268" r="18" fill="#F1C500"/><circle cx="756" cy="258" r="18" fill="#F1C500"/>
+          <path d="M604 250 Q598 236 608 224 M618 236 Q616 224 626 216 M792 236 Q800 224 796 210 M778 226 Q782 214 776 202" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M656 402 L680 470 M744 402 L720 470" stroke="#3A8AD8" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+        <span class="tag">Current practice</span>
+        <h3>Communication access</h3>
+        <p>Interpreting, captioning, and classroom design for Deaf and hard of hearing students — treating access as a design question rather than a service request.</p>
+      </article>
+      <article class="card">
+        <svg class="card-img" viewBox="0 0 900 600" aria-hidden="true" focusable="false">
+          <rect width="900" height="600" fill="#8FC1EA"/>
+          <rect x="600" y="60" width="170" height="26" rx="13" fill="#A8D0F0"/><rect x="90" y="96" width="120" height="24" rx="12" fill="#A8D0F0"/>
+          <rect y="490" width="900" height="110" fill="#6B7A8C"/>
+          <rect x="150" y="96" width="330" height="410" rx="12" fill="#F5F7FA"/>
+          <rect x="255" y="76" width="120" height="42" rx="9" fill="#33363D"/>
+          <rect x="190" y="150" width="190" height="20" rx="4" fill="#3A8AD8"/>
+          <g fill="none" stroke="#33363D" stroke-width="5">
+            <rect x="190" y="204" width="30" height="30" rx="5"/><rect x="190" y="264" width="30" height="30" rx="5"/>
+            <rect x="190" y="324" width="30" height="30" rx="5"/><rect x="190" y="384" width="30" height="30" rx="5"/>
+          </g>
+          <g fill="none" stroke="#F1C500" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M196 218 L204 227 L220 206"/><path d="M196 278 L204 287 L220 266"/><path d="M196 338 L204 347 L220 326"/>
+          </g>
+          <g fill="#C9D3DE"><rect x="238" y="213" width="190" height="11" rx="5"/><rect x="238" y="273" width="160" height="11" rx="5"/>
+            <rect x="238" y="333" width="180" height="11" rx="5"/><rect x="238" y="393" width="140" height="11" rx="5"/></g>
+          <rect x="540" y="200" width="250" height="290" rx="12" fill="#33363D"/>
+          <rect x="572" y="386" width="36" height="74" fill="#3A8AD8"/><rect x="622" y="336" width="36" height="124" fill="#3A8AD8"/>
+          <rect x="672" y="362" width="36" height="98" fill="#3A8AD8"/><rect x="722" y="286" width="36" height="174" fill="#F1C500"/>
+          <rect x="562" y="460" width="206" height="5" fill="#C9D3DE"/>
+          <circle cx="455" cy="420" r="60" fill="#FFFFFF" fill-opacity=".35" stroke="#33363D" stroke-width="16"/>
+          <path d="M498 463 L556 521" stroke="#33363D" stroke-width="24" stroke-linecap="round"/>
+        </svg>
+        <span class="tag">Next</span>
+        <h3>Disability policy analysis</h3>
+        <p>Moving from managing the consequences of structural conditions to working on the conditions themselves, in a governmental or nonprofit setting.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BRONCONAV ==================== -->
+<section id="bronconav" aria-labelledby="bnTitle">
+  <figure class="pano">
+    <img src="bronconav-campus-panorama-1600.webp"
+         srcset="bronconav-campus-panorama-1600.webp 1600w, bronconav-campus-panorama-3200.webp 3200w"
+         sizes="100vw" width="3200" height="664" loading="lazy"
+         alt="Panoramic view of the center of WMU's campus on a sunny day. The BroncoNav van, dark gray with a gold W and blue and gold stripes, is parked at left beside a tree sculpture and fountains, with Sangren Hall behind it. Wide pedestrian paths curve away across open lawns toward residence halls, with no road in sight.">
+    <figcaption class="wrap">The walkable core. Great for anyone on foot, and a longer trip to the nearest vehicle for anyone who can't make that walk.</figcaption>
+  </figure>
+
+  <div class="wrap bn-grid">
+    <div class="rev">
+      <p class="eyebrow">Flagship project</p>
+      <h2 class="h-sec" id="bnTitle">From a shuttle to a system</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>BroncoNav is an accessible shuttle for students registered with Disability Services at WMU. Students book rides on its own website, and can set up rides for a whole semester at once.</p></aside>
+      <p>WMU's campus plan moved vehicles to the edges and gave the center to pedestrians. That works for most students. For a student with a mobility disability, it turned the distance between parking, transit, and class into a barrier. BroncoNav is the structural response: an accessible, on-demand shuttle I helped create with Dr. Zach Asher's team at WMU's Energy Efficient and Autonomous Vehicle Lab and run out of Disability Services for Students. The van itself was a gift from the lab, and the service completed more than 1,500 rides in its first full semester.</p>
+      <p>Running it on Microsoft Bookings showed me exactly where an off-the-shelf tool stops fitting a public service. So BroncoNav now runs on its own platform, <a href="https://www.bronconav.com" target="_blank" rel="noopener">bronconav.com</a>, which I worked closely with a development team to build from the ground up. Students sign in with their WMU account, request one-time or recurring rides with at least an hour's notice, choose from 18 campus pickup and drop-off points, and track the rides they've requested.</p>
+      <p>Recurring rides are the thesis in miniature. A student with a fixed class schedule asks once for the semester instead of once for every ride. Each request a system no longer requires is a burden it no longer imposes.</p>
+
+      <p class="ph">INSERT: Your role in the build, in two or three sentences. What requirements did you define, which design decisions did you drive, and how did you test it with staff and riders?</p>
+      <p class="ph">INSERT: Credit for the development team, in the words you'd like to use.</p>
+
+      <dl class="bn-facts">
+        <div><dt>Launched</dt><dd>September 21, 2026</dd></div>
+        <div><dt>Replaced</dt><dd>Microsoft Bookings</dd></div>
+        <div><dt>Who can ride</dt><dd>Registered DSS students, signed in with a WMU account</dd></div>
+        <div><dt>Coverage</dt><dd>18 campus pickup and drop-off points, weekdays</dd></div>
+      </dl>
+
+
+      <div class="cta-row">
+        <a class="cta" href="https://www.bronconav.com" target="_blank" rel="noopener">Visit bronconav.com</a>
+      </div>
+      <p class="bn-note">Ride requests need a registered DSS account, so reviewers will see the public landing page. The <a href="https://www.bronconav.com/faq" target="_blank" rel="noopener">FAQ</a> is open to everyone.</p>
+    </div>
+
+    <figure class="bn-photo rev">
+      <img src="bronconav-van-sangren-900.webp"
+           srcset="bronconav-van-sangren-900.webp 900w, bronconav-van-sangren-1600.webp 1600w"
+           sizes="(max-width:900px) 100vw, 44vw" width="1600" height="1200" loading="lazy"
+           alt="The BroncoNav van, a dark gray high-roof van with a gold WMU W, blue and gold stripes, and the Revision Autonomy logo, parked on a curving campus walkway beside a tree sculpture, with Sangren Hall in the background.">
+      <figcaption>BroncoNav outside Sangren Hall, at the center of campus.</figcaption>
+    </figure>
+  </div>
+
+  <div class="wrap improve rev" aria-labelledby="improveTitle">
+    <h3 id="improveTitle">Built to keep improving</h3>
+    <p>BroncoNav is not a finished product. It keeps changing to ask less of the people who ride it.</p>
+    <ul class="improve-grid">
+      <li class="improve-item is-stat">
+        <span class="k">First full semester</span>
+        <span class="big">1,500+</span>
+        <span class="d">rides completed, the clearest sign the service was needed.</span>
+      </li>
+      <li class="improve-item">
+        <span class="k">Easier to reach</span>
+        <span class="big">Dedicated phone line</span>
+        <span class="d">Riders can reach BroncoNav directly by phone.</span>
+      </li>
+      <li class="improve-item">
+        <span class="k">Easier to book</span>
+        <span class="big">bronconav.com</span>
+        <span class="d">Built from the ground up to replace Microsoft Bookings, with recurring rides so a student books once for the semester. More than 50 riders registered in its first month.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== FRAMEWORK ==================== -->
+<section class="sec-alt" id="framework">
+  <div class="wrap">
+    <div class="narrow rev">
+      <p class="eyebrow">Conceptual review</p>
+      <h2 class="h-sec">Three ideas that changed how I practice</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>Three ideas shaped how I work: public services should count everyone, forms and waiting are costs a system chooses to impose, and access disappears when no one is responsible for it.</p></aside>
+      <p class="lede">The scholarship below reframed access from something I delivered one student at a time into something produced — or prevented — by design.</p>
+    </div>
+
+    <div class="grid-3 stagger">
+      <article class="card">
+        <span class="tag">Equity</span>
+        <h3>Who gets counted</h3>
+        <p>Frederickson's social equity pillar gives an administrator standing to argue that a service used by three percent of students is not therefore worth three percent of the attention. Efficiency-oriented decision rules reliably underweight minority needs.</p>
+      </article>
+      <article class="card">
+        <span class="tag">Design</span>
+        <h3>Burden is a choice</h3>
+        <p>Oliver's social model locates disability in the environment rather than the body. Moynihan's administrative burden explains the cost: every exception a system grants first requires a citizen to prove they deserve one.</p>
+      </article>
+      <article class="card">
+        <span class="tag">Governance</span>
+        <h3>Access erodes quietly</h3>
+        <p>Balfour and Adams on administrative evil, Headley and Wright on fragmented accountability. Access rarely disappears through a hostile decision — it disappears through a budget line not renewed and a responsibility with no owner.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COMPETENCY MATRIX ==================== -->
+<section class="sec-dark" id="matrix">
+  <div class="wrap">
+    <div class="rev">
+      <p class="eyebrow">Analytical design</p>
+      <h2 class="h-sec">The competency matrix</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>My MPA program measures five skill areas. Each piece of work below shows one of them. Choose an area to see the work.</p></aside>
+      <p class="lede" style="max-width:64ch"><span id="artCount">Twenty</span> artifacts mapped to the five NASPAA domains. Each was selected to demonstrate a specific, identifiable element of its domain — not merely to relate to it topically. Select a domain to see its evidence.</p>
+    </div>
+
+    <div class="dom-tabs" role="tablist" aria-label="NASPAA competency domains" id="tabs"></div>
+
+    <div id="panel" role="tabpanel" tabindex="0">
+      <p class="dom-statement" id="domStatement"></p>
+      <p class="dom-note" id="domNote"></p>
+      <div class="arts" id="arts"></div>
+    </div>
+
+    <div class="progress">
+      <span>Portfolio status</span>
+      <span><b id="pDone">0</b> artifacts complete</span>
+      <span><b id="pPend">0</b> in progress through Fall 2026</span>
+    </div>
+
+    <ol class="milestones" aria-label="Capstone milestones">
+      <li class="is-done"><b>Proposal</b>September 26 &middot; <span class="st">Submitted</span></li>
+      <li class="is-next"><b>Progress portfolio</b>October 24 &middot; <span class="st">Next</span></li>
+      <li><b>Final portfolio</b>November 21</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==================== INTEGRATION ==================== -->
+<section id="integration">
+  <div class="narrow rev">
+    <p class="eyebrow">Integration</p>
+    <h2 class="h-sec">The domains are separable on paper only</h2>
+    <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>The five skill areas work together, not one at a time. BroncoNav needed all five to exist.</p></aside>
+    <p>BroncoNav makes the point efficiently. The service required leadership to convene units that did not report to one another, policy work to set eligibility and service standards, analysis to define what it would measure, a public service perspective to justify investing in something most students would never use, and communication to make the case to a funder, to faculty, and to riders. Remove any one and the program does not exist. Building bronconav.com repeated the lesson at a smaller scale: every service rule had to be defended to a development team, written into the system, and then made clear enough for a student to use without asking anyone.</p>
+  </div>
+
+  <figure class="hub rev" aria-labelledby="hubCap">
+    <figcaption id="hubCap" class="sr-only">What each competency domain contributed to BroncoNav. Each item links to that domain's evidence in the competency matrix.</figcaption>
+    <svg class="hub-lines" viewBox="0 0 100 54.17" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <line x1="50" y1="27.08" x2="50" y2="6.5"/><line x1="50" y1="27.08" x2="86" y2="22.2"/>
+      <line x1="50" y1="27.08" x2="72" y2="46.6"/><line x1="50" y1="27.08" x2="28" y2="46.6"/>
+      <line x1="50" y1="27.08" x2="14" y2="22.2"/>
+    </svg>
+    <p class="hub-core">BroncoNav<small>needed all five</small></p>
+    <ul class="hub-nodes">
+      <li><a class="hub-node" href="#d1" data-dom="0"><span class="t"><span class="n">01</span>Leadership</span><span class="d">Convened units that did not report to one another</span><span class="go">See the evidence</span></a></li>
+      <li><a class="hub-node" href="#d2" data-dom="1"><span class="t"><span class="n">02</span>Policy</span><span class="d">Set eligibility and service standards</span><span class="go">See the evidence</span></a></li>
+      <li><a class="hub-node" href="#d3" data-dom="2"><span class="t"><span class="n">03</span>Analysis</span><span class="d">Defined what the service would measure</span><span class="go">See the evidence</span></a></li>
+      <li><a class="hub-node" href="#d4" data-dom="3"><span class="t"><span class="n">04</span>Public service</span><span class="d">Justified a service most students would never use</span><span class="go">See the evidence</span></a></li>
+      <li><a class="hub-node" href="#d5" data-dom="4"><span class="t"><span class="n">05</span>Communication</span><span class="d">Made the case to a funder, faculty, and riders</span><span class="go">See the evidence</span></a></li>
+    </ul>
+  </figure>
+
+  <div class="narrow rev">
+
+    <p>What I did not anticipate is how much the competencies would correct one another. My earliest instinct was advocacy — argue harder, escalate better, win more individual cases. Analytical training complicated that instinct productively. Ethics coursework complicated it in the opposite direction, by showing that rigorous analysis inside an institution with distorted priorities can rationalize nearly anything. Budgeting supplied the constraint neither can: good intentions with no funding mechanism are a well-documented preference.</p>
+    <p>The most significant change was a change in <strong>unit of analysis</strong>. I entered thinking in terms of students, and I still do — the individual case is where harm shows up. But I now read individual outcomes as measurements of system performance. A student who can't get to class after a snowfall is data about snow removal, transit scheduling, and capital planning. That shift is the difference between the practitioner I was and the administrator I'm becoming.</p>
+  </div>
+</section>
+
+<!-- ==================== FORWARD ==================== -->
+<section class="sec-alt" id="forward">
+  <div class="wrap">
+    <div class="narrow rev">
+      <p class="eyebrow">Professional preparation</p>
+      <h2 class="h-sec">What I intend to do with this</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>I want to work in disability policy, helping governments and nonprofits design for access from the start. My biggest strength is helping different groups understand each other.</p></aside>
+      <p>My purpose is to help public institutions design for access rather than react to it — to reduce the number of exceptions a system requires by building systems that need fewer of them. Near term, that means a policy analyst role in disability policy. Longer term, it means working on Michigan's accessibility standards, funding, and governance at the level where conditions are actually set.</p>
+      <p><strong>Where I'm strongest:</strong> translation. I've spent my career moving between people who use different languages — engineers and student services staff, clinicians and administrators, funders and practitioners — finding the framing that lets each side recognize its own priorities in the other's proposal.</p>
+      <p><strong>Where I'm still building:</strong> my analytic judgment lags my analytic technique. I can execute the standard methods; my sense of research design, data scale, and measurement validity has more room to grow. That's the competency that determines whether my arguments persuade people who don't already share my commitments.</p>
+    </div>
+
+    <div class="values stagger">
+      <div class="value">
+        <h3>Dignity</h3>
+        <p>These systems ask people to disclose private medical information and justify their needs to strangers. Some of that is unavoidable. The amount of it is a design choice.</p>
+      </div>
+      <div class="value">
+        <h3>Stewardship</h3>
+        <p>Access programs are small and first on the list when budgets tighten. Managing funds well is partly fiduciary obligation and partly survival strategy.</p>
+      </div>
+      <div class="value">
+        <h3>Accountability</h3>
+        <p>Access erodes through diffusion — responsibilities that belong to everyone and therefore to no one. Decisions need identifiable owners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXPERIENCE / RESUME ==================== -->
+<section id="experience">
+  <div class="wrap">
+    <div class="narrow rev">
+      <p class="eyebrow">Experience</p>
+      <h2 class="h-sec">Practice before theory</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>I have worked in disability services and supported employment for about ten years. I finish my MPA at WMU in December 2026.</p></aside>
+      <p class="lede">Ten years of direct service is what produced the structural analysis. The coursework gave me language for what I had already been watching.</p>
+
+      <div class="cta-row">
+        <a class="cta" href="Behymer-Resume.pdf" download="Behymer-Resume.pdf">Download resume (PDF)</a>
+        <a class="cta ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="tl narrow rev">
+
+      <div class="tl-item">
+        <p class="tl-when">August 2024 &ndash; Present</p>
+        <h3 class="tl-role">Accommodation Specialist</h3>
+        <p class="tl-org">Disability Services for Students &middot; Western Michigan University &middot; Kalamazoo, MI</p>
+        <p class="d">Supervises 20+ staff across three areas (ASL interpreters, Sighted Aides, and BroncoNav Drivers) and coordinates CART providers and vendor partners. Helped create and now manages BroncoNav, WMU's accessible campus shuttle, from concept through 1,500+ rides in its first full semester, and worked with a development team to build bronconav.com, the ride-request platform that replaced Microsoft Bookings in September 2026. Online scheduling initiative now accounts for over 80% of DSS appointments. Coordinates BSBP program elements including the Summer II Transition Program.</p>
+      </div>
+
+      <div class="tl-item">
+        <p class="tl-when">November 2021 &ndash; June 2024</p>
+        <h3 class="tl-role">Employment Services &amp; Transitions Coordinator</h3>
+        <p class="tl-org">OnPoint (formerly ACCMHS) &middot; Allegan, MI</p>
+        <p class="d">Managed vocational rehabilitation caseloads for individuals with disabilities and mental illness. Directed the Youth Transitions program, conducting community outreach and writing Individual Plans of Service through Person-Centered Planning. Served as Allegan County's community liaison with Michigan Rehabilitation Services (MRS).</p>
+      </div>
+
+      <div class="tl-item">
+        <p class="tl-when">May 2017 &ndash; November 2021</p>
+        <h3 class="tl-role">Employment Training Specialist II</h3>
+        <p class="tl-org">MRC Industries &middot; Kalamazoo, MI</p>
+        <p class="d">Led CARF accreditation audit preparation. Established and maintained partnerships with 40+ employers across Southwest Michigan, placing hundreds of consumers with disabilities into employment. Built department-wide data-tracking in Salesforce and served as organizational trainer on Individual Placement &amp; Supports (IPS) standards. Maintained direct working relationship with MRS, CMH, and BSBP.</p>
+      </div>
+
+      <div class="tl-item">
+        <p class="tl-when">Graduating December 2026</p>
+        <h3 class="tl-role">Master of Public Administration</h3>
+        <p class="tl-org">School of Public Affairs &amp; Administration &middot; Western Michigan University</p>
+        <p class="d">NASPAA-accredited. Coursework in public policy, applied research methods, quantitative data analysis, public budgeting and accounting, grant writing, ethics, leadership, and nonprofit management. Advisor: Dr. Daniela Schroeter.</p>
+      </div>
+
+      <div class="tl-item">
+        <p class="tl-when">Western Michigan University</p>
+        <h3 class="tl-role">Bachelor&rsquo;s Degree &mdash; University Studies</h3>
+        <p class="tl-org">Concentration in Health &amp; Human Services</p>
+        <p class="d">&nbsp;</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CLOSING ==================== -->
+<section class="sec-dark" id="close">
+  <div class="narrow rev">
+    <p class="eyebrow">Reflection</p>
+    <p class="close-q">How a public institution treats the people it was not designed for is the most honest available measure of whether it is serving the public at all.</p>
+    <p style="margin-top:1.8rem;color:rgba(247,241,232,.72);max-width:60ch">I'd like to help build institutions that pass that test — where a student in a snowy season finds the sidewalk cleared and the curb cut open, and never has to know that someone decided in advance that they would be coming.</p>
+  </div>
+</section>
+
+<!-- ==================== CONTACT ==================== -->
+<section class="sec-dark" id="contact">
+  <div class="wrap">
+    <div class="narrow rev">
+      <p class="eyebrow">Contact</p>
+      <h2 class="h-sec">Get in touch</h2>
+      <p class="lede">I'm finishing the MPA in Fall 2026 and looking toward policy analysis work in disability policy. If you're working on access at the level where conditions get set, I'd like to hear about it.</p>
+    </div>
+
+    <div class="contact-grid narrow stagger">
+      <div class="contact-item">
+        <p class="k">Email</p>
+        <a href="mailto:joshua.b.behymer@wmich.edu">joshua.b.behymer@wmich.edu</a>
+      </div>
+      <div class="contact-item">
+        <p class="k">LinkedIn</p>
+        <!-- EDIT: replace with your LinkedIn URL, or delete this block -->
+        <a href="https://linkedin.com/in/joshuabehymer" target="_blank" rel="noopener">linkedin.com/in/joshuabehymer</a>
+      </div>
+      <div class="contact-item">
+        <p class="k">Based in</p>
+        <span class="v">Kalamazoo, Michigan</span>
+      </div>
+    </div>
+
+    <div class="narrow rev">
+      <div class="cta-row">
+        <!-- EDIT: point this at your portfolio PDF -->
+        <a class="cta" href="#" id="download2">Read the full portfolio</a>
+        <a class="cta ghost" href="#experience">See experience</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ACCESSIBILITY STATEMENT ==================== -->
+<section class="sec-dark" id="accessibility" aria-labelledby="a11yStmt">
+  <div class="wrap">
+    <div class="narrow">
+      <p class="eyebrow">Accessibility statement</p>
+      <h2 class="h-sec" id="a11yStmt">How this site was built</h2>
+      <p class="lede">An accessibility portfolio should meet its own standard. Here is the one this site aims for, and how to tell me when it misses.</p>
+    </div>
+    <dl class="a11y-dl narrow">
+      <div><dt>Standard</dt><dd>Written to meet WCAG 2.2 Level AA. Text colors are checked against the contrast minimums in the light, dark, and high-contrast themes.</dd></div>
+      <div><dt>Display settings</dt><dd>Text size, theme, contrast, motion, spacing, typeface, link underlines, a reading ruler, plain-language summaries, and visible image descriptions. Your choices are saved only in this browser.</dd></div>
+      <div><dt>Built with</dt><dd>Native HTML buttons and links, so keyboards and screen readers get the behavior they expect. Papers open as text rather than embedded PDFs, so they reflow on a phone.</dd></div>
+      <div><dt>Tested with</dt><dd>NVDA and JAWS on Windows, VoiceOver on Mac and iPhone, TalkBack on Android, keyboard-only navigation, and browser zoom up to 200%.</dd></div>
+      <div><dt>Found a barrier?</dt><dd>Email <a href="mailto:joshua.b.behymer@wmich.edu">joshua.b.behymer@wmich.edu</a> with what happened and what you were using. I'll reply and work on a fix.</dd></div>
+      <div><dt>Last reviewed</dt><dd>September 2026</dd></div>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <span>Joshua Behymer &middot; MPA Capstone Portfolio &middot; Western Michigan University</span>
+    <span><a href="#accessibility">Accessibility statement</a> &middot; <a href="mailto:joshua.b.behymer@wmich.edu">joshua.b.behymer@wmich.edu</a></span>
+  </div>
+</footer>
+
+<!-- ============================================================
+     DISPLAY PANEL — every setting, from any point on the page
+     ============================================================ -->
+<div class="ruler" id="rulerTop"></div>
+<div class="ruler" id="rulerBottom"></div>
+
+<button class="a11y-fab" id="a11yFab" aria-expanded="false" aria-controls="a11yPanel">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="4.2" r="1.9"/><path d="M3.5 8.2h17"/>
+    <path d="M8.4 8.2v3.4l-1.6 9.2"/><path d="M15.6 8.2v3.4l1.6 9.2"/>
+    <path d="M8.4 11.6h7.2"/>
+  </svg>
+  Display
+</button>
+
+<div class="a11y-panel" id="a11yPanel" role="dialog" aria-modal="false" aria-labelledby="a11yTitle">
+  <h2 id="a11yTitle">Display settings</h2>
+  <p class="hint">These change how this page looks for you. Your choices are saved on this device.</p>
+
+  <div class="a11y-row">
+    <span class="lab">Text size<span class="sub">Scales every word on the page</span></span>
+    <span class="a11y-size">
+      <button class="a11y-btn" id="pDown" aria-label="Decrease text size">A&minus;</button>
+      <output id="pOut" aria-live="polite">100%</output>
+      <button class="a11y-btn" id="pUp" aria-label="Increase text size">A+</button>
+    </span>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab" id="themeLab">Theme<span class="sub">Auto follows your device</span></span>
+    <span class="seg" role="group" aria-labelledby="themeLab">
+      <button type="button" data-theme="auto" aria-pressed="true">Auto</button>
+      <button type="button" data-theme="light" aria-pressed="false">Light</button>
+      <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    </span>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">High contrast<span class="sub">Stronger text and border contrast</span></span>
+    <button class="sw" id="swContrast" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="High contrast"></button>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">Reduce motion<span class="sub">Stops animation and scroll effects</span></span>
+    <button class="sw" id="swMotion" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="Reduce motion"></button>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">More text spacing<span class="sub">Wider lines, letters, and words</span></span>
+    <button class="sw" id="swSpacing" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="More text spacing"></button>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">Plain typeface<span class="sub">Drops the display serif for a plain sans</span></span>
+    <button class="sw" id="swFont" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="Plain typeface"></button>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">Underline links<span class="sub">Marks links without relying on colour</span></span>
+    <button class="sw" id="swUnderline" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="Underline links"></button>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">Plain-language summaries<span class="sub">Adds a short, simple summary to each section</span></span>
+    <button class="sw" id="swPlain" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="Plain-language summaries"></button>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">Show image descriptions<span class="sub">Shows the text a screen reader hears for each photo</span></span>
+    <button class="sw" id="swAlts" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="Show image descriptions"></button>
+  </div>
+
+  <div class="a11y-row">
+    <span class="lab">Reading ruler<span class="sub">Dims all but the line you're on</span></span>
+    <button class="sw" id="swRuler" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="Reading ruler"></button>
+  </div>
+
+  <div class="a11y-foot">
+    <button class="a11y-btn" id="a11yReset">Reset all</button>
+    <button class="a11y-btn" id="a11yClose">Done</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     READER DIALOG — populated from papers.js
+     ============================================================ -->
+<div class="reader" id="reader" role="dialog" aria-modal="true" aria-labelledby="rdTitle" aria-hidden="true">
+  <div class="reader-scrim"></div>
+  <div class="reader-panel">
+    <div class="reader-head">
+      <button class="rd-close" type="button" aria-label="Close and return to the portfolio">&#10005;</button>
+      <span class="rd-src" id="rdSrc"></span>
+      <h2 id="rdTitle"></h2>
+      <p class="rd-sub" id="rdSub"></p>
+      <p class="rd-meta" id="rdMeta"></p>
+      <div class="reader-actions" id="rdActions"></div>
+    </div>
+    <div class="reader-body" id="rdBody" tabindex="0"></div>
+  </div>
+</div>
+
+<script src="papers.js"></script>
+
+<script>
+/* ============================================================
+   ARTIFACT DATA — edit here as you complete coursework.
+   status: "done" | "pending"
+   ============================================================ */
+const DOMAINS = [
+  {
+    n:"01", label:"Leadership",
+    statement:"Apply theories and techniques of leadership and management in the public interest.",
+    note:"Access work is boundary work. No single office controls the conditions that determine whether a disabled student can attend class, so leadership here means convening rather than directing.",
+    artifacts:[
+      {src:"Professional", title:"BroncoNav program development and launch", status:"done",
+       desc:"Defining the service and holding an engineering partner and a student services office to one definition of success. Neither party had authority over the other."},
+      {src:"Professional", title:"Supervision and fiscal oversight, DSS staff", status:"done",
+       desc:"Direct supervisor and financial manager for 20+ staff across three areas: ASL interpreting, Sighted Aides, and BroncoNav. A service is only as accessible as its staffing model permits."},
+      {src:"PADM 6290", inst:"Dr. Kelly Gesmundo Clarke", title:"Sustaining effective leadership in urgent environments", status:"done", paper:"padm-6290",
+       desc:"Self-awareness, transparency about cost, and psychological safety treated as one practice rather than three. Absorbing the cost of an urgent accommodation silently is what keeps an organization from learning it has a design problem."},
+      {src:"PADM 6400", inst:"Dr. Gene McKay", title:"Managing Nonprofit Organizations", status:"pending",
+       desc:"Research paper on supported employment. In progress this fall."}
+    ]
+  },
+  {
+    n:"02", label:"Policy",
+    statement:"Participate in and contribute to the public policy process.",
+    note:"Policy is made in more places than a legislature — including the daily discretionary judgments of staff who apply written rules to specific human situations.",
+    artifacts:[
+      {src:"PADM 6020", inst:"Dr. Daniela Schroeter", title:"The underdiagnosis of ADHD in women", status:"done", paper:"padm-6020",
+       desc:"A policy brief tracing a five-year diagnostic gap to male-centered criteria and cultural expectation. Every diagnosis-gated accommodation system inherits the inequities of the diagnostic system feeding it."},
+      {src:"PADM 6000", inst:"Dr. Abby Kinch", title:"Michigan Higher Education Accessibility Assurance Board", status:"done", paper:"padm-6000",
+       desc:"An independent oversight body designed against a governance vacuum rather than a hostile decision. A protection with no designated owner has a short half-life."},
+      {src:"Professional", title:"Accommodation determination under the ADA and Section 504", status:"done",
+       desc:"Interpreting federal law at the point of service. A documentation standard isn't a fixed requirement I administer — it's a burden level I set."},
+      {src:"Professional", title:"bronconav.com ride-request platform", status:"done", more:"#bronconav",
+       desc:"Service rules written into software: who can ride, how much notice, where the stops are. Recurring requests mean a student asks once a semester instead of once a ride. Designing the form is setting the burden."},
+      {src:"PADM 6010", inst:"Dr. Gene McKay", title:"Economic Principles for Public Service", status:"pending",
+       desc:"Final paper. In progress this fall."}
+    ]
+  },
+  {
+    n:"03", label:"Analysis",
+    statement:"Analyze, synthesize, think critically, and make evidence-informed decisions.",
+    note:"Technical skill matters less than epistemic discipline. Evidence is only valuable to an organization willing to be told something it did not want to hear.",
+    artifacts:[
+      {src:"PADM 6060", inst:"Dr. Daniela Schroeter", title:"WMU accessibility community needs assessment", status:"done", paper:"padm-6060",
+       desc:"A convergent parallel mixed-methods design scoped deliberately beyond my own office — to transportation, facilities, and housing, which I don't control."},
+      {src:"PADM 6070", inst:"Dr. Gene McKay", title:"SSDI participation and university enrollment", status:"done", paper:"padm-6070",
+       desc:"Twenty years of time-series data, r = .13, p = .59. Included precisely because it failed: reporting an unwanted result honestly is the competency."},
+      {src:"PADM 5120", inst:"Michael Hart", title:"Village of Berrien Springs budget review", status:"done", paper:"padm-5120",
+       desc:"A technically sound document that failed as communication — scanned, unsearchable, and unreadable to a screen reader. Access isn't a topic area. It's a lens."},
+      {src:"Professional", title:"BroncoNav evaluation framework", status:"done",
+       desc:"Ridership tells you the vehicle is running. It says nothing about whether a student made it to an exam. Pairing telemetry with rider surveys keeps the human outcome in view."}
+    ]
+  },
+  {
+    n:"04", label:"Public service",
+    statement:"Articulate, apply, and advance a public service perspective grounded in equity and democratic governance.",
+    note:"A public service perspective has to include some account of what you'll do when institutional pressure runs against it.",
+    artifacts:[
+      {src:"PADM 6000", inst:"Dr. Abby Kinch", title:"Ethics futures analysis: administrative evil", status:"done", paper:"padm-6000",
+       desc:"A 2035 scenario in which the ADA falls and DSS is dissolved. Writing it required imagining my own office dismantled — and how ordinary incentives would pull my colleagues toward compliance."},
+      {src:"PADM 6001", inst:"Dr. Matthew Mingus", title:"Competency exercise", status:"done", paper:"padm-6001-comp",
+       desc:"Included as a baseline, not a demonstration. The distance between this and the ethics analysis is the clearest evidence of growth the portfolio contains."},
+      {src:"PADM 6001", inst:"Dr. Matthew Mingus", title:"MPA and beyond", status:"done", paper:"padm-6001-mpa",
+       desc:"Career goals in disability policy grounded in specific experience rather than abstraction — though it treated public service values as motivations rather than commitments to be defended."},
+      {src:"Professional", title:"Supported employment practice", status:"done",
+       desc:"Nearly a decade helping adults with disabilities keep community jobs. Sustained direct service eventually produces a structural analysis in anyone paying attention."}
+    ]
+  },
+  {
+    n:"05", label:"Communication",
+    statement:"Communicate and interact productively and in culturally responsive ways with a diverse and changing citizenry.",
+    note:"A policy no one can understand is not a policy anyone can use. A budget that cannot be read is not transparent, however publicly it is posted.",
+    artifacts:[
+      {src:"PADM 5830", inst:"Dr. Daniela Schroeter", title:"BroncoNav grant proposal, Kalamazoo Community Foundation", status:"done", paper:"padm-5830",
+       desc:"A $30,000 request framed against the funder's own stated goals. A persuasive case for access is rarely made by asserting that access matters — it's made by showing the reader's commitments already imply it."},
+      {src:"Professional", title:"Deaf and hard of hearing service coordination", status:"done",
+       desc:"Deaf culture is a linguistic community, not a medical category. The right service is determined by a person's language and preference, not by an audiogram."},
+      {src:"Professional", title:"DSS outreach presentations to academic departments", status:"done",
+       desc:"Learning to distinguish resistance from confusion. Faculty objections arrive as principled concerns about rigor and are usually anxieties about implementation."}
+    ]
+  }
+];
+
+
+/* ============================================================
+   READER — opens the full text of an artifact in a dialog.
+   Text, not an embedded PDF: it reflows on a phone, works with a
+   screen reader, and can be searched with the browser's own find.
+   ============================================================ */
+let currentDomain = 0;
+const reader     = document.getElementById('reader');
+const rdPanel    = reader.querySelector('.reader-panel');
+const rdBody     = document.getElementById('rdBody');
+const rdTitle    = document.getElementById('rdTitle');
+const rdSub      = document.getElementById('rdSub');
+const rdSrc      = document.getElementById('rdSrc');
+const rdMeta     = document.getElementById('rdMeta');
+const rdActions  = document.getElementById('rdActions');
+let lastFocused  = null;
+
+/* Motion that answers an action: the reader slides in and out where the
+   browser supports view transitions, and snaps when motion is reduced. */
+function withTransition(fn){
+  const d = document.documentElement;
+  const calm = d.classList.contains('no-motion') ||
+    (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if (document.startViewTransition && !calm) document.startViewTransition(fn);
+  else fn();
+}
+
+function openPaper(id, trigger){
+  const P = (window.PAPERS||{})[id];
+  if(!P){ console.warn('No paper loaded for "'+id+'" — is papers.js present?'); return; }
+  lastFocused = trigger || document.activeElement;
+  withTransition(()=>{
+
+  rdSrc.textContent   = P.course;
+  rdTitle.textContent = P.title;
+  rdSub.textContent   = P.sub || '';
+  rdSub.hidden        = !P.sub;
+  rdMeta.textContent  = (P.meta ? P.meta + ' · ' : '') + P.words.toLocaleString() + ' words';
+
+  rdActions.innerHTML =
+    (P.pdf ? '<a class="rd-act" href="'+P.pdf+'" download>Download PDF</a>' : '') +
+    '<button class="rd-act" type="button" id="rdPrint">Print this paper</button>' +
+    '<button class="rd-act" type="button" id="rdCopyLink">Copy link</button>';
+
+  rdBody.innerHTML = '<div class="rd">'+P.html+
+    '<p class="rd-end">End of artifact · Joshua Behymer · MPA Capstone Portfolio</p></div>';
+  rdBody.scrollTop = 0;
+
+  document.getElementById('rdPrint').onclick = ()=>window.print();
+  document.getElementById('rdCopyLink').onclick = e=>{
+    const url = location.origin + location.pathname + '#p-' + id;
+    navigator.clipboard && navigator.clipboard.writeText(url);
+    e.target.textContent = 'Link copied';
+    setTimeout(()=>{ e.target.textContent = 'Copy link'; }, 1800);
+  };
+
+  reader.classList.add('open');
+  reader.removeAttribute('aria-hidden');
+  document.body.classList.add('reading');
+  document.body.style.overflow = 'hidden';
+  [...document.body.children].forEach(el=>{
+    if(el !== reader){ el.setAttribute('aria-hidden','true'); el.inert = true; }
+  });
+  if(history.replaceState) history.replaceState(null,'','#p-'+id);
+  reader.querySelector('.rd-close').focus();
+  });
+}
+
+function closePaper(){
+  if(!reader.classList.contains('open')) return;
+  withTransition(()=>{
+  reader.classList.remove('open');
+  reader.setAttribute('aria-hidden','true');
+  document.body.classList.remove('reading');
+  document.body.style.overflow = '';
+  [...document.body.children].forEach(el=>{
+    if(el !== reader){ el.removeAttribute('aria-hidden'); el.inert = false; }
+  });
+  if(history.replaceState) history.replaceState(null,'','#d'+(currentDomain+1));
+  if(lastFocused && document.contains(lastFocused)) lastFocused.focus();
+  rdBody.innerHTML = '';
+  });
+}
+
+reader.querySelector('.rd-close').addEventListener('click', closePaper);
+reader.querySelector('.reader-scrim').addEventListener('click', closePaper);
+
+/* Escape closes; Tab stays inside the dialog */
+reader.addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){ e.preventDefault(); closePaper(); return; }
+  if(e.key !== 'Tab') return;
+  const f = [...rdPanel.querySelectorAll('a[href],button,[tabindex]:not([tabindex="-1"])')]
+              .filter(el=>el.offsetParent !== null);
+  if(!f.length) return;
+  const first = f[0], last = f[f.length-1];
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
+/* ---------- render matrix ---------- */
+const tabsEl = document.getElementById('tabs');
+const artsEl = document.getElementById('arts');
+const stmtEl = document.getElementById('domStatement');
+const noteEl = document.getElementById('domNote');
+
+DOMAINS.forEach((d,i)=>{
+  const b=document.createElement('button');
+  b.className='dom-tab'; b.type='button'; b.setAttribute('role','tab');
+  b.id='tab-'+(i+1);
+  b.setAttribute('aria-controls','panel');
+  b.setAttribute('aria-selected', i===0?'true':'false');
+  b.tabIndex = i===0 ? 0 : -1;
+  b.innerHTML='<span class="n">'+d.n+'</span> '+d.label;
+  b.addEventListener('click',()=>select(i,true));
+  tabsEl.appendChild(b);
+});
+
+/* Arrow-key navigation — required for role="tab" to actually be usable */
+tabsEl.addEventListener('keydown', e=>{
+  const step={ArrowRight:1,ArrowLeft:-1,ArrowDown:1,ArrowUp:-1};
+  let next=null;
+  const cur=[...tabsEl.children].findIndex(b=>b.getAttribute('aria-selected')==='true');
+  if(e.key in step) next=(cur+step[e.key]+DOMAINS.length)%DOMAINS.length;
+  else if(e.key==='Home') next=0;
+  else if(e.key==='End') next=DOMAINS.length-1;
+  if(next===null) return;
+  e.preventDefault();
+  select(next,true);
+  tabsEl.children[next].focus();
+});
+
+function select(i,userAction){
+  [...tabsEl.children].forEach((b,j)=>{
+    const on = j===i;
+    b.setAttribute('aria-selected', on?'true':'false');
+    b.tabIndex = on ? 0 : -1;
+  });
+  const d=DOMAINS[i];
+  document.getElementById('panel').setAttribute('aria-labelledby','tab-'+(i+1));
+  stmtEl.textContent=d.statement;
+  noteEl.textContent=d.note;
+  artsEl.innerHTML='';
+  d.artifacts.forEach((a,k)=>{
+    const el=document.createElement('article');
+    el.className='art'+(a.status==='pending'?' is-pending':'');
+    const chipClass = a.status==='done' ? 'done' : 'pend';
+    const chipText  = a.status==='done' ? 'Complete' : 'Fall 2026';
+    if(a.paper) el.classList.add('has-paper');
+    el.innerHTML=
+      '<div class="art-top">'+
+        '<span class="art-src">'+a.src+'</span>'+
+        '<span class="chip '+chipClass+'">'+chipText+'</span>'+
+      '</div>'+
+      '<h4>'+a.title+'</h4>'+
+      (a.inst ? '<p class="art-inst">Course instructor: '+a.inst+'</p>' : '')+
+      '<p>'+a.desc+'</p>'+
+      (a.more ? '<a class="art-open" href="'+a.more+'">See the project <span class="ar" aria-hidden="true">&rarr;</span></a>' : '')+
+      (a.paper
+        ? '<button class="art-open" type="button" aria-haspopup="dialog" data-paper="'+a.paper+'" '+
+          'aria-label="Read the full paper: '+a.title.replace(/"/g,'&quot;')+'">'+
+          'Read the Paper <span class="ar" aria-hidden="true">&rarr;</span></button>'
+        : '');
+    if(a.paper){
+      el.addEventListener('click', ev=>{
+        if(ev.target.closest('a')) return;
+        openPaper(a.paper, el.querySelector('.art-open'));
+      });
+    }
+    artsEl.appendChild(el);
+    if(document.documentElement.classList.contains('no-motion')) return;
+    el.style.opacity='0'; el.style.transform='translateY(14px)';
+    setTimeout(()=>{
+      el.style.transition='opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)';
+      el.style.opacity='1'; el.style.transform='none';
+    }, 40+k*55);
+  });
+  /* shareable link to a single domain, e.g. .../#d3 */
+  currentDomain = i;
+  if(userAction && history.replaceState) history.replaceState(null,'','#d'+(i+1));
+}
+
+/* open on the domain — or the paper — named in the URL */
+const hashDom  = (location.hash||'').match(/^#d([1-5])$/);
+const hashPap  = (location.hash||'').match(/^#p-([a-z0-9-]+)$/i);
+let startDomain = 0;
+if(hashDom) startDomain = Number(hashDom[1])-1;
+else if(hashPap){
+  const di = DOMAINS.findIndex(d=>d.artifacts.some(a=>a.paper===hashPap[1]));
+  if(di>-1) startDomain = di;
+}
+select(startDomain);
+if(hashDom||hashPap) window.addEventListener('load',()=>{
+  if(hashPap) openPaper(hashPap[1], null);
+  const m=document.getElementById('matrix');
+  if(m && m.scrollIntoView) m.scrollIntoView({behavior:'auto'});
+});
+
+/* full listing for print — a printed page shouldn't hide four of five domains */
+const printAll=document.createElement('div');
+printAll.className='print-all';
+printAll.innerHTML=DOMAINS.map(d=>
+  '<div class="print-dom"><p class="dom-statement">'+d.n+' &middot; '+d.statement+'</p>'+
+  '<div class="arts">'+d.artifacts.map(a=>
+    '<article class="art"><div class="art-top"><span class="art-src">'+a.src+'</span>'+
+    '<span class="chip '+(a.status==='done'?'done':'pend')+'">'+
+    (a.status==='done'?'Complete':'Fall 2026')+'</span></div>'+
+    '<h4>'+a.title+'</h4>'+(a.inst?'<p class="art-inst">Course instructor: '+a.inst+'</p>':'')+'<p>'+a.desc+'</p></article>').join('')+
+  '</div></div>').join('');
+document.getElementById('panel').insertAdjacentElement('afterend',printAll);
+
+/* counts */
+const all=DOMAINS.flatMap(d=>d.artifacts);
+document.getElementById('pDone').textContent=all.filter(a=>a.status==='done').length;
+document.getElementById('pPend').textContent=all.filter(a=>a.status==='pending').length;
+(function(){ /* keep the intro count honest as artifacts are added or removed */
+  const w=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty','Twenty-one','Twenty-two','Twenty-three','Twenty-four','Twenty-five'];
+  const el=document.getElementById('artCount'); if(el) el.textContent=w[all.length]||String(all.length);
+})();
+
+
+/* ============================================================
+   INTEGRATION HUB — each domain jumps to its evidence
+   ============================================================ */
+document.querySelectorAll('.hub-node').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const i = Number(a.dataset.dom);
+    select(i, true);
+    const calm = document.documentElement.classList.contains('no-motion');
+    document.getElementById('matrix').scrollIntoView({ behavior: calm ? 'auto' : 'smooth' });
+    tabsEl.children[i].focus({ preventScroll: true });
+  });
+});
+
+/* ============================================================
+   IMAGE DESCRIPTIONS — the alt text, made visible on request.
+   aria-hidden so screen reader users don't hear it twice.
+   ============================================================ */
+document.querySelectorAll('figure img[alt]').forEach(img => {
+  if (!img.alt.trim()) return;
+  const p = document.createElement('p');
+  p.className = 'alt-cap' + (img.closest('.pano') ? ' wrap' : '');
+  p.setAttribute('aria-hidden', 'true');
+  p.innerHTML = '<b>Image description:</b> ';
+  p.append(img.alt);
+  img.closest('figure').appendChild(p);
+});
+
+/* ============================================================
+   CURB-CUT SCENE — travellers cross as the section scrolls by.
+   With motion reduced, they hold a fixed, evenly spaced layout.
+   ============================================================ */
+(function(){
+  const scene = document.getElementById('ccScene');
+  if (!scene) return;
+  const track = scene.querySelector('.cc-track');
+  const figs  = [...scene.querySelectorAll('.fg')].reverse();   /* wheelchair leads */
+  const L = track.getTotalLength();
+  /* distance along the track for a given x (track: x=-320 .. 1220) */
+  const dAt = x => x <= 230 ? x + 320
+                : x <= 300 ? 550 + (x - 230) / 70 * 78.26
+                : x <= 600 ? 628.26 + (x - 300)
+                : x <= 670 ? 928.26 + (x - 600) / 70 * 78.26
+                : 1006.52 + (x - 670);
+  const STATIC = [800, 635, 450, 265, 90].map(dAt);
+
+  function place(g, d){
+    d = Math.max(0, Math.min(L, d));
+    const p  = track.getPointAtLength(d);
+    const a  = track.getPointAtLength(Math.max(0, d - 12));
+    const b  = track.getPointAtLength(Math.min(L, d + 12));
+    const ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+    g.setAttribute('transform', 'translate('+p.x.toFixed(1)+' '+p.y.toFixed(1)+') rotate('+ang.toFixed(2)+')');
+  }
+  function calm(){
+    return document.documentElement.classList.contains('no-motion') ||
+      (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+  let queued = false;
+  window.updateScene = function(){
+    queued = false;
+    if (calm()) { figs.forEach((g, i) => place(g, STATIC[i])); return; }
+    const r  = scene.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const p  = (vh - r.top) / (vh + r.height);
+    /* centred in the viewport = the same composition as the static layout */
+    figs.forEach((g, i) => place(g, STATIC[i] + (p - .5) * 3400));
+  };
+  let visible = false;
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) updateScene(); })
+    .observe(scene);
+  window.addEventListener('scroll', () => {
+    if (!visible || queued || calm()) return;
+    queued = true; requestAnimationFrame(updateScene);
+  }, { passive:true });
+  window.addEventListener('resize', () => updateScene(), { passive:true });
+  updateScene();
+})();
+
+/* ============================================================
+   DISPLAY SETTINGS
+   One state object drives the hero controls and the panel, and is
+   written to localStorage so a visitor sets the page up once.
+   ============================================================ */
+const root = document.documentElement;
+
+const DEFAULTS = { size:100, theme:'auto', contrast:false, motion:false,
+                   spacing:false, font:false, underline:false, ruler:false,
+                   plain:false, alts:false };
+const mqDark = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : { matches:false };
+const KEY = 'jb-display-v1';
+let cfg = Object.assign({}, DEFAULTS);
+
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+  Object.keys(DEFAULTS).forEach(k => { if (k in saved) cfg[k] = saved[k]; });
+} catch (e) { /* private mode, or no storage — defaults are fine */ }
+
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) {} };
+
+function apply(){
+  /* rem-based sizing means scaling the root scales the whole page */
+  root.style.fontSize = (17 * cfg.size / 100).toFixed(2) + 'px';
+  root.classList.toggle('dark', cfg.theme === 'dark' || (cfg.theme === 'auto' && mqDark.matches));
+  root.classList.toggle('a11y-plain',     cfg.plain);
+  root.classList.toggle('a11y-alts',      cfg.alts);
+  document.querySelectorAll('.seg [data-theme]').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.theme === cfg.theme));
+  root.classList.toggle('contrast',       cfg.contrast);
+  root.classList.toggle('no-motion',      cfg.motion);
+  root.classList.toggle('a11y-spacing',   cfg.spacing);
+  root.classList.toggle('a11y-font',      cfg.font);
+  root.classList.toggle('a11y-underline', cfg.underline);
+  root.classList.toggle('a11y-ruler',     cfg.ruler);
+
+  /* nothing should stay hidden mid-animation once motion is off */
+  if (cfg.motion) document.querySelectorAll('.rev,.stagger').forEach(e => e.classList.add('in'));
+
+  const pct = cfg.size + '%';
+  ['tOut','pOut'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = pct; });
+
+  SWITCHES.forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('aria-checked', cfg[key]);
+    el.setAttribute('aria-pressed', cfg[key]);
+  });
+  const dT = document.getElementById('dToggle');
+  if (dT) dT.setAttribute('aria-pressed', root.classList.contains('dark'));
+  [['cToggle','contrast'],['mToggle','motion'],['plToggle','plain']].forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('aria-pressed', cfg[key]);
+  });
+  positionRuler();
+  if (window.updateScene) updateScene();
+}
+
+const SWITCHES = [
+  ['swContrast','contrast'], ['swMotion','motion'], ['swSpacing','spacing'],
+  ['swFont','font'], ['swUnderline','underline'], ['swRuler','ruler'],
+  ['swPlain','plain'], ['swAlts','alts']
+];
+
+function set(key, val){ cfg[key] = val; save(); apply(); }
+const bump = d => set('size', Math.min(200, Math.max(80, cfg.size + d)));
+
+/* hero controls */
+document.getElementById('tUp').onclick   = () => bump(10);
+document.getElementById('tDown').onclick = () => bump(-10);
+document.getElementById('cToggle').onclick = () => set('contrast', !cfg.contrast);
+document.getElementById('mToggle').onclick = () => set('motion',   !cfg.motion);
+document.getElementById('plToggle').onclick = () => set('plain',  !cfg.plain);
+document.querySelectorAll('.seg [data-theme]').forEach(b => { b.onclick = () => set('theme', b.dataset.theme); });
+if (mqDark.addEventListener) mqDark.addEventListener('change', () => { if (cfg.theme === 'auto') apply(); });
+
+/* panel controls */
+document.getElementById('pUp').onclick   = () => bump(10);
+document.getElementById('pDown').onclick = () => bump(-10);
+SWITCHES.forEach(([id, key]) => {
+  const el = document.getElementById(id);
+  if (el) el.onclick = () => set(key, !cfg[key]);
+});
+document.getElementById('a11yReset').onclick = () => {
+  cfg = Object.assign({}, DEFAULTS);
+  save(); apply();
+};
+
+/* panel open / close */
+const fab   = document.getElementById('a11yFab');
+const panel = document.getElementById('a11yPanel');
+function togglePanel(open){
+  const on = open === undefined ? !panel.classList.contains('open') : open;
+  panel.classList.toggle('open', on);
+  fab.setAttribute('aria-expanded', on);
+  if (on) panel.querySelector('.a11y-btn, .sw').focus();
+}
+fab.onclick = () => togglePanel();
+document.getElementById('a11yClose').onclick = () => { togglePanel(false); fab.focus(); };
+document.getElementById('dToggle').onclick = () =>
+  set('theme', root.classList.contains('dark') ? 'light' : 'dark');
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && panel.classList.contains('open')) { togglePanel(false); fab.focus(); }
+});
+document.addEventListener('click', e => {
+  if (!panel.classList.contains('open')) return;
+  if (panel.contains(e.target) || fab.contains(e.target)) return;
+  togglePanel(false);
+});
+
+/* reading ruler — a clear band at the pointer, everything else dimmed */
+const rTop = document.getElementById('rulerTop');
+const rBot = document.getElementById('rulerBottom');
+let rulerY = null;
+function positionRuler(){
+  if (!cfg.ruler) return;
+  const band = Math.max(46, 2.6 * parseFloat(root.style.fontSize || '17'));
+  const y = rulerY === null ? window.innerHeight / 2 : rulerY;
+  const top = Math.max(0, y - band / 2);
+  rTop.style.height = top + 'px';
+  rBot.style.height = Math.max(0, window.innerHeight - top - band) + 'px';
+}
+window.addEventListener('pointermove', e => {
+  if (!cfg.ruler) return;
+  rulerY = e.clientY;
+  positionRuler();
+}, { passive:true });
+window.addEventListener('resize', positionRuler, { passive:true });
+
+/* respect the operating-system setting on a first visit */
+const prefersReduced = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let firstVisit = true;
+try { firstVisit = !localStorage.getItem(KEY); } catch (e) {}
+if (prefersReduced && firstVisit) cfg.motion = true;
+
+apply();
+
+/* ---------- scroll reveal ---------- */
+if(cfg.motion){
+  document.querySelectorAll('.rev,.stagger').forEach(e=>e.classList.add('in'));
+}else{
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+  },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.rev,.stagger').forEach(e=>io.observe(e));
+}
+</script>
+</body>
+</html>
