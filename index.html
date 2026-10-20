@@ -8,9 +8,10 @@
 <link rel="icon" type="image/png" href="favicon-48.png">
 <script>
 /* Set the theme before first paint so dark-mode visitors never see a white flash */
+document.documentElement.classList.add('js');
 try{var s=JSON.parse(localStorage.getItem('jb-display-v1')||'{}'),t=s.theme||'auto',d=document.documentElement;
 if(t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))d.classList.add('dark');
-if(s.contrast)d.classList.add('contrast');}catch(e){}
+if(s.contrast)d.classList.add('contrast');if(s.motion)d.classList.add('no-motion');if(s.calm)d.classList.add('a11y-calm');}catch(e){}
 </script>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -202,7 +203,7 @@ html.contrast .nav{background:#fff}
   transition:color .2s;white-space:nowrap;
 }
 .nav-links a:hover{color:var(--brown-ink)}
-@media(max-width:820px){.nav-links{display:none}}
+@media(max-width:1100px){.nav-links{display:none}}
 
 /* ============================================================
    HERO
@@ -935,6 +936,440 @@ html.contrast .a11y-dl dd{color:#fff}
   #accessibility{display:none}
 }
 
+
+/* ============================================================
+   ADDED OCTOBER 2026 (II) — motion you can pause, things to find
+   Everything below respects Reduce motion, High contrast and print.
+   ============================================================ */
+@property --fold{syntax:"<length>";inherits:true;initial-value:40px}
+
+/* ---------- Hero: a route map draws itself; a shuttle runs the loop ---------- */
+.routes{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.routes path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.rt-lines path{stroke:rgba(241,197,0,.13);stroke-width:5;stroke-dasharray:1;stroke-dashoffset:1;
+  animation:rt-draw 2.6s var(--ease) forwards;animation-delay:calc(var(--i) * .22s)}
+.rt-loop{stroke:rgba(241,197,0,.46);stroke-width:7;stroke-dasharray:1;stroke-dashoffset:1;
+  animation:rt-draw 2.8s var(--ease) .45s forwards}
+@keyframes rt-draw{to{stroke-dashoffset:0}}
+.rt-stops circle{fill:var(--bark);stroke:#F1C500;stroke-width:4;opacity:0;
+  transform-box:fill-box;transform-origin:center;
+  animation:rt-pop .5s var(--ease) forwards;animation-delay:calc(2.1s + var(--i) * .09s);transition:fill .4s}
+.rt-stops circle.at{fill:#F1C500}
+@keyframes rt-pop{from{opacity:0;transform:scale(.2)}to{opacity:.95;transform:none}}
+.rt-shuttle{opacity:0;transition:opacity .7s}
+.rt-shuttle.on{opacity:1}
+.rt-shuttle .body{fill:#FFE24D;stroke:var(--bark);stroke-width:3}
+.rt-shuttle .halo{fill:rgba(241,197,0,.22);transform-box:fill-box;transform-origin:center;animation:rt-pulse 2.4s ease-in-out infinite}
+@keyframes rt-pulse{50%{transform:scale(1.4);opacity:.35}}
+.rt-drift{transform-box:view-box;transform-origin:center;animation:rt-drift 26s ease-in-out 3s infinite alternate}
+@keyframes rt-drift{to{transform:translate(-30px,18px) rotate(-.6deg)}}
+@media (max-width:700px){.routes{opacity:.55}}
+
+/* The pause control — WCAG 2.2.2: anything that moves for more than five seconds can be stopped */
+.motion-toggle{position:absolute;z-index:3;right:max(1.25rem,env(safe-area-inset-right,0px));bottom:1.15rem;
+  display:inline-flex;align-items:center;gap:.5rem;font:600 .78rem var(--body);color:#F5EDE2;
+  background:rgba(32,16,10,.72);border:1px solid rgba(241,197,0,.5);border-radius:2rem;
+  padding:.45rem .9rem .45rem .75rem;cursor:pointer;transition:border-color .2s,color .2s}
+.motion-toggle:hover{border-color:var(--gold);color:var(--gold)}
+.motion-toggle:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.motion-toggle svg{width:.85rem;height:.85rem;flex:0 0 auto}
+.motion-toggle .i-play{display:none}
+.motion-toggle[data-state="paused"] .i-play{display:block}
+.motion-toggle[data-state="paused"] .i-pause{display:none}
+.hero.is-paused::before,.hero.is-paused .routes *,.hero.is-paused .snow i{animation-play-state:paused!important}
+.hero.is-paused .rt-lines path,.hero.is-paused .rt-loop{animation:none;stroke-dashoffset:0}
+.hero.is-paused .rt-stops circle{animation:none;opacity:.95}
+@media (max-width:700px){.hero{padding-bottom:5.2rem}}
+
+/* Snow, in season — the sidewalks in the essay below */
+.snow{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.snow i{position:absolute;top:-4%;left:var(--x);width:var(--s);height:var(--s);border-radius:50%;
+  background:#FFF9EE;opacity:var(--o);animation:snow-fall var(--d) linear var(--delay) infinite}
+@keyframes snow-fall{0%{top:-4%;transform:translateX(0)}50%{transform:translateX(var(--w))}100%{top:104%;transform:translateX(0)}}
+
+/* ---------- Navigation: menu, search, where you are ---------- */
+.nav-progress{position:absolute;left:0;bottom:-1px;height:3px;width:100%;background:var(--gold);
+  transform-origin:0 50%;transform:scaleX(0);pointer-events:none}
+.nav-links a{position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-.5rem;height:2px;background:var(--gold-deep);
+  transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.nav-links a[aria-current="true"]{color:var(--ink)}
+.nav-links a[aria-current="true"]::after{transform:scaleX(1)}
+.nav-tools{display:flex;align-items:center;gap:.5rem;margin-left:1.3rem}
+.nav-btn{display:inline-flex;align-items:center;gap:.45rem;font:600 .8rem var(--body);color:var(--ink);
+  background:transparent;border:1px solid var(--line);border-radius:2px;padding:.42rem .7rem;cursor:pointer;white-space:nowrap}
+.nav-btn:hover{border-color:var(--brown-ink);color:var(--brown-ink)}
+.nav-btn svg{width:.95rem;height:.95rem;flex:0 0 auto}
+.nav-btn kbd{font:600 .66rem var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 .32rem;line-height:1.5}
+.nav-menu{display:none}
+@media (max-width:1180px){.nav-links{gap:1.15rem}.nav-tools{margin-left:1rem}.nav-btn kbd{display:none}}
+@media (max-width:1100px){
+  .nav-menu{display:inline-flex}
+  .nav-tools{margin-left:auto}
+  .nav-btn kbd{display:none}
+  .nav-links{position:absolute;top:100%;left:0;right:0;margin:0;flex-direction:column;align-items:stretch;gap:0;
+    background:var(--paper);border-bottom:2px solid var(--brown-ink);padding:.3rem 1.25rem 1rem;box-shadow:0 22px 40px rgba(0,0,0,.18)}
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:1rem;padding:.85rem 0;border-top:1px solid var(--line);color:var(--ink)}
+  .nav-links a:first-child{border-top:0}
+  .nav-links a::after{display:none}
+  .nav-links a[aria-current="true"]{color:var(--brown-ink);font-weight:700}
+  .nav-links a[aria-current="true"]::before{content:"";position:absolute;left:-1.25rem;top:.7rem;bottom:.7rem;width:4px;background:var(--gold)}
+}
+@media (max-width:480px){.mark span{display:none}.nav-btn{padding:.42rem .6rem}}
+html.contrast .nav-links{background:#fff}
+@media screen{html.dark.contrast .nav-links{background:#000}}
+
+/* ---------- Search ---------- */
+.search-dlg{width:min(44rem,calc(100vw - 1.5rem));max-height:min(42rem,calc(100dvh - 3rem));margin:3.5rem auto auto;
+  padding:0;border:2px solid var(--brown-ink);border-radius:6px;background:var(--paper);color:var(--ink);
+  box-shadow:0 30px 90px rgba(0,0,0,.45);overflow:hidden}
+.search-dlg[open]{display:flex;flex-direction:column;animation:dlg-in .28s var(--ease)}
+@keyframes dlg-in{from{opacity:0;transform:translateY(14px) scale(.985)}}
+.search-dlg::backdrop{background:rgba(12,7,4,.68);backdrop-filter:blur(2px)}
+.search-top{padding:1.1rem 1.2rem .9rem;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.search-lab{display:block;font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--brown-ink);margin:0 0 .6rem}
+.search-row{display:flex;align-items:center;gap:.6rem;background:var(--card);border:2px solid var(--brown-ink);border-radius:4px;padding:.15rem .3rem .15rem .75rem}
+.search-row svg{width:1.1rem;height:1.1rem;color:var(--muted);flex:0 0 auto}
+.search-row input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:500 1.05rem var(--body);padding:.6rem 0;outline:none}
+.search-row:focus-within{outline:3px solid var(--gold);outline-offset:2px}
+.search-x{font:600 .72rem var(--mono);letter-spacing:.06em;color:var(--brown-ink);background:transparent;border:1px solid var(--line);border-radius:3px;padding:.35rem .55rem;cursor:pointer}
+.search-x:hover{border-color:var(--brown-ink)}
+.search-hint{font-size:.8rem;color:var(--muted);margin:.6rem 0 0}
+.search-body{overflow-y:auto;padding:.4rem 1.2rem 1.2rem}
+.search-count{font:600 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:.8rem 0 .4rem}
+.search-results{list-style:none;margin:0;padding:0}
+.search-results li + li{border-top:1px solid var(--line)}
+.sr-hit{display:block;width:100%;text-align:left;background:transparent;border:0;color:var(--ink);cursor:pointer;
+  padding:.85rem .6rem;border-radius:3px;font:inherit}
+.sr-hit:hover,.sr-hit:focus-visible{background:var(--paper-2)}
+.sr-hit:focus-visible{outline:3px solid var(--gold-deep);outline-offset:-3px}
+.sr-k{display:block;font:600 .64rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:.2rem}
+.sr-t{display:block;font-family:var(--display);font-weight:700;font-size:1.02rem;line-height:1.3}
+.sr-s{display:block;font-size:.88rem;line-height:1.5;color:var(--muted);margin-top:.25rem}
+.search-dlg mark,.rd mark{background:rgba(241,197,0,.5);color:inherit;border-radius:2px;padding:0 .1em}
+.rd mark.cur{background:var(--gold);outline:2px solid var(--brown-ink)}
+.search-empty{color:var(--muted);font-size:.95rem;padding:.8rem .2rem}
+.search-tips{display:flex;flex-wrap:wrap;gap:.45rem;margin:.4rem 0 0;padding:0;list-style:none}
+.search-tips button{font:500 .84rem var(--body);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:.3rem .75rem;cursor:pointer}
+.search-tips button:hover{border-color:var(--brown-ink)}
+html.contrast .search-dlg{background:#fff}
+@media screen{html.dark.contrast .search-dlg{background:#000}}
+
+/* ---------- Stats strip ---------- */
+.stats{list-style:none;padding:0;margin:2.6rem 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12.5rem),1fr));
+  border-top:3px solid var(--gold);border-bottom:1px solid var(--line)}
+.stats li{padding:1.3rem 1.2rem 1.4rem 0;display:flex;flex-direction:column;gap:.35rem}
+.stats li + li{padding-left:1.2rem;border-left:1px solid var(--line)}
+@media (max-width:560px){.stats li + li{padding-left:0;border-left:0;border-top:1px solid var(--line)}}
+.stat-n{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,4.4vw,3rem);line-height:1;letter-spacing:-.03em;color:var(--brown-ink);font-variant-numeric:tabular-nums}
+.stat-l{font-size:.9rem;line-height:1.45;color:var(--muted)}
+
+/* ---------- Turn the corner: find a curb cut ---------- */
+.find{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(2rem,5vw,4rem);align-items:center;
+  max-width:980px;margin:3.4rem auto 0;padding:clamp(1.6rem,4vw,2.6rem);background:var(--card);border:1px solid var(--line);border-radius:4px}
+@media (max-width:820px){.find{grid-template-columns:1fr}}
+.find h3{font-size:clamp(1.6rem,3vw,2.1rem);margin-bottom:.8rem}
+.find-copy p{color:var(--muted)}
+.find-copy .cta{margin-top:.4rem;border:0;cursor:pointer;font-family:var(--body)}
+.find-copy .cta svg{width:1rem;height:1rem}
+.find-stage{position:relative;padding:1.4rem 1.2rem}
+.find-mat{position:absolute;inset:0;border-radius:6px;transform:rotate(-3deg);
+  background:repeating-linear-gradient(90deg,var(--gold) 0 22px,var(--bark) 22px 44px);opacity:.92;transition:transform .45s var(--ease)}
+.find-mat.shift{transform:rotate(2.5deg) scale(.98)}
+html.dark .find-mat{background:repeating-linear-gradient(90deg,var(--gold) 0 22px,#0F0805 22px 44px)}
+.find-card{position:relative;background:var(--paper);color:var(--ink);border-radius:4px;padding:1.35rem 1.4rem 1.2rem;
+  border-top:8px solid var(--accent,var(--gold));box-shadow:0 18px 40px rgba(20,10,5,.28);min-height:17rem;
+  display:flex;flex-direction:column;gap:.55rem}
+.find-card.turning{animation:find-turn .5s var(--ease)}
+@keyframes find-turn{from{opacity:0;transform:rotate(-5deg) translate(-16px,6px)}}
+.find-card .fc-tag{font:600 .64rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep)}
+.find-card h4{font-family:var(--display);font-weight:900;font-size:1.45rem;line-height:1.15;letter-spacing:-.02em;margin:0}
+.fc-flow{display:grid;grid-template-columns:auto 1fr;gap:.25rem .8rem;margin:.2rem 0 .1rem;font-size:.9rem}
+.fc-flow dt{font-weight:700;color:var(--brown-ink);white-space:nowrap}
+.fc-flow dd{margin:0}
+@media (max-width:560px){.fc-flow{grid-template-columns:1fr;gap:0}.fc-flow dd{margin-bottom:.45rem}}
+.find-card p{font-size:.92rem;line-height:1.55;margin:0;color:var(--muted)}
+.find-card .fc-n{margin-top:auto;padding-top:.6rem;border-top:1px solid var(--line);font:600 .66rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.find-card.is-mine{--accent:var(--brown-lift)}
+html.contrast .find-mat{background:repeating-linear-gradient(90deg,#000 0 22px,#FFE24D 22px 44px)}
+html.contrast .find-card{border:2px solid #000;border-top-width:8px}
+
+/* ---------- Turn the corner: framework cards peel back to their sources ---------- */
+.card.peel-host{padding:0;overflow:hidden;display:flex}
+.peel{--fold:2.4rem;position:relative;flex:1;display:grid;border-radius:inherit;isolation:isolate;
+  transition:--fold .85s cubic-bezier(.45,.05,.2,1)}
+.peel-front,.peel-back{grid-area:1/1;padding:1.7rem 1.6rem 2.6rem;border-radius:inherit;min-width:0}
+.peel-front{position:relative;z-index:2;background:var(--card);
+  clip-path:polygon(0 0,calc(var(--bw,400px) + var(--bh,300px) - var(--fold)) 0,0 calc(var(--bw,400px) + var(--bh,300px) - var(--fold)))}
+.peel-back{position:relative;z-index:1;background:var(--brown);color:#FFF9EE;padding-bottom:1.5rem}
+.peel-back .tag{color:var(--gold)}
+.card .peel-back p.peel-cite{font-size:.84rem;line-height:1.5;padding-left:1.4em;text-indent:-1.4em;color:rgba(255,249,238,.92);margin:0 0 .7rem}
+.card .peel-back p.peel-cite + p.peel-cite{margin-top:-.2rem}
+.card .peel-back p.peel-where{font-size:.88rem;line-height:1.5;color:rgba(255,249,238,.86);margin:0 0 1rem}
+.peel-where b{color:#FFF9EE}
+.peel-acts{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.peel-acts button{font:600 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  background:transparent;color:var(--gold);border:1px solid rgba(241,197,0,.55);border-radius:2px;padding:.45rem .7rem}
+.peel-acts button:hover{background:var(--gold);color:var(--bark)}
+.peel-acts button:focus-visible,.peel-back:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.peel-flap{position:absolute;right:0;bottom:0;z-index:3;width:var(--fold);height:var(--fold);pointer-events:none;
+  background:linear-gradient(to bottom right,var(--paper) 0,var(--paper-2) 49%,transparent 50%);
+  filter:drop-shadow(-3px -3px 4px rgba(37,19,9,.22));transition:opacity .25s}
+.peel-hint{font:600 .62rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);
+  position:absolute;left:1.6rem;bottom:1rem;margin:0;opacity:0;transition:opacity .25s}
+.peel-corner{position:absolute;right:0;bottom:0;z-index:4;width:3.4rem;height:3.4rem;border:0;padding:0;background:transparent;cursor:pointer}
+.peel-corner:focus-visible{outline:3px solid var(--gold-deep);outline-offset:-4px}
+.peel:hover,.peel:focus-within{--fold:4.2rem}
+.peel:hover .peel-hint,.peel:focus-within .peel-hint{opacity:1}
+.peel.is-turned{--fold:calc(var(--bw,400px) + var(--bh,300px) + 2rem)!important}
+.peel.is-turned .peel-flap{opacity:0}
+.peel.is-turned .peel-corner{visibility:hidden}
+html:not(.js) .peel-corner,html:not(.js) .peel-flap{display:none}
+html.contrast .peel-back{background:#000}
+html.contrast .peel-flap{background:linear-gradient(to bottom right,#fff 0,#ddd 49%,transparent 50%)}
+
+/* ---------- Margin notes: a corner that wasn't curled yesterday ---------- */
+.has-nook{position:relative}
+.nook{position:absolute;right:0;bottom:0;z-index:4;width:1.75rem;height:1.75rem;padding:0;border:0;cursor:pointer;
+  background:transparent;overflow:hidden;border-bottom-right-radius:inherit;
+  transition:width .3s cubic-bezier(.3,1.4,.5,1),height .3s cubic-bezier(.3,1.4,.5,1)}
+.nook::before{content:"";position:absolute;inset:0;background:var(--gold);clip-path:polygon(100% 0,100% 100%,0 100%)}
+.nook::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom right,var(--paper) 0,var(--paper-2) 47%,transparent 50%);
+  filter:drop-shadow(-2px -2px 3px rgba(37,19,9,.3))}
+.nook:hover,.nook:focus-visible{width:2.7rem;height:2.7rem}
+.nook:focus-visible{outline:3px solid var(--gold-deep);outline-offset:2px}
+.nook[aria-expanded="true"]{visibility:hidden}
+.nook-note{position:absolute;right:0;top:calc(100% - 1.1rem);z-index:40;width:min(21rem,calc(100vw - 2rem));
+  background:var(--paper);color:var(--ink);border:2px solid var(--brown-ink);border-top:6px solid var(--gold);border-radius:4px;
+  padding:1rem 1.1rem 1rem;box-shadow:0 20px 46px rgba(0,0,0,.3);transform-origin:100% 0;animation:nook-open .5s cubic-bezier(.2,1.2,.4,1);text-align:left}
+@keyframes nook-open{from{transform:rotate(-8deg) scale(.2);opacity:0}}
+.nook-note:focus{outline:none}
+.nook-note .nk-k{display:block;font:600 .62rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:.3rem}
+.nook-note .nk-t{font-family:var(--display);font-weight:700;font-size:1.08rem;line-height:1.25;margin:0 0 .45rem;color:var(--ink)}
+.nook-note p{font-size:.88rem;line-height:1.55;color:var(--muted);margin:0 0 .8rem}
+.nk-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem}
+.nk-row button{font:600 .66rem var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  background:transparent;color:var(--brown-ink);border:1px solid var(--brown-ink);border-radius:2px;padding:.4rem .6rem}
+.nk-row button:hover{background:var(--brown-ink);color:var(--paper)}
+.nk-row button:focus-visible{outline:3px solid var(--gold-deep);outline-offset:2px}
+.nk-found{font:500 .7rem var(--mono);color:var(--muted)}
+.found-count{color:var(--gold)}
+html.contrast .nook-note{background:#fff;border-color:#000}
+@media screen{html.dark.contrast .nook-note{background:#000;border-color:#FFE24D}}
+
+/* ---------- Competency matrix: filter and see everything ---------- */
+.mx-tools{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1.4rem;margin:2.4rem 0 0}
+.mx-chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.mx-chip,.mx-view button{font:600 .8rem var(--body);cursor:pointer;color:rgba(247,241,232,.85);background:transparent;
+  border:1px solid rgba(247,241,232,.3);border-radius:100px;padding:.38rem .85rem}
+.mx-chip:hover,.mx-view button:hover{border-color:var(--gold);color:#FFF9EE}
+.mx-chip[aria-pressed="true"]{background:rgba(241,197,0,.16);border-color:var(--gold);color:#FFF9EE}
+.mx-chip[aria-pressed="true"]::before{content:"\2713\00a0";color:var(--gold)}
+.mx-view{display:inline-flex;border:1px solid rgba(247,241,232,.3);border-radius:100px;padding:2px;margin-left:auto}
+.mx-view button{border:0;padding:.34rem .8rem}
+.mx-view button[aria-pressed="true"]{background:var(--gold);color:var(--bark)}
+.mx-chip:focus-visible,.mx-view button:focus-visible,.mx-reset:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.mx-count{flex-basis:100%;margin:0;font:600 .7rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:rgba(247,241,232,.72)}
+#matrix .dom-tabs{margin-top:1.4rem}
+.mx-empty{color:rgba(247,241,232,.8);grid-column:1/-1}
+.mx-reset{font:inherit;font-weight:700;color:var(--gold);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.mx-all{margin-top:2rem}
+#tabs[hidden],#panel[hidden],.mx-all[hidden]{display:none!important}
+.mx-dom{padding:2rem 0;border-top:1px solid rgba(247,241,232,.18)}
+.mx-dom:first-child{border-top:0;padding-top:0}
+.mx-dom-h{font-family:var(--display);font-size:1.5rem;color:#FFF9EE;display:flex;gap:.7rem;align-items:baseline;margin:0 0 .5rem}
+.mx-dom-h .n{font:600 .8rem var(--mono);color:var(--gold)}
+.mx-dom .arts{margin-top:1.4rem}
+html.contrast .mx-chip,html.contrast .mx-view button,html.contrast .mx-count,html.contrast .mx-empty{color:#fff;border-color:#fff}
+html.contrast .mx-chip[aria-pressed="true"]{background:#000;border-color:#FFE24D}
+html.contrast .mx-view button[aria-pressed="true"]{background:#FFE24D;color:#000}
+
+/* ---------- Reader: progress, find-in-paper, next paper ---------- */
+.rd-progress{position:absolute;left:0;right:0;top:0;height:4px;z-index:2;background:transparent}
+.rd-progress span{display:block;height:100%;background:var(--gold);transform-origin:0 50%;transform:scaleX(0)}
+.rd-find{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.8rem;font-size:.84rem;color:var(--muted)}
+.rd-find[hidden]{display:none}
+.rd-find b{color:var(--ink)}
+.rd-next{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:.8rem;margin-top:1.6rem}
+.rd-next button{text-align:left;font:inherit;cursor:pointer;background:var(--paper-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:3px;padding:.9rem 1rem}
+.rd-next button:hover{border-color:var(--brown-ink)}
+.rd-next button:focus-visible{outline:3px solid var(--gold-deep);outline-offset:2px}
+.rd-next .k{display:block;font:600 .62rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--brown-ink);margin-bottom:.25rem}
+.rd-next .t{display:block;font-family:var(--display);font-weight:700;font-size:.98rem;line-height:1.3}
+.rd-next .next{text-align:right}
+
+/* ---------- Small things ---------- */
+.copy-btn{font:600 .66rem var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-left:.6rem;vertical-align:middle;
+  background:transparent;color:var(--gold);border:1px solid rgba(241,197,0,.5);border-radius:2px;padding:.3rem .55rem}
+.copy-btn:hover{background:var(--gold);color:var(--bark)}
+.copy-btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.a11y-btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-a:disabled{opacity:.4;cursor:not-allowed}
+.a11y-keys{font-size:.78rem;color:var(--muted);margin:.9rem 0 0;line-height:1.5}
+.a11y-keys kbd{font:600 .7rem var(--mono);border:1px solid var(--line);border-radius:3px;padding:0 .3rem;color:var(--ink)}
+[tabindex="-1"]:focus{outline:none}
+
+/* ---------- Calm mode: hides the playful extras for anyone who finds them distracting ---------- */
+html.a11y-calm .routes,html.a11y-calm .snow,html.a11y-calm .motion-toggle,
+html.a11y-calm .nook,html.a11y-calm .nook-note,html.a11y-calm .peel-flap,html.a11y-calm .peel-hint{display:none!important}
+
+/* ---------- High contrast and reduced motion ---------- */
+html.contrast .routes,html.contrast .snow,html.contrast .motion-toggle{display:none}
+html.no-motion .rt-lines path,html.no-motion .rt-loop{stroke-dashoffset:0}
+html.no-motion .rt-stops circle{opacity:.95}
+html.no-motion .snow,html.no-motion .motion-toggle{display:none}
+html.no-motion .nav-links a::after{transition:none}
+@media (prefers-reduced-motion:reduce){
+  .rt-lines path,.rt-loop{stroke-dashoffset:0}
+  .rt-stops circle{opacity:.95}
+  .snow,.motion-toggle{display:none}
+}
+
+@media print{
+  .routes,.snow,.motion-toggle,.nav-progress,.nook,.nook-note,.peel-flap,.peel-corner,.peel-hint,
+  .find,.mx-tools,.mx-all,.search-dlg,.copy-btn,.rd-progress,.rd-next,.rd-find{display:none!important}
+  .peel-front{clip-path:none!important}
+  .peel-back{display:none}
+  .stats li{break-inside:avoid}
+  .stat-n{color:#000}
+}
+
+/* ============================================================
+   THE ROUTE THROUGH THE PROGRAM — six terms, one van
+   ============================================================ */
+#route .lede{max-width:60ch}
+.rp{margin-top:2.6rem}
+.rp-scroller{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;
+  margin-inline:-.5rem;padding:0 .5rem .4rem}
+.rp-scroll{position:relative;min-width:700px;padding-top:5.9rem}
+/* the road */
+.rp-line{position:absolute;top:calc(5.9rem + 7px);height:8px;border-radius:8px;pointer-events:none;
+  background:repeating-linear-gradient(90deg,var(--edge) 0 14px,transparent 14px 24px)}
+.rp-done{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:8px;background:var(--gold);
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.12);transition:width .6s var(--ease)}
+/* the van */
+.rp-van{position:absolute;left:0;top:calc(5.9rem - 72px);width:150px;height:67px;z-index:3;pointer-events:none;
+  transform:translateX(0);transition-property:transform;transition-timing-function:cubic-bezier(.55,.06,.3,1)}
+.rp-van-in{position:relative;width:100%;height:100%;transition:transform .25s var(--ease)}
+.rp-van-in.flip{transform:scaleX(-1)}
+.rp-body{position:absolute;inset:0;width:100%;height:100%;display:block;max-width:none}
+.rp-wheel{position:absolute;width:6.85%;height:auto;aspect-ratio:1;max-width:none;display:block}
+.rp-shadow{position:absolute;left:7%;right:3%;bottom:-4px;height:7px;border-radius:50%;background:rgba(20,10,5,.2);filter:blur(1.5px)}
+.rp-trail{position:absolute;right:100%;top:34%;width:26px;display:grid;gap:7px;margin-right:4px}
+.rp-trail i{display:block;height:2.5px;border-radius:2px;background:var(--muted)}
+.rp-trail i:nth-child(2){width:70%;margin-left:30%}
+.rp-trail i:nth-child(3){width:45%;margin-left:55%}
+html.dark .rp-body{filter:drop-shadow(0 0 1px rgba(245,237,226,.5))}
+.rp-van.is-driving .spin{animation:rp-spin .45s linear infinite}
+.rp-van.is-driving .rp-body{animation:rp-bob .32s ease-in-out infinite alternate}
+.rp-trail{opacity:0;transition:opacity .2s}
+.rp-van.is-driving .rp-trail{opacity:.6}
+@keyframes rp-spin{to{transform:rotate(360deg)}}
+@keyframes rp-bob{to{transform:translateY(-1px)}}
+/* the stops */
+.rp-stops{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));position:relative;z-index:2}
+.rp-stop{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.12rem;
+  font:inherit;color:var(--ink);background:transparent;border:0;border-radius:4px;padding:0 .2rem .7rem;cursor:pointer}
+.rp-dot{width:22px;height:22px;border-radius:50%;margin-bottom:.75rem;flex:0 0 auto;
+  background:var(--paper);border:3px solid var(--brown-ink);transition:transform .25s var(--ease),box-shadow .25s}
+.rp-stop.is-done .rp-dot{background:var(--gold);border-color:var(--brown-ink)}
+.rp-stop.is-now .rp-dot{background:var(--gold);box-shadow:0 0 0 5px rgba(241,197,0,.32)}
+.rp-stop.is-next .rp-dot{border-style:dashed}
+.rp-stop.is-grad .rp-dot{border-radius:4px;border-style:solid;transform:rotate(45deg) scale(.86)}
+.rp-term{font-family:var(--display);font-weight:700;font-size:1.02rem;line-height:1.15;letter-spacing:-.01em}
+.rp-year{font:600 .7rem var(--mono);letter-spacing:.1em;color:var(--muted)}
+.rp-codes{font:500 .68rem var(--mono);letter-spacing:.02em;color:var(--muted);margin-top:.25rem;line-height:1.4}
+.rp-stop:hover .rp-term{color:var(--brown-ink)}
+.rp-stop[aria-selected="true"] .rp-dot{transform:scale(1.25);box-shadow:0 0 0 4px var(--paper),0 0 0 7px var(--brown-ink)}
+.rp-stop.is-grad[aria-selected="true"] .rp-dot{transform:rotate(45deg) scale(1.08)}
+.rp-stop[aria-selected="true"]::after{content:"";position:absolute;left:30%;right:30%;bottom:0;height:3px;border-radius:3px;background:var(--gold-deep)}
+.rp-stop:focus-visible{outline:3px solid var(--gold-deep);outline-offset:2px}
+.rp-now-tag{position:absolute;top:-1.55rem;left:50%;transform:translateX(-50%);white-space:nowrap;
+  font:600 .58rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--bark);background:var(--gold);
+  border-radius:2px;padding:.12rem .35rem}
+.rp-van-on .rp-now-tag{opacity:0}
+/* the term panel */
+.rp-panel{margin-top:1.6rem;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:1.4rem;align-items:start}
+@media (max-width:860px){.rp-panel{grid-template-columns:1fr}}
+.rp-panel:focus-visible{outline:3px solid var(--gold-deep);outline-offset:6px;border-radius:4px}
+.rp-panel.rp-fade > *{animation:rp-in .4s var(--ease) both}
+.rp-panel.rp-fade > *:nth-child(2){animation-delay:.06s}
+@keyframes rp-in{from{opacity:0;transform:translateY(10px)}}
+.rp-main{min-width:0}
+.rp-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .9rem;margin-bottom:1rem}
+.rp-head h3{font-size:clamp(1.5rem,3vw,2rem);margin:0}
+.rp-k{flex-basis:100%;margin:0;font:600 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep)}
+.rp-status{font:600 .62rem var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.22rem .5rem;border-radius:2px;
+  border:1px solid var(--brown-ink);color:var(--brown-ink)}
+.rp-status.now{background:var(--gold);border-color:var(--gold);color:var(--bark)}
+.rp-status.next{border-style:dashed}
+.rp-courses{list-style:none;margin:0;padding:0;display:grid;gap:.8rem}
+.rp-course{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:3px;padding:1rem 1.15rem 1.05rem}
+.rp-course.pending{border-left-style:dashed;border-left-color:var(--edge)}
+.rp-c-top{display:flex;justify-content:space-between;gap:1rem;align-items:baseline}
+.rp-code{font:600 .72rem var(--mono);letter-spacing:.08em;color:var(--gold-deep)}
+.rp-cr{font:500 .7rem var(--mono);color:var(--muted);white-space:nowrap}
+.rp-c-title{font-family:var(--display);font-weight:700;font-size:1.12rem;line-height:1.25;margin:.2rem 0 .1rem}
+.rp-c-inst{font-size:.84rem;color:var(--muted);margin:0 0 .55rem}
+.rp-c-work{font-size:.92rem;line-height:1.55;margin:0 0 .7rem}
+.rp-c-foot{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;justify-content:space-between}
+.rp-doms{display:flex;flex-wrap:wrap;gap:.35rem}
+.rp-dom{font-size:.74rem;font-weight:600;color:var(--brown-ink);border:1px solid var(--line);border-radius:100px;padding:.15rem .55rem;background:var(--paper)}
+.rp-read{font:600 .66rem var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  background:transparent;color:var(--brown-ink);border:1px solid var(--brown-ink);border-radius:2px;padding:.42rem .65rem}
+.rp-read:hover{background:var(--brown-ink);color:var(--paper)}
+.rp-read:focus-visible{outline:3px solid var(--gold-deep);outline-offset:2px}
+/* side column */
+.rp-side{display:grid;gap:1rem;min-width:0}
+.rp-card{border-radius:3px;padding:1.1rem 1.2rem 1.2rem}
+.rp-work{background:var(--brown);color:#FFF9EE}
+.rp-work .rp-k{color:var(--gold);margin-bottom:.45rem}
+.rp-work p{font-size:.93rem;line-height:1.55;margin:0 0 .6rem;color:rgba(255,249,238,.9)}
+.rp-work p:last-child{margin-bottom:0}
+.rp-work p.ph{margin:.4rem 0 0;font-size:.82rem;color:#8B1A1A}
+.rp-tot{background:var(--card);border:1px solid var(--line)}
+.rp-tot .rp-k{margin-bottom:.6rem}
+.rp-cred{display:flex;align-items:baseline;gap:.45rem;margin:0 0 .45rem}
+.rp-cred b{font-family:var(--display);font-weight:900;font-size:2rem;line-height:1;color:var(--brown-ink);font-variant-numeric:tabular-nums}
+.rp-cred span{font-size:.86rem;color:var(--muted)}
+.rp-bar{height:8px;border-radius:8px;background:var(--paper-2);overflow:hidden;margin-bottom:1rem}
+.rp-bar span{display:block;height:100%;background:var(--gold);border-radius:8px;transition:width .6s var(--ease)}
+.rp-domlist{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+.rp-domlist li{display:flex;justify-content:space-between;align-items:center;gap:.8rem;font-size:.86rem}
+.rp-pips{display:flex;gap:.3rem}
+.rp-pip{width:.8rem;height:.8rem;border-radius:50%;border:2px solid var(--brown-ink);background:transparent}
+.rp-pip.on{background:var(--gold-deep);border-color:var(--gold-deep)}
+.rp-pip.on.new{background:var(--gold);border-color:var(--brown-ink);box-shadow:0 0 0 2px rgba(241,197,0,.35)}
+.rp-pip.pend{border-style:dashed}
+.rp-note{font-size:.8rem;color:var(--muted);margin:.8rem 0 0;line-height:1.45}
+.rp-sum{list-style:none;margin:0 0 1.1rem;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr));
+  gap:0;border-top:3px solid var(--gold);border-bottom:1px solid var(--line)}
+.rp-sum li{padding:.9rem .8rem .9rem 0;display:flex;flex-direction:column}
+.rp-sum b{font-family:var(--display);font-weight:900;font-size:1.9rem;line-height:1;color:var(--brown-ink)}
+.rp-sum span{font-size:.82rem;color:var(--muted);margin-top:.25rem}
+.rp-miles{list-style:none;margin:0 0 1rem;padding:0;display:grid;gap:.55rem}
+.rp-miles li{display:flex;gap:.7rem;align-items:baseline;font-size:.93rem}
+.rp-miles .m{flex:0 0 auto;font:600 .62rem var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.18rem .45rem;border-radius:2px;border:1px solid var(--brown-ink);color:var(--brown-ink);min-width:5.6rem;text-align:center}
+.rp-miles .m.done{background:var(--brown-ink);color:var(--paper)}
+.rp-miles .m.next{background:var(--gold);border-color:var(--gold);color:var(--bark)}
+.rp-main > p a{color:var(--brown-ink);font-weight:600}
+.rp-print{display:none}
+.rp-swipe{display:none;margin:0 0 .4rem;font:600 .66rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:760px){.rp-swipe{display:block}}
+html.contrast .rp-work{background:#000}
+html.contrast .rp-line{background:repeating-linear-gradient(90deg,#000 0 14px,transparent 14px 24px)}
+@media screen{html.dark.contrast .rp-line{background:repeating-linear-gradient(90deg,#fff 0 14px,transparent 14px 24px)}}
+html.no-motion .rp-trail{display:none}
+@media (prefers-reduced-motion:reduce){.rp-trail{display:none}}
+@media print{
+  .rp-scroller,.rp-panel{display:none!important}
+  .rp-print{display:block}
+  .rp-print table{border-collapse:collapse;width:100%;font-size:9.5pt}
+  .rp-print th,.rp-print td{border:1px solid #999;padding:.3rem .45rem;text-align:left;vertical-align:top}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .rev,.stagger > *{opacity:1!important;transform:none!important}
@@ -952,19 +1387,32 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
 <nav class="nav">
   <div class="wrap nav-in">
     <a class="mark" href="#top">Joshua Behymer <span>/ MPA Capstone</span></a>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="#thesis">Thesis</a>
       <a href="#bronconav">BroncoNav</a>
       <a href="#framework">Framework</a>
+      <a href="#route">Program</a>
       <a href="#matrix">Competencies</a>
       <a href="#experience">Experience</a>
       <a href="#contact">Contact</a>
     </div>
+    <div class="nav-tools">
+      <button class="nav-btn" type="button" data-open-search aria-haspopup="dialog" aria-keyshortcuts="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+        Search <kbd aria-hidden="true">/</kbd>
+      </button>
+      <button class="nav-btn nav-menu" type="button" id="navMenu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <span class="lbl">Menu</span>
+      </button>
+    </div>
   </div>
+  <div class="nav-progress" id="navProgress" aria-hidden="true"></div>
 </nav>
 
 <!-- ==================== HERO ==================== -->
 <header class="hero" id="top">
+  <svg class="routes" id="routes" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><g class="rt-drift"><g class="rt-lines"><path d="M-60 610L334 610Q380 610 413 643L487 717Q520 750 566 750L934 750Q980 750 1013 783L1027 797Q1060 830 1106 830L1700 830" pathLength="1" style="--i:0"/><path d="M-60 150L514 150Q560 150 593 183L667 257Q700 290 746 290L964 290Q1010 290 1043 323L1167 447Q1200 480 1246 480L1700 480" pathLength="1" style="--i:1"/><path d="M760 -60L760 314Q760 360 793 393L847 447Q880 480 926 480L1640 480" pathLength="1" style="--i:2"/><path d="M1340 -60L1340 284Q1340 330 1307 363L1293 377Q1260 410 1260 456L1260 960" pathLength="1" style="--i:3"/><path d="M-60 860L194 860Q240 860 273 827L387 713Q420 680 420 634L420 -60" pathLength="1" style="--i:4"/></g></g><path class="rt-loop" id="rtLoop" d="M1143 241L1206 241Q1248 241 1279 211L1285 205Q1316 175 1358 175L1441 175Q1484 175 1514 205L1520 211Q1551 241 1551 283L1551 449Q1551 495 1518 527L1483 561Q1450 593 1404 593L1257 593Q1215 593 1184 623L1178 629Q1148 659 1105 659L1076 659Q1030 659 1030 613L1030 464Q1030 421 1061 391L1067 385Q1097 355 1097 313L1097 287Q1097 241 1143 241Z" pathLength="1"/><g class="rt-stops"><circle cx="1173" cy="241" r="9" style="--i:0"/><circle cx="1400" cy="175" r="9" style="--i:1"/><circle cx="1551" cy="368" r="9" style="--i:2"/><circle cx="1500" cy="544" r="9" style="--i:3"/><circle cx="1332" cy="593" r="9" style="--i:4"/><circle cx="1089" cy="659" r="9" style="--i:5"/><circle cx="1030" cy="540" r="9" style="--i:6"/><circle cx="1097" cy="298" r="9" style="--i:7"/></g><g class="rt-shuttle" id="rtShuttle"><circle class="halo" r="22"/><circle class="body" r="10"/></g></svg>
   <div class="wrap">
     <p class="eyebrow">Capstone Portfolio &middot; Master of Public Administration</p>
     <h1>Access by <em>Design</em></h1>
@@ -1000,6 +1448,11 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       <span>Expected Fall 2026</span>
     </div>
   </div>
+  <button class="motion-toggle" type="button" id="motionToggle" data-state="playing">
+    <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.4" height="12" rx="1" fill="currentColor"/><rect x="9.6" y="2" width="3.4" height="12" rx="1" fill="currentColor"/></svg>
+    <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.2v11.6L13.6 8z" fill="currentColor"/></svg>
+    <span class="lbl">Pause motion</span>
+  </button>
 </header>
 
 <main id="main">
@@ -1129,6 +1582,22 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       </div>
         </dl>
 
+    <div class="find rev" id="findCurb">
+      <div class="find-copy">
+        <p class="eyebrow">Find one yourself</p>
+        <h3 id="findTitle">Around every corner</h3>
+        <p>Once you start looking, curb cuts are everywhere. Each turn shows something designed for disabled people that ended up working for nearly everyone, including a few from my own work.</p>
+        <button class="cta" type="button" id="findNext" aria-controls="findCard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4v9a4 4 0 0 0 4 4h11"/><path d="m16 13 4 4-4 4"/></svg>
+          <span class="lbl">Turn the corner</span>
+        </button>
+      </div>
+      <div class="find-stage">
+        <div class="find-mat" aria-hidden="true"></div>
+        <article class="find-card" id="findCard" aria-live="polite" aria-atomic="true" aria-labelledby="findTitle"></article>
+      </div>
+    </div>
+
     <div class="narrow rev" style="margin-top:2.8rem">
       <p class="eyebrow">Kalamazoo's accessibility legacy</p>
       <h3 style="font-size:1.7rem;margin-bottom:1rem">A local idea with a global impact</h3>
@@ -1194,6 +1663,13 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       <p>I spent nearly a decade in supported employment, helping adults with disabilities find community jobs and then keep them — the harder half of the work. When a placement failed, it was rarely because the person couldn't do the job. It was because one of the surrounding systems had no give in it.</p>
       <p>Today I serve as a <strong>Deaf and Hard of Hearing Accommodation Specialist</strong> in Disability Services for Students at Western Michigan University, where I coordinate communication access, supervise more than 20 staff across three areas (ASL interpreters, Sighted Aides, and BroncoNav Drivers), manage program funds, and lead BroncoNav, the accessible shuttle program I helped create.</p>
     </div>
+
+    <ul class="stats stagger" aria-label="By the numbers">
+      <li><span class="stat-n" data-count="10">10</span><span class="stat-l">years helping people with disabilities work and study</span></li>
+      <li><span class="stat-n" data-count="20" data-suffix="+">20+</span><span class="stat-l">staff supervised across interpreting, Sighted Aides and BroncoNav</span></li>
+      <li><span class="stat-n" data-count="1500" data-suffix="+">1,500+</span><span class="stat-l">BroncoNav rides in its first full semester</span></li>
+      <li><span class="stat-n" data-count="80" data-suffix="%+">80%+</span><span class="stat-l">of DSS appointments now booked online</span></li>
+    </ul>
 
     <div class="grid-3 stagger">
       <article class="card">
@@ -1317,7 +1793,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
     <ul class="improve-grid">
       <li class="improve-item is-stat">
         <span class="k">First full semester</span>
-        <span class="big">1,500+</span>
+        <span class="big" data-count="1500" data-suffix="+">1,500+</span>
         <span class="d">rides completed, the clearest sign the service was needed.</span>
       </li>
       <li class="improve-item">
@@ -1345,21 +1821,95 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
     </div>
 
     <div class="grid-3 stagger">
-      <article class="card">
-        <span class="tag">Equity</span>
-        <h3>Who gets counted</h3>
-        <p>Frederickson's social equity pillar gives an administrator standing to argue that a service used by three percent of students is not therefore worth three percent of the attention. Efficiency-oriented decision rules reliably underweight minority needs.</p>
+      <article class="card peel-host">
+        <div class="peel" data-turn>
+          <div class="peel-front">
+            <span class="tag">Equity</span>
+            <h3>Who gets counted</h3>
+            <p>Frederickson's social equity pillar gives an administrator standing to argue that a service used by three percent of students is not therefore worth three percent of the attention. Efficiency-oriented decision rules reliably underweight minority needs.</p>
+            <p class="peel-hint" aria-hidden="true">Turn the corner for the source</p>
+          </div>
+          <div class="peel-back" id="peel-1" tabindex="-1" role="region" aria-label="Sources for Who gets counted">
+            <span class="tag">Where it comes from</span>
+            <p class="peel-cite">Frederickson, H. G. (1990). Public administration and social equity. <i>Public Administration Review, 50</i>(2), 228&ndash;237.</p>
+            <p class="peel-where"><b>Where it shows up:</b> The ethics futures analysis, where equity is the standard I hold a dismantled DSS against.</p>
+            <div class="peel-acts">
+              <button type="button" data-paper="padm-6000" aria-haspopup="dialog">Read the paper</button>
+              <button type="button" class="peel-backbtn">Turn back</button>
+            </div>
+          </div>
+          <span class="peel-flap" aria-hidden="true"></span>
+          <button class="peel-corner" type="button" aria-expanded="false" aria-controls="peel-1"><span class="sr-only">Turn the corner: where &ldquo;Who gets counted&rdquo; comes from</span></button>
+        </div>
       </article>
-      <article class="card">
-        <span class="tag">Design</span>
-        <h3>Burden is a choice</h3>
-        <p>Oliver's social model locates disability in the environment rather than the body. Moynihan's administrative burden explains the cost: every exception a system grants first requires a citizen to prove they deserve one.</p>
+      <article class="card peel-host">
+        <div class="peel" data-turn>
+          <div class="peel-front">
+            <span class="tag">Design</span>
+            <h3>Burden is a choice</h3>
+            <p>Oliver's social model locates disability in the environment rather than the body. Moynihan's administrative burden explains the cost: every exception a system grants first requires a citizen to prove they deserve one.</p>
+            <p class="peel-hint" aria-hidden="true">Turn the corner for the source</p>
+          </div>
+          <div class="peel-back" id="peel-2" tabindex="-1" role="region" aria-label="Sources for Burden is a choice">
+            <span class="tag">Where it comes from</span>
+            <p class="peel-cite">Oliver, M. (1990). <i>The politics of disablement.</i> Macmillan.</p><p class="peel-cite">Moynihan, D., Herd, P., &amp; Harvey, H. (2015). Administrative burden: Learning, psychological, and compliance costs in citizen-state interactions. <i>Journal of Public Administration Research and Theory, 25</i>(1), 43&ndash;69.</p>
+            <p class="peel-where"><b>Where it shows up:</b> The WMU needs assessment, which uses both as its theoretical framework.</p>
+            <div class="peel-acts">
+              <button type="button" data-paper="padm-6060" aria-haspopup="dialog">Read the paper</button>
+              <button type="button" class="peel-backbtn">Turn back</button>
+            </div>
+          </div>
+          <span class="peel-flap" aria-hidden="true"></span>
+          <button class="peel-corner" type="button" aria-expanded="false" aria-controls="peel-2"><span class="sr-only">Turn the corner: where &ldquo;Burden is a choice&rdquo; comes from</span></button>
+        </div>
       </article>
-      <article class="card">
-        <span class="tag">Governance</span>
-        <h3>Access erodes quietly</h3>
-        <p>Balfour and Adams on administrative evil, Headley and Wright on fragmented accountability. Access rarely disappears through a hostile decision — it disappears through a budget line not renewed and a responsibility with no owner.</p>
+      <article class="card peel-host">
+        <div class="peel" data-turn>
+          <div class="peel-front">
+            <span class="tag">Governance</span>
+            <h3>Access erodes quietly</h3>
+            <p>Balfour and Adams on administrative evil, Headley and Wright on fragmented accountability. Access rarely disappears through a hostile decision &mdash; it disappears through a budget line not renewed and a responsibility with no owner.</p>
+            <p class="peel-hint" aria-hidden="true">Turn the corner for the source</p>
+          </div>
+          <div class="peel-back" id="peel-3" tabindex="-1" role="region" aria-label="Sources for Access erodes quietly">
+            <span class="tag">Where it comes from</span>
+            <p class="peel-cite">Balfour, D. L., &amp; Adams, G. B. (1996). <i>Unmasking administrative evil.</i> Sage.</p><p class="peel-cite">Headley, A., &amp; Wright, D. (2021). Administrative responsibility and the fragmentation of accountability. <i>Journal of Public Affairs Education, 27</i>(2), 123&ndash;140.</p>
+            <p class="peel-where"><b>Where it shows up:</b> The 2035 ethics scenario, and the oversight board designed to stop it from happening.</p>
+            <div class="peel-acts">
+              <button type="button" data-paper="padm-6000" aria-haspopup="dialog">Read the paper</button>
+              <button type="button" class="peel-backbtn">Turn back</button>
+            </div>
+          </div>
+          <span class="peel-flap" aria-hidden="true"></span>
+          <button class="peel-corner" type="button" aria-expanded="false" aria-controls="peel-3"><span class="sr-only">Turn the corner: where &ldquo;Access erodes quietly&rdquo; comes from</span></button>
+        </div>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== THE ROUTE THROUGH THE PROGRAM ==================== -->
+<section id="route" aria-labelledby="routeTitle">
+  <div class="wrap">
+    <div class="narrow rev">
+      <p class="eyebrow">The program</p>
+      <h2 class="h-sec" id="routeTitle">The route through the program</h2>
+      <aside class="plain" aria-label="In short"><p class="plain-k">In short</p><p>I took eleven courses over six terms, from Spring 2025 to Fall 2026. Choose a term to see the courses, the work I wrote, and what was happening at my job at the same time.</p></aside>
+      <p class="lede">Six terms, eleven courses, thirty credits, taken while running the services this portfolio is about. Choose a stop to see what each term added.</p>
+    </div>
+
+    <div class="rp" id="rp">
+      <p class="rp-swipe" aria-hidden="true">Swipe the route to see every term &rarr;</p>
+      <div class="rp-scroller">
+        <div class="rp-scroll">
+          <div class="rp-line" aria-hidden="true"><span class="rp-done"></span></div>
+          <div class="rp-van" id="rpVan" aria-hidden="true"><div class="rp-van-in">
+        <span class="rp-shadow"></span><span class="rp-trail"><i></i><i></i><i></i></span><img class="rp-body" src="data:image/webp;base64,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" alt="" width="360" height="161" decoding="async"><img class="rp-wheel spin" src="data:image/webp;base64,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" alt="" width="40" height="40" style="left:18.38%;top:78.76%"><img class="rp-wheel spin" src="data:image/webp;base64,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" alt="" width="40" height="40" style="left:82.67%;top:79.69%">
+          </div></div>
+          <div class="rp-stops" id="rpStops" role="tablist" aria-label="Terms in the MPA program"></div>
+        </div>
+      </div>
+      <div class="rp-panel" id="rpPanel" role="tabpanel" tabindex="0"></div>
     </div>
   </div>
 </section>
@@ -1374,6 +1924,20 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       <p class="lede" style="max-width:64ch"><span id="artCount">Twenty</span> artifacts mapped to the five NASPAA domains. Each was selected to demonstrate a specific, identifiable element of its domain — not merely to relate to it topically. Select a domain to see its evidence.</p>
     </div>
 
+    <div class="mx-tools">
+      <div class="mx-chips" role="group" aria-label="Show artifacts">
+        <button type="button" class="mx-chip" data-f="all" aria-pressed="true">Everything</button>
+        <button type="button" class="mx-chip" data-f="course" aria-pressed="false">Coursework</button>
+        <button type="button" class="mx-chip" data-f="pro" aria-pressed="false">Professional</button>
+        <button type="button" class="mx-chip" data-f="paper" aria-pressed="false">Full paper to read</button>
+      </div>
+      <div class="mx-view" role="group" aria-label="Layout">
+        <button type="button" data-view="tabs" aria-pressed="true">One domain</button>
+        <button type="button" data-view="all" aria-pressed="false">All five</button>
+      </div>
+      <p class="mx-count" id="mxCount" role="status"></p>
+    </div>
+
     <div class="dom-tabs" role="tablist" aria-label="NASPAA competency domains" id="tabs"></div>
 
     <div id="panel" role="tabpanel" tabindex="0">
@@ -1381,6 +1945,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       <p class="dom-note" id="domNote"></p>
       <div class="arts" id="arts"></div>
     </div>
+    <div class="mx-all" id="mxAll" hidden></div>
 
     <div class="progress">
       <span>Portfolio status</span>
@@ -1535,7 +2100,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
     <div class="contact-grid narrow stagger">
       <div class="contact-item">
         <p class="k">Email</p>
-        <a href="mailto:joshua.b.behymer@wmich.edu">joshua.b.behymer@wmich.edu</a>
+        <a href="mailto:joshua.b.behymer@wmich.edu">joshua.b.behymer@wmich.edu</a><button class="copy-btn" type="button" data-copy="joshua.b.behymer@wmich.edu" aria-label="Copy email address">Copy</button>
       </div>
       <div class="contact-item">
         <p class="k">LinkedIn</p>
@@ -1568,11 +2133,11 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
     </div>
     <dl class="a11y-dl narrow">
       <div><dt>Standard</dt><dd>Written to meet WCAG 2.2 Level AA. Text colors are checked against the contrast minimums in the light, dark, and high-contrast themes.</dd></div>
-      <div><dt>Display settings</dt><dd>Text size, theme, contrast, motion, spacing, typeface, link underlines, a reading ruler, plain-language summaries, and visible image descriptions. Your choices are saved only in this browser.</dd></div>
+      <div><dt>Display settings</dt><dd>Text size, theme, contrast, motion, spacing, typeface, link underlines, a reading ruler, plain-language summaries, visible image descriptions, and a calm mode that hides the playful extras. Anything that moves can be paused, and stops entirely under Reduce motion. Your choices are saved only in this browser.</dd></div>
       <div><dt>Built with</dt><dd>Native HTML buttons and links, so keyboards and screen readers get the behavior they expect. Papers open as text rather than embedded PDFs, so they reflow on a phone.</dd></div>
       <div><dt>Tested with</dt><dd>NVDA and JAWS on Windows, VoiceOver on Mac and iPhone, TalkBack on Android, keyboard-only navigation, and browser zoom up to 200%.</dd></div>
       <div><dt>Found a barrier?</dt><dd>Email <a href="mailto:joshua.b.behymer@wmich.edu">joshua.b.behymer@wmich.edu</a> with what happened and what you were using. I'll reply and work on a fix.</dd></div>
-      <div><dt>Last reviewed</dt><dd>September 2026</dd></div>
+      <div><dt>Last reviewed</dt><dd>October 2026</dd></div>
     </dl>
   </div>
 </section>
@@ -1581,10 +2146,38 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
 
 <footer>
   <div class="wrap foot-in">
-    <span>Joshua Behymer &middot; MPA Capstone Portfolio &middot; Western Michigan University</span>
+    <span>Joshua Behymer &middot; MPA Capstone Portfolio &middot; Western Michigan University<span class="found-count" id="foundCount" hidden></span></span>
     <span><a href="#accessibility">Accessibility statement</a> &middot; <a href="mailto:joshua.b.behymer@wmich.edu">joshua.b.behymer@wmich.edu</a></span>
   </div>
 </footer>
+
+<p class="sr-only" id="copyStatus" role="status" aria-live="polite"></p>
+
+<!-- ============================================================
+     SEARCH — sections, artifacts, and the full text of every paper
+     ============================================================ -->
+<dialog class="search-dlg" id="searchDlg" aria-labelledby="searchTitle">
+  <div class="search-top" role="search">
+    <label class="search-lab" id="searchTitle" for="searchQ">Search the portfolio</label>
+    <div class="search-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+      <input id="searchQ" type="search" autocomplete="off" spellcheck="false" aria-describedby="searchHint" aria-controls="searchResults">
+      <button type="button" class="search-x" id="searchClose" aria-label="Close search">Esc</button>
+    </div>
+    <p class="search-hint" id="searchHint">Searches every section, artifact, and the full text of every paper.</p>
+  </div>
+  <div class="search-body">
+    <ul class="search-tips" id="searchTips" aria-label="Try searching for">
+      <li><button type="button">administrative burden</button></li>
+      <li><button type="button">BroncoNav</button></li>
+      <li><button type="button">budget</button></li>
+      <li><button type="button">snow</button></li>
+      <li><button type="button">interpreters</button></li>
+    </ul>
+    <p class="search-count" id="searchCount" role="status" aria-live="polite"></p>
+    <ul class="search-results" id="searchResults" aria-label="Search results"></ul>
+  </div>
+</dialog>
 
 <!-- ============================================================
      DISPLAY PANEL — every setting, from any point on the page
@@ -1672,6 +2265,14 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
             aria-label="Reading ruler"></button>
   </div>
 
+  <div class="a11y-row">
+    <span class="lab">Calm mode<span class="sub">Hides the route map, snow and margin notes</span></span>
+    <button class="sw" id="swCalm" role="switch" aria-checked="false" aria-pressed="false"
+            aria-label="Calm mode"></button>
+  </div>
+
+  <p class="a11y-keys">Press <kbd>/</kbd> to search the portfolio. <kbd>Esc</kbd> closes any panel.</p>
+
   <div class="a11y-foot">
     <button class="a11y-btn" id="a11yReset">Reset all</button>
     <button class="a11y-btn" id="a11yClose">Done</button>
@@ -1684,6 +2285,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
 <div class="reader" id="reader" role="dialog" aria-modal="true" aria-labelledby="rdTitle" aria-hidden="true">
   <div class="reader-scrim"></div>
   <div class="reader-panel">
+    <div class="rd-progress" aria-hidden="true"><span id="rdBar"></span></div>
     <div class="reader-head">
       <button class="rd-close" type="button" aria-label="Close and return to the portfolio">&#10005;</button>
       <span class="rd-src" id="rdSrc"></span>
@@ -1691,6 +2293,7 @@ html.no-motion .rev,html.no-motion .stagger > *{opacity:1!important;transform:no
       <p class="rd-sub" id="rdSub"></p>
       <p class="rd-meta" id="rdMeta"></p>
       <div class="reader-actions" id="rdActions"></div>
+      <div class="rd-find" id="rdFind" hidden></div>
     </div>
     <div class="reader-body" id="rdBody" tabindex="0"></div>
   </div>
@@ -1808,26 +2411,64 @@ function withTransition(fn){
   else fn();
 }
 
-function openPaper(id, trigger){
+/* The original files, kept in the repository next to index.html.
+   A download button appears only if the file is really there. */
+const PDF_FILES = {
+  'padm-6290':'PADM 6290 - Final Paper.pdf',
+  'padm-6020':'PADM 6020 - Policy Brief.pdf',
+  'padm-6000':'PADM 6000 Final Exam.pdf',
+  'padm-6060':'PADM 6060 Final - Behymer.pdf',
+  'padm-6070':'PADM 6070 - Final.pdf',
+  'padm-5120':'PADM 5120 - Final Budget Review.pdf',
+  'padm-5830':'PADM 5830 - Final Grant Proposal.pdf',
+  'padm-6001-comp':'PADM 6001 - Competency Exercise.pdf',
+  'padm-6001-mpa':'PADM 6001 - MPA and Beyond.pdf'
+};
+const DATA_FILES = { 'padm-6070':['PADM 6070 - Final Project.xlsx','Download the data (Excel)'] };
+const PAPER_ORDER = [...new Set(DOMAINS.flatMap(d=>d.artifacts.map(a=>a.paper).filter(Boolean)))]
+  .filter(id=>(window.PAPERS||{})[id]);
+const fileOk = {};
+function checkFile(path, el){
+  if(location.protocol==='file:' || !window.fetch) return;
+  if(path in fileOk){ if(!fileOk[path]) el.remove(); return; }
+  fetch(encodeURI(path),{method:'HEAD'}).then(r=>{ fileOk[path]=r.ok; if(!r.ok) el.remove(); })
+    .catch(()=>{});
+}
+
+function openPaper(id, trigger, term){
   const P = (window.PAPERS||{})[id];
   if(!P){ console.warn('No paper loaded for "'+id+'" — is papers.js present?'); return; }
-  lastFocused = trigger || document.activeElement;
+  if(!reader.classList.contains('open')) lastFocused = trigger || document.activeElement;
   withTransition(()=>{
 
   rdSrc.textContent   = P.course;
   rdTitle.textContent = P.title;
   rdSub.textContent   = P.sub || '';
   rdSub.hidden        = !P.sub;
-  rdMeta.textContent  = (P.meta ? P.meta + ' · ' : '') + P.words.toLocaleString() + ' words';
+  rdMeta.textContent  = (P.meta ? P.meta + ' · ' : '') + P.words.toLocaleString() + ' words · about ' +
+                        Math.max(1, Math.round(P.words/230)) + ' min read';
 
+  const pdf = P.pdf || PDF_FILES[id];
+  const dat = DATA_FILES[id];
   rdActions.innerHTML =
-    (P.pdf ? '<a class="rd-act" href="'+P.pdf+'" download>Download PDF</a>' : '') +
+    (pdf ? '<a class="rd-act" id="rdPdf" href="'+encodeURI(pdf)+'" download>Download PDF</a>' : '') +
+    (dat ? '<a class="rd-act" id="rdData" href="'+encodeURI(dat[0])+'" download>'+dat[1]+'</a>' : '') +
     '<button class="rd-act" type="button" id="rdPrint">Print this paper</button>' +
     '<button class="rd-act" type="button" id="rdCopyLink">Copy link</button>';
 
+  const k = PAPER_ORDER.indexOf(id);
+  const prevId = k > 0 ? PAPER_ORDER[k-1] : null, nextId = k > -1 && k < PAPER_ORDER.length-1 ? PAPER_ORDER[k+1] : null;
+  const navBtn = (pid, cls, label) => pid ? '<button type="button" class="'+cls+'" data-go="'+pid+'"><span class="k">'+label+'</span><span class="t">'+window.PAPERS[pid].title+'</span></button>' : '<span></span>';
   rdBody.innerHTML = '<div class="rd">'+P.html+
-    '<p class="rd-end">End of artifact · Joshua Behymer · MPA Capstone Portfolio</p></div>';
+    '<p class="rd-end">End of artifact · Joshua Behymer · MPA Capstone Portfolio</p>'+
+    ((prevId||nextId) ? '<nav class="rd-next" aria-label="More papers">'+navBtn(prevId,'prev','Previous paper')+navBtn(nextId,'next','Next paper')+'</nav>' : '')+
+    '</div>';
   rdBody.scrollTop = 0;
+  if(document.getElementById('rdPdf')) checkFile(pdf, document.getElementById('rdPdf'));
+  if(document.getElementById('rdData')) checkFile(dat[0], document.getElementById('rdData'));
+  rdBody.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>openPaper(b.dataset.go)));
+  markTerm(term);
+  updateRdBar();
 
   document.getElementById('rdPrint').onclick = ()=>window.print();
   document.getElementById('rdCopyLink').onclick = e=>{
@@ -1845,9 +2486,59 @@ function openPaper(id, trigger){
     if(el !== reader){ el.setAttribute('aria-hidden','true'); el.inert = true; }
   });
   if(history.replaceState) history.replaceState(null,'','#p-'+id);
-  reader.querySelector('.rd-close').focus();
+  const firstHit = rdBody.querySelector('mark.cur');
+  if(firstHit){ firstHit.scrollIntoView({block:'center'}); document.getElementById('rdFindNext').focus(); }
+  else reader.querySelector('.rd-close').focus();
   });
 }
+
+/* Find in paper: arriving from search highlights every match */
+const rdFind = document.getElementById('rdFind');
+function markTerm(term){
+  rdFind.hidden = true; rdFind.innerHTML = '';
+  let words = (term||'').toLowerCase().split(/\s+/).filter(w=>w.length>1);
+  if(!words.length) return;
+  const phrase = (term||'').toLowerCase().trim().replace(/\s+/g,' ');
+  if(words.length>1 && rdBody.textContent.toLowerCase().replace(/\s+/g,' ').includes(phrase)) words = [phrase];
+  const rx = new RegExp('('+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/ /g,'\\s+')).join('|')+')','gi');
+  const walker = document.createTreeWalker(rdBody.querySelector('.rd'), NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while(walker.nextNode()){ const n = walker.currentNode; if(rx.test(n.nodeValue) && !n.parentNode.closest('.rd-next')) nodes.push(n); rx.lastIndex = 0; }
+  nodes.forEach(n=>{
+    const frag = document.createDocumentFragment();
+    n.nodeValue.split(rx).forEach((part,i)=>{
+      if(i%2){ const m = document.createElement('mark'); m.textContent = part; frag.appendChild(m); }
+      else if(part) frag.appendChild(document.createTextNode(part));
+    });
+    n.parentNode.replaceChild(frag, n);
+  });
+  const marks = [...rdBody.querySelectorAll('.rd mark')];
+  if(!marks.length) return;
+  let at = 0; marks[0].classList.add('cur');
+  rdFind.hidden = false;
+  rdFind.innerHTML = '<span role="status"><b>'+marks.length+'</b> '+(marks.length===1?'match':'matches')+' for &ldquo;'+
+    term.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))+'&rdquo; &middot; <span id="rdFindAt">1</span> of '+marks.length+'</span>'+
+    '<button type="button" class="rd-act" id="rdFindPrev">Previous</button><button type="button" class="rd-act" id="rdFindNext">Next match</button>'+
+    '<button type="button" class="rd-act" id="rdFindClear">Clear</button>';
+  const goTo = d=>{
+    marks[at].classList.remove('cur'); at = (at + d + marks.length) % marks.length; marks[at].classList.add('cur');
+    marks[at].scrollIntoView({block:'center', behavior: document.documentElement.classList.contains('no-motion') ? 'auto' : 'smooth'});
+    document.getElementById('rdFindAt').textContent = at+1;
+  };
+  document.getElementById('rdFindNext').onclick = ()=>goTo(1);
+  document.getElementById('rdFindPrev').onclick = ()=>goTo(-1);
+  document.getElementById('rdFindClear').onclick = ()=>{
+    marks.forEach(m=>m.replaceWith(document.createTextNode(m.textContent)));
+    rdBody.querySelector('.rd').normalize(); rdFind.hidden = true; reader.querySelector('.rd-close').focus();
+  };
+}
+/* reading progress inside the paper */
+const rdBar = document.getElementById('rdBar');
+function updateRdBar(){
+  const max = rdBody.scrollHeight - rdBody.clientHeight;
+  rdBar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, rdBody.scrollTop / max) : 0).toFixed(4) + ')';
+}
+rdBody.addEventListener('scroll', ()=>requestAnimationFrame(updateRdBar), {passive:true});
 
 function closePaper(){
   if(!reader.classList.contains('open')) return;
@@ -1912,6 +2603,94 @@ tabsEl.addEventListener('keydown', e=>{
   tabsEl.children[next].focus();
 });
 
+/* filters and layout */
+let artFilter = 'all', mxView = 'tabs';
+const artPass = a => artFilter==='all' || (artFilter==='pro' && a.src==='Professional') ||
+  (artFilter==='course' && a.src!=='Professional') || (artFilter==='paper' && !!a.paper);
+const mxAll = document.getElementById('mxAll'), mxCount = document.getElementById('mxCount');
+const FILTER_WORDS = {all:'', course:' from coursework', pro:' from professional practice', paper:' with a full paper to read'};
+function buildArt(a){
+  const el=document.createElement('article');
+  el.className='art'+(a.status==='pending'?' is-pending':'');
+  const chipClass = a.status==='done' ? 'done' : 'pend';
+  const chipText  = a.status==='done' ? 'Complete' : 'Fall 2026';
+  if(a.paper) el.classList.add('has-paper');
+  el.innerHTML=
+    '<div class="art-top">'+
+      '<span class="art-src">'+a.src+'</span>'+
+      '<span class="chip '+chipClass+'">'+chipText+'</span>'+
+    '</div>'+
+    '<h4>'+a.title+'</h4>'+
+    (a.inst ? '<p class="art-inst">Course instructor: '+a.inst+'</p>' : '')+
+    '<p>'+a.desc+'</p>'+
+    (a.more ? '<a class="art-open" href="'+a.more+'">See the project <span class="ar" aria-hidden="true">&rarr;</span></a>' : '')+
+    (a.paper
+      ? '<button class="art-open" type="button" aria-haspopup="dialog" data-paper="'+a.paper+'" '+
+        'aria-label="Read the full paper: '+a.title.replace(/"/g,'&quot;')+'">'+
+        'Read the Paper <span class="ar" aria-hidden="true">&rarr;</span></button>'
+      : '');
+  if(a.paper){
+    el.addEventListener('click', ev=>{
+      if(ev.target.closest('a')) return;
+      openPaper(a.paper, el.querySelector('.art-open'));
+    });
+  }
+  return el;
+}
+function animateIn(el,k){
+  if(document.documentElement.classList.contains('no-motion') || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  el.style.opacity='0'; el.style.transform='translateY(14px)';
+  setTimeout(()=>{
+    el.style.transition='opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)';
+    el.style.opacity='1'; el.style.transform='none';
+  }, 40+k*55);
+}
+const emptyNote = () => '<p class="mx-empty">Nothing here matches that filter. <button type="button" class="mx-reset">Show everything</button></p>';
+function wireReset(scope){ scope.querySelectorAll('.mx-reset').forEach(b=>b.onclick=()=>setFilter('all', true)); }
+function renderAll(){
+  mxAll.innerHTML = '';
+  DOMAINS.forEach((d,i)=>{
+    const list = d.artifacts.filter(artPass);
+    if(!list.length) return;
+    const sec = document.createElement('section');
+    sec.className = 'mx-dom'; sec.setAttribute('aria-labelledby','mxd-'+(i+1));
+    sec.innerHTML = '<h3 class="mx-dom-h" id="mxd-'+(i+1)+'"><span class="n">'+d.n+'</span> '+d.label+'</h3>'+
+      '<p class="dom-note">'+d.statement+'</p><div class="arts"></div>';
+    const box = sec.querySelector('.arts');
+    list.forEach((a,k)=>{ const el = buildArt(a); box.appendChild(el); animateIn(el,k); });
+    mxAll.appendChild(sec);
+  });
+  if(!mxAll.children.length){ mxAll.innerHTML = emptyNote(); wireReset(mxAll); }
+}
+function updateCount(){
+  const total = DOMAINS.flatMap(d=>d.artifacts);
+  if(mxView==='all'){
+    const n = total.filter(artPass).length;
+    mxCount.textContent = 'Showing ' + n + ' of ' + total.length + ' artifacts' + FILTER_WORDS[artFilter];
+  } else {
+    const d = DOMAINS[currentDomain], n = d.artifacts.filter(artPass).length;
+    mxCount.textContent = 'Showing ' + n + ' of ' + d.artifacts.length + ' in ' + d.label + FILTER_WORDS[artFilter];
+  }
+}
+function setFilter(f, focusChip){
+  artFilter = f;
+  document.querySelectorAll('.mx-chip').forEach(c=>c.setAttribute('aria-pressed', String(c.dataset.f===f)));
+  if(mxView==='all') renderAll(); else select(currentDomain);
+  updateCount();
+  if(focusChip){ const c = document.querySelector('.mx-chip[data-f="'+f+'"]'); if(c) c.focus(); }
+}
+function setMatrixView(v){
+  if(v===mxView) return;
+  mxView = v;
+  document.querySelectorAll('.mx-view button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.view===v)));
+  const all = v==='all';
+  tabsEl.hidden = all; document.getElementById('panel').hidden = all; mxAll.hidden = !all;
+  if(all) renderAll(); else select(currentDomain);
+  updateCount();
+}
+document.querySelectorAll('.mx-chip').forEach(c=>c.addEventListener('click',()=>setFilter(c.dataset.f)));
+document.querySelectorAll('.mx-view button').forEach(b=>b.addEventListener('click',()=>setMatrixView(b.dataset.view)));
+
 function select(i,userAction){
   [...tabsEl.children].forEach((b,j)=>{
     const on = j===i;
@@ -1923,40 +2702,11 @@ function select(i,userAction){
   stmtEl.textContent=d.statement;
   noteEl.textContent=d.note;
   artsEl.innerHTML='';
-  d.artifacts.forEach((a,k)=>{
-    const el=document.createElement('article');
-    el.className='art'+(a.status==='pending'?' is-pending':'');
-    const chipClass = a.status==='done' ? 'done' : 'pend';
-    const chipText  = a.status==='done' ? 'Complete' : 'Fall 2026';
-    if(a.paper) el.classList.add('has-paper');
-    el.innerHTML=
-      '<div class="art-top">'+
-        '<span class="art-src">'+a.src+'</span>'+
-        '<span class="chip '+chipClass+'">'+chipText+'</span>'+
-      '</div>'+
-      '<h4>'+a.title+'</h4>'+
-      (a.inst ? '<p class="art-inst">Course instructor: '+a.inst+'</p>' : '')+
-      '<p>'+a.desc+'</p>'+
-      (a.more ? '<a class="art-open" href="'+a.more+'">See the project <span class="ar" aria-hidden="true">&rarr;</span></a>' : '')+
-      (a.paper
-        ? '<button class="art-open" type="button" aria-haspopup="dialog" data-paper="'+a.paper+'" '+
-          'aria-label="Read the full paper: '+a.title.replace(/"/g,'&quot;')+'">'+
-          'Read the Paper <span class="ar" aria-hidden="true">&rarr;</span></button>'
-        : '');
-    if(a.paper){
-      el.addEventListener('click', ev=>{
-        if(ev.target.closest('a')) return;
-        openPaper(a.paper, el.querySelector('.art-open'));
-      });
-    }
-    artsEl.appendChild(el);
-    if(document.documentElement.classList.contains('no-motion')) return;
-    el.style.opacity='0'; el.style.transform='translateY(14px)';
-    setTimeout(()=>{
-      el.style.transition='opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)';
-      el.style.opacity='1'; el.style.transform='none';
-    }, 40+k*55);
-  });
+  currentDomain = i;
+  const shown = d.artifacts.filter(artPass);
+  if(!shown.length){ artsEl.innerHTML = emptyNote(); wireReset(artsEl); }
+  shown.forEach((a,k)=>{ const el = buildArt(a); artsEl.appendChild(el); animateIn(el,k); });
+  updateCount();
   /* shareable link to a single domain, e.g. .../#d3 */
   currentDomain = i;
   if(userAction && history.replaceState) history.replaceState(null,'','#d'+(i+1));
@@ -2008,6 +2758,7 @@ document.querySelectorAll('.hub-node').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
     const i = Number(a.dataset.dom);
+    setMatrixView('tabs');
     select(i, true);
     const calm = document.documentElement.classList.contains('no-motion');
     document.getElementById('matrix').scrollIntoView({ behavior: calm ? 'auto' : 'smooth' });
@@ -2089,7 +2840,7 @@ const root = document.documentElement;
 
 const DEFAULTS = { size:100, theme:'auto', contrast:false, motion:false,
                    spacing:false, font:false, underline:false, ruler:false,
-                   plain:false, alts:false };
+                   plain:false, alts:false, calm:false };
 const mqDark = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : { matches:false };
 const KEY = 'jb-display-v1';
 let cfg = Object.assign({}, DEFAULTS);
@@ -2115,6 +2866,9 @@ function apply(){
   root.classList.toggle('a11y-font',      cfg.font);
   root.classList.toggle('a11y-underline', cfg.underline);
   root.classList.toggle('a11y-ruler',     cfg.ruler);
+  root.classList.toggle('a11y-calm',      cfg.calm);
+  ['tDown','pDown'].forEach(id => { const el = document.getElementById(id); if (el) el.disabled = cfg.size <= 80; });
+  ['tUp','pUp'].forEach(id => { const el = document.getElementById(id); if (el) el.disabled = cfg.size >= 200; });
 
   /* nothing should stay hidden mid-animation once motion is off */
   if (cfg.motion) document.querySelectorAll('.rev,.stagger').forEach(e => e.classList.add('in'));
@@ -2136,12 +2890,13 @@ function apply(){
   });
   positionRuler();
   if (window.updateScene) updateScene();
+  if (window.jbMotionChanged) jbMotionChanged();
 }
 
 const SWITCHES = [
   ['swContrast','contrast'], ['swMotion','motion'], ['swSpacing','spacing'],
   ['swFont','font'], ['swUnderline','underline'], ['swRuler','ruler'],
-  ['swPlain','plain'], ['swAlts','alts']
+  ['swPlain','plain'], ['swAlts','alts'], ['swCalm','calm']
 ];
 
 function set(key, val){ cfg[key] = val; save(); apply(); }
@@ -2227,6 +2982,756 @@ if(cfg.motion){
   },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.rev,.stagger').forEach(e=>io.observe(e));
 }
+</script>
+<script>
+/* ============================================================
+   OCTOBER 2026 (II) — the interaction layer
+   Hero motion you can pause, search, a curb-cut deck, peel cards,
+   margin notes, count-ups and copy buttons. Every piece checks
+   Reduce motion first and works without a mouse.
+   ============================================================ */
+(function(){
+'use strict';
+const $  = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const calm = () => root.classList.contains('no-motion') ||
+  (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+};
+
+/* ---------- Hero: the shuttle runs its loop, stopping at each stop ---------- */
+const hero = $('.hero');
+const shuttle = (function(){
+  const loop = $('#rtLoop'), sh = $('#rtShuttle');
+  if (!hero || !loop || !sh || !loop.getTotalLength) return { update(){} };
+  const L = loop.getTotalLength();
+  const samples = [];
+  for (let d = 0; d <= L; d += 4) { const p = loop.getPointAtLength(d); samples.push([d, p.x, p.y]); }
+  const stops = $$('.rt-stops circle').map(c => {
+    const x = +c.getAttribute('cx'), y = +c.getAttribute('cy');
+    let best = 0, bd = Infinity;
+    samples.forEach(s => { const dd = (s[1]-x)**2 + (s[2]-y)**2; if (dd < bd) { bd = dd; best = s[0]; } });
+    return { d: best, el: c };
+  }).sort((a, b) => a.d - b.d);
+  if (!stops.length) return { update(){} };
+  const SPEED = 125, DWELL = 1150;
+  const ease = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+  let i = 0, phase = 'dwell', elapsed = 0, last = 0, raf = 0, running = false, onScreen = true;
+  const leg = k => { const a = stops[k].d, b = stops[(k+1) % stops.length].d; return ((b - a) + L) % L || L; };
+  function put(d){
+    d = ((d % L) + L) % L;
+    const p = loop.getPointAtLength(d);
+    sh.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ')');
+  }
+  function light(k){ stops.forEach((s, j) => s.el.classList.toggle('at', j === k)); }
+  function frame(now){
+    const dt = last ? Math.min(64, now - last) : 16; last = now; elapsed += dt;
+    if (phase === 'dwell') {
+      put(stops[i].d); light(i);
+      if (elapsed >= DWELL) { phase = 'move'; elapsed = 0; light(-1); }
+    } else {
+      const len = leg(i), t = Math.min(1, elapsed / (len / SPEED * 1000));
+      put(stops[i].d + len * ease(t));
+      if (t >= 1) { i = (i + 1) % stops.length; phase = 'dwell'; elapsed = 0; }
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  function update(){
+    const stopIt = calm() || hero.classList.contains('is-paused') || !onScreen || document.hidden ||
+                   root.classList.contains('a11y-calm') || root.classList.contains('contrast');
+    if (stopIt) {
+      if (running) { cancelAnimationFrame(raf); running = false; }
+      if (phase === 'dwell' || calm()) { put(stops[i].d); light(i); }
+    } else if (!running) { running = true; last = 0; raf = requestAnimationFrame(frame); }
+  }
+  put(stops[0].d);
+  setTimeout(() => { sh.classList.add('on'); update(); }, calm() ? 0 : 2500);
+  if (window.IntersectionObserver)
+    new IntersectionObserver(es => { onScreen = es[0].isIntersecting; update(); }).observe(hero);
+  document.addEventListener('visibilitychange', update);
+  return { update };
+})();
+
+/* Pause / play — saved, so a visitor who pauses it once doesn't have to again */
+const mt = $('#motionToggle');
+function setHeroPaused(v, save){
+  if (!hero) return;
+  hero.classList.toggle('is-paused', v);
+  if (mt) { mt.dataset.state = v ? 'paused' : 'playing'; $('.lbl', mt).textContent = v ? 'Play motion' : 'Pause motion'; }
+  if (save) store.set('jb-hero-paused', v ? '1' : '0');
+  shuttle.update();
+}
+setHeroPaused(store.get('jb-hero-paused') === '1', false);
+if (mt) mt.addEventListener('click', () => setHeroPaused(!hero.classList.contains('is-paused'), true));
+window.jbMotionChanged = () => shuttle.update();
+
+/* Snow, November to mid-March (add ?season=winter to preview it, ?season=off to hide it) */
+(function(){
+  if (!hero) return;
+  const q = new URLSearchParams(location.search).get('season');
+  const now = new Date(), m = now.getMonth();
+  const winter = q === 'winter' || (q !== 'off' && (m >= 10 || m <= 1 || (m === 2 && now.getDate() <= 15)));
+  if (!winter) return;
+  const box = document.createElement('div');
+  box.className = 'snow'; box.setAttribute('aria-hidden', 'true');
+  let h = '';
+  for (let k = 0; k < 34; k++) {
+    h += '<i style="--x:' + (Math.random()*100).toFixed(1) + '%;--s:' + (2 + Math.random()*4).toFixed(1) +
+         'px;--d:' + (10 + Math.random()*10).toFixed(1) + 's;--delay:-' + (Math.random()*20).toFixed(1) +
+         's;--w:' + Math.round(Math.random()*60 - 30) + 'px;--o:' + (.3 + Math.random()*.5).toFixed(2) + '"></i>';
+  }
+  box.innerHTML = h;
+  hero.insertBefore(box, $('.wrap', hero));
+})();
+
+/* ---------- Navigation: menu on small screens, where you are, how far along ---------- */
+const nav = $('.nav'), navLinks = $('#navLinks'), menuBtn = $('#navMenu'), bar = $('#navProgress');
+function setMenu(open){
+  if (!navLinks || !menuBtn) return;
+  navLinks.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+  $('.lbl', menuBtn).textContent = open ? 'Close' : 'Menu';
+}
+if (menuBtn) {
+  menuBtn.addEventListener('click', () => {
+    const open = !navLinks.classList.contains('open');
+    setMenu(open);
+    if (open) { const a = $('a', navLinks); if (a) a.focus(); }
+  });
+  navLinks.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) { setMenu(false); menuBtn.focus(); }
+  });
+  document.addEventListener('click', e => { if (navLinks.classList.contains('open') && !e.target.closest('.nav')) setMenu(false); });
+  window.addEventListener('resize', () => { if (innerWidth > 1100) setMenu(false); }, { passive: true });
+}
+const navMap = navLinks ? $$('a[href^="#"]', navLinks).map(a => [a, document.getElementById(a.getAttribute('href').slice(1))]).filter(p => p[1]) : [];
+let navQueued = false;
+function onScroll(){
+  navQueued = false;
+  const docH = document.documentElement.scrollHeight - innerHeight;
+  if (bar) bar.style.transform = 'scaleX(' + (docH > 0 ? Math.min(1, scrollY / docH) : 0).toFixed(4) + ')';
+  const y = innerHeight * .38;
+  navMap.forEach(([a, s]) => {
+    const r = s.getBoundingClientRect();
+    const here = r.top <= y && r.bottom > y;
+    if (here) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+  });
+}
+window.addEventListener('scroll', () => { if (!navQueued) { navQueued = true; requestAnimationFrame(onScroll); } }, { passive: true });
+window.addEventListener('resize', onScroll, { passive: true });
+onScroll();
+
+/* ---------- Search: every section, every artifact, the full text of every paper ---------- */
+const dlg = $('#searchDlg'), sq = $('#searchQ'), sres = $('#searchResults'), scount = $('#searchCount');
+let IDX = null, lastOpener = null;
+/* the words a reader sees: no button labels, screen-reader-only hints, or decoration */
+function cleanText(el){
+  const c = el.cloneNode(true);
+  c.querySelectorAll('button, .sr-only, .peel-hint, svg, script, .find-card, .nook-note').forEach(n => n.remove());
+  return c.textContent.replace(/\s+/g, ' ').trim();
+}
+const textOf = html => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent.replace(/\s+/g, ' ').trim(); };
+function buildIndex(){
+  IDX = [];
+  $$('main > section[id]').forEach(s => {
+    if (s.id === 'matrix') return;   /* artifacts are indexed one by one below */
+    const h = $('h2', s) || $('.close-q', s);
+    const eb = $('.eyebrow', s);
+    IDX.push({ kind:'section', id:s.id, title: h ? h.textContent.trim() : s.id,
+               label: 'Section' + (eb ? ' · ' + eb.textContent.trim() : ''), text: cleanText(s) });
+  });
+  DOMAINS.forEach((d, di) => d.artifacts.forEach(a => IDX.push({
+    kind:'artifact', dom:di, paper:a.paper || null, more:a.more || null, title:a.title,
+    label: d.label + ' · ' + a.src + (a.status === 'pending' ? ' · Fall 2026' : ''),
+    text: a.title + ' ' + a.desc + ' ' + (a.inst || '') + ' ' + a.src })));
+  Object.entries(window.PAPERS || {}).forEach(([id, P]) => IDX.push({
+    kind:'paper', id, title: textOf(P.title), label: 'Full paper · ' + textOf(P.course), text: textOf(P.html) }));
+}
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function snippet(text, words, phrase){
+  const low = text.toLowerCase();
+  if (phrase && phrase.includes(' ') && low.includes(phrase)) words = [phrase];
+  let at = -1;
+  words.forEach(w => { const k = low.indexOf(w); if (k > -1 && (at < 0 || k < at)) at = k; });
+  if (at < 0) at = 0;
+  let a = Math.max(0, at - 70), b = Math.min(text.length, at + 130);
+  if (a > 0) { const sp = text.indexOf(' ', a); if (sp > -1 && sp < at) a = sp + 1; }
+  if (b < text.length) { const sp = text.lastIndexOf(' ', b); if (sp > at) b = sp; }
+  let s = esc(text.slice(a, b));
+  const rx = new RegExp('(' + words.map(w => reEsc(esc(w))).join('|') + ')', 'gi');
+  s = s.replace(rx, '<mark>$1</mark>');
+  return (a > 0 ? '… ' : '') + s + (b < text.length ? ' …' : '');
+}
+function runSearch(){
+  if (!IDX) buildIndex();
+  const q = sq.value.trim();
+  const words = q.toLowerCase().split(/\s+/).filter(w => w.length > 1);
+  const phrase = q.toLowerCase().replace(/\s+/g, ' ');
+  if (!words.length) { sres.innerHTML = ''; scount.textContent = ''; $('#searchTips').hidden = false; return; }
+  $('#searchTips').hidden = true;
+  const hits = [];
+  IDX.forEach(it => {
+    const t = it.title.toLowerCase(), x = it.text.toLowerCase();
+    if (!words.every(w => t.includes(w) || x.includes(w))) return;
+    let score = 0;
+    words.forEach(w => {
+      if (t.includes(w)) score += 12;
+      let n = 0, k = x.indexOf(w);
+      while (k > -1 && n < 25) { n++; k = x.indexOf(w, k + w.length); }
+      score += n;
+    });
+    if (it.kind === 'artifact') score += 2;
+    if (words.length > 1 && (t.includes(phrase) || x.includes(phrase))) score += 40;
+    const usePhrase = words.length > 1 && x.includes(phrase);
+    hits.push({ it, score, n: usePhrase ? x.split(phrase).length - 1 : words.reduce((m, w) => m + (x.split(w).length - 1), 0) });
+  });
+  hits.sort((a, b) => b.score - a.score);
+  const shown = hits.slice(0, 14);
+  scount.textContent = hits.length
+    ? hits.length + (hits.length === 1 ? ' result' : ' results') + ' for “' + q + '”' + (hits.length > shown.length ? ' · showing the best ' + shown.length : '')
+    : 'Nothing found for “' + q + '”';
+  sres.innerHTML = shown.length ? shown.map((h, k) => {
+    const it = h.it;
+    const extra = it.kind === 'paper' ? ' · ' + h.n + (h.n === 1 ? ' match' : ' matches') : '';
+    return '<li><button type="button" class="sr-hit" data-k="' + k + '">' +
+      '<span class="sr-k">' + esc(it.label) + extra + '</span>' +
+      '<span class="sr-t">' + esc(it.title) + '</span>' +
+      '<span class="sr-s">' + snippet(it.text, words, phrase) + '</span></button></li>';
+  }).join('') : '<li class="search-empty">Try a broader word, or one of these: burden, curb cut, budget, interpreters.</li>';
+  $$('.sr-hit', sres).forEach(b => b.addEventListener('click', () => go(shown[+b.dataset.k].it, q)));
+}
+function go(it, q){
+  dlg.close();
+  const smooth = calm() ? 'auto' : 'smooth';
+  if (it.kind === 'paper' || (it.kind === 'artifact' && it.paper)) {
+    const id = it.kind === 'paper' ? it.id : it.paper;
+    const di = DOMAINS.findIndex(d => d.artifacts.some(a => a.paper === id));
+    if (di > -1 && window.setMatrixView) { setMatrixView('tabs'); select(di); }
+    openPaper(id, lastOpener, q);
+  } else if (it.kind === 'artifact') {
+    if (window.setMatrixView) setMatrixView('tabs');
+    select(it.dom, true);
+    const m = document.getElementById('matrix');
+    m.scrollIntoView({ behavior: smooth });
+    tabsEl.children[it.dom].focus({ preventScroll: true });
+  } else {
+    const s = document.getElementById(it.id);
+    const h = $('h2', s) || s;
+    if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1');
+    s.scrollIntoView({ behavior: smooth });
+    h.focus({ preventScroll: true });
+  }
+}
+function openSearch(opener){
+  if (!dlg || dlg.open) return;
+  lastOpener = opener || document.activeElement;
+  if (navLinks) setMenu(false);
+  try { dlg.showModal(); } catch (e) { dlg.setAttribute('open', ''); }
+  sq.focus(); sq.select();
+  if (!IDX) buildIndex();
+  const hint = $('#searchHint');
+  if (hint) hint.textContent = 'Searches every section, all ' + DOMAINS.flatMap(d => d.artifacts).length +
+    ' artifacts, and the full text of all ' + Object.keys(window.PAPERS || {}).length + ' papers.';
+}
+if (dlg) {
+  let t;
+  sq.addEventListener('input', () => { clearTimeout(t); t = setTimeout(runSearch, 120); });
+  sq.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); const b = $('.sr-hit', sres); if (b) b.click(); }
+    if (e.key === 'ArrowDown') { const b = $('.sr-hit', sres); if (b) { e.preventDefault(); b.focus(); } }
+  });
+  sres.addEventListener('keydown', e => {
+    const list = $$('.sr-hit', sres), k = list.indexOf(document.activeElement);
+    if (k < 0) return;
+    if (e.key === 'ArrowDown' && k < list.length - 1) { e.preventDefault(); list[k+1].focus(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); (k ? list[k-1] : sq).focus(); }
+  });
+  $('#searchClose').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', () => {
+    if (!reader.classList.contains('open') && lastOpener && document.contains(lastOpener) && !document.activeElement.closest('main'))
+      lastOpener.focus({ preventScroll: true });
+  });
+  $$('#searchTips button').forEach(b => b.addEventListener('click', () => { sq.value = b.textContent; runSearch(); sq.focus(); }));
+  $$('[data-open-search]').forEach(b => b.addEventListener('click', () => openSearch(b)));
+  document.addEventListener('keydown', e => {
+    const typing = e.target.closest && e.target.closest('input, textarea, select, [contenteditable="true"]');
+    const k = (e.key || '').toLowerCase();
+    if (((k === '/' && !typing) || (k === 'k' && (e.metaKey || e.ctrlKey))) && !reader.classList.contains('open')) {
+      e.preventDefault(); openSearch($('[data-open-search]'));
+    }
+  });
+}
+
+/* ---------- Turn the corner: find a curb cut ---------- */
+const FINDS = [
+  { t:'Curb cuts', tag:'Kalamazoo, 1945', f:'Wheelchair users, including veterans returning from World War II',
+    u:'Strollers, rolling luggage, delivery carts, bikes, anyone on ice',
+    x:'Kalamazoo installed what are widely recognized as the first modern curb cuts in the United States. Now they are simply how a sidewalk ends.' },
+  { t:'Closed captions', tag:'Everyday', f:'Deaf and hard of hearing viewers',
+    u:'Noisy bars and gyms, quiet waiting rooms, language learners, anyone scrolling with the sound off',
+    x:'Television captioning grew out of work in the 1970s to make broadcasts accessible to Deaf viewers. Today a lot of video is watched muted, with the captions doing the talking.' },
+  { t:'Audiobooks', tag:'Everyday', f:'Blind readers',
+    u:'Commuters, runners, people cooking dinner, anyone with full hands',
+    x:'Recorded “talking books” for blind readers began in the 1930s through the Library of Congress. The format outgrew its first audience.' },
+  { t:'Text-to-speech', tag:'Everyday', f:'Blind readers',
+    u:'Navigation apps, voice assistants, anyone proofreading by ear',
+    x:'The Kurzweil Reading Machine, introduced in 1976, scanned printed pages and read them aloud so blind people could read ordinary books.' },
+  { t:'Easy-grip kitchen tools', tag:'Everyday', f:'People with arthritis',
+    u:'Everyone’s kitchen drawer',
+    x:'OXO’s Good Grips line started in 1990, after Sam Farber watched his wife, who had arthritis, struggle with an ordinary vegetable peeler.' },
+  { t:'Tactile paving', tag:'Public space', f:'Blind and low-vision pedestrians',
+    u:'Every commuter who needs to know where the platform edge is',
+    x:'Seiichi Miyake invented the raised warning blocks in Japan in the 1960s. They now mark crossings and train platforms around the world.' },
+  { t:'The typewriter', tag:'History', f:'A writer who was blind',
+    u:'Every keyboard you have ever typed on',
+    x:'One of the earliest typing machines was built in Italy around 1808 by Pellegrino Turri so that Countess Carolina Fantoni da Fivizzano, who was blind, could write her own letters.' },
+  { t:'Push-button door openers', tag:'Public space', f:'Wheelchair users',
+    u:'Anyone carrying boxes, pushing a cart, or holding a child’s hand',
+    x:'One button turns a heavy door into an open one. Watch any entrance that has one and count who actually presses it.' },
+  { t:'Low-floor buses', tag:'Transit', f:'Riders who use wheelchairs or can’t climb steps',
+    u:'Parents with strollers, older riders, shoppers with carts, the whole line waiting to board',
+    x:'Fewer steps means fewer people who need help getting on, and a line that moves faster for everyone behind them.' },
+  { t:'Visual fire alarms', tag:'Public space', f:'Deaf and hard of hearing people',
+    u:'Anyone wearing headphones or hearing protection, or in a room too loud to hear a siren',
+    x:'A flashing strobe beside the siren means the warning reaches people the sound can’t.' },
+  { t:'Lever door handles', tag:'Public space', f:'People with limited grip strength',
+    u:'Anyone with full hands, wet hands, or an elbow free',
+    x:'A round knob asks you to grip and twist. A lever only asks you to push down.' },
+  { t:'Audio description', tag:'Everyday', f:'Blind and low-vision audiences',
+    u:'People following a show while cooking, folding laundry, or driving',
+    x:'A narrator describes what is happening on screen between the lines of dialogue, so the story works without the picture.' },
+  { t:'Ramps and step-free entrances', tag:'Public space', f:'Wheelchair users',
+    u:'Movers, cyclists, kids on scooters, anyone pulling a suitcase',
+    x:'A building with one step at the door is a building some people can’t enter. Take the step away and nobody misses it.' },
+  { t:'BroncoNav', tag:'From my work', mine:true, f:'WMU students with mobility disabilities',
+    u:'Any DSS-registered student, including on the days the weather turns a walk into a barrier',
+    x:'An accessible shuttle that completed more than 1,500 rides in its first full semester, and now runs on its own platform, bronconav.com.' },
+  { t:'Online scheduling at DSS', tag:'From my work', mine:true, f:'Students with disabilities',
+    u:'Students and faculty across the office',
+    x:'Built so students could book without calling or walking in. It now accounts for more than 80% of DSS appointments.' },
+  { t:'Recurring ride requests', tag:'From my work', mine:true, f:'Students with fixed class schedules',
+    u:'Every rider whose week looks the same',
+    x:'Ask once for the semester instead of once for every ride. Each request a system stops requiring is a burden it stops imposing.' }
+];
+(function(){
+  const card = $('#findCard'), btn = $('#findNext'), mat = $('.find-mat');
+  if (!card || !btn) return;
+  let order = [0], cur = 0;
+  const seen = new Set([0]);
+  function render(k, animate){
+    const f = FINDS[k];
+    card.classList.toggle('is-mine', !!f.mine);
+    card.innerHTML =
+      '<span class="fc-tag">' + esc(f.tag) + '</span>' +
+      '<h4>' + esc(f.t) + '</h4>' +
+      '<dl class="fc-flow"><dt>Built for</dt><dd>' + esc(f.f) + '</dd><dt>Now used by</dt><dd>' + esc(f.u) + '</dd></dl>' +
+      '<p>' + esc(f.x) + '</p>' +
+      '<p class="fc-n">' + seen.size + ' of ' + FINDS.length + ' found' + (seen.size === FINDS.length ? ' · you found them all' : '') + '</p>';
+    if (animate && !calm()) {
+      card.classList.remove('turning'); void card.offsetWidth; card.classList.add('turning');
+      if (mat) mat.classList.toggle('shift');
+    }
+  }
+  render(0, false);
+  btn.addEventListener('click', () => {
+    let pool = FINDS.map((_, k) => k).filter(k => !seen.has(k));
+    if (!pool.length) { seen.clear(); pool = FINDS.map((_, k) => k).filter(k => k !== cur); }
+    cur = pool[Math.floor(Math.random() * pool.length)];
+    seen.add(cur);
+    render(cur, true);
+    $('.lbl', btn).textContent = 'Turn another corner';
+  });
+})();
+
+/* ---------- Peel cards: each idea turns over to show where it came from ---------- */
+(function(){
+  const boxes = $$('[data-turn]');
+  if (!boxes.length) return;
+  const measure = b => { b.style.setProperty('--bw', b.offsetWidth + 'px'); b.style.setProperty('--bh', b.offsetHeight + 'px'); };
+  boxes.forEach(measure);
+  if (window.ResizeObserver) { const ro = new ResizeObserver(es => es.forEach(e => measure(e.target))); boxes.forEach(b => ro.observe(b)); }
+  else window.addEventListener('resize', () => boxes.forEach(measure));
+  function setTurned(box, on, focus){
+    const front = $('.peel-front', box), back = $('.peel-back', box), corner = $('.peel-corner', box);
+    box.classList.toggle('is-turned', on);
+    front.inert = on; back.inert = !on;
+    corner.setAttribute('aria-expanded', String(on));
+    if (!focus) return;
+    if (on) setTimeout(() => back.focus({ preventScroll: true }), calm() ? 0 : 420);
+    else corner.focus({ preventScroll: true });
+  }
+  boxes.forEach(box => {
+    $('.peel-back', box).inert = true;
+    $('.peel-corner', box).addEventListener('click', () => setTurned(box, true, true));
+    $('.peel-backbtn', box).addEventListener('click', () => setTurned(box, false, true));
+    box.addEventListener('keydown', e => { if (e.key === 'Escape' && box.classList.contains('is-turned')) setTurned(box, false, true); });
+    $$('[data-paper]', box).forEach(b => b.addEventListener('click', () => openPaper(b.dataset.paper, b)));
+  });
+})();
+
+/* ---------- Margin notes: a curled corner somewhere new on each visit ---------- */
+const NOTES = {
+  enroll:  { k:'From PADM 6070', t:'Twenty years of enrollment', p:'padm-6070',
+             x:'WMU enrolled 26,239 students in 2005 and 17,605 in 2024. The analysis tested whether SSDI participation moved with that decline. It didn’t, and the paper says so plainly.' },
+  park:    { k:'From PADM 5120', t:'The fund that said what the budget didn’t', p:'padm-5120',
+             x:'Berrien Springs’ budget stated no mission or goals, but a Shamrock Park fund of more than $719,000 made one priority obvious anyway.' },
+  selfrate:{ k:'From PADM 6290', t:'The last to know', p:'padm-6290',
+             x:'Kaplan and Kaiser (2003) found that leaders’ ratings of themselves don’t line up with how others see them. Growth starts with asking.' },
+  umbrella:{ k:'From PADM 6290', t:'Proximity isn’t experience', p:'padm-6290',
+             x:'Standing next to someone with an umbrella won’t keep you dry. Day et al. (2014) found that time in a role didn’t predict leadership performance.' },
+  fiveyrs: { k:'From PADM 6020', t:'Five years', p:'padm-6020',
+             x:'Women with ADHD wait, on average, about five years longer than men for a diagnosis. Any accommodation system that requires a diagnosis inherits that wait.' },
+  grant:   { k:'From PADM 5830', t:'What the $30,000 was for', p:'padm-5830',
+             x:'The BroncoNav proposal asked for one-time technology: GPS vehicle tracking, LED signage, a student-facing app, survey kiosks and advertising panels. WMU already funded the staff.' },
+  freeze:  { k:'From PADM 6000', t:'A freeze with a friendly name', p:'padm-6000',
+             x:'In the 2035 scenario, the university announces an “Accommodations Budget Freeze Review.” Nothing in the name tells you that services stop.' },
+  outside: { k:'From PADM 6060', t:'Outside the classroom', p:'padm-6060',
+             x:'The needs assessment looks past classroom accommodations to transportation, housing, campus navigation and belonging, where students say many of the barriers are.' }
+};
+(function(){
+  const ids = Object.keys(NOTES);
+  let found = [];
+  try { found = JSON.parse(store.get('jb-notes-found') || '[]').filter(id => NOTES[id]); } catch (e) {}
+  const counter = $('#foundCount');
+  const showCount = () => {
+    if (!counter || !found.length) return;
+    counter.textContent = ' · ' + found.length + ' of ' + ids.length + ' margin notes found';
+    counter.hidden = false;
+  };
+  showCount();
+  const hosts = $$('#who .card, .improve-item, #forward .value, #experience .tl-item').filter(el => el.offsetParent !== null);
+  if (!hosts.length || Math.random() < .12) return;        /* some visits, there is nothing to find */
+  const picks = [], pool = hosts.slice();
+  while (picks.length < 2 && pool.length) picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+  const order = ids.filter(id => !found.includes(id)).sort(() => Math.random() - .5)
+                   .concat(ids.slice().sort(() => Math.random() - .5));
+  let open = null;
+  function close(note, back){
+    if (!note) return;
+    const b = note._nook; note.remove();
+    b.setAttribute('aria-expanded', 'false');
+    if (back) b.focus({ preventScroll: true });
+    if (open === note) open = null;
+  }
+  picks.forEach((host, k) => {
+    const id = order[k], n = NOTES[id];
+    host.classList.add('has-nook');
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'nook';
+    b.setAttribute('aria-label', 'Lift the corner: a margin note');
+    b.setAttribute('aria-expanded', 'false');
+    host.appendChild(b);
+    b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      if (open) close(open, false);
+      if (!found.includes(id)) { found.push(id); store.set('jb-notes-found', JSON.stringify(found)); showCount(); }
+      const note = document.createElement('div');
+      note.className = 'nook-note';
+      note.setAttribute('role', 'region'); note.setAttribute('aria-label', 'Margin note: ' + n.t); note.tabIndex = -1;
+      note.innerHTML = '<span class="nk-k">' + esc(n.k) + '</span><p class="nk-t">' + esc(n.t) + '</p><p>' + esc(n.x) + '</p>' +
+        '<div class="nk-row"><button type="button" class="nk-read">Read the paper</button>' +
+        '<button type="button" class="nk-close">Tuck it back</button>' +
+        '<span class="nk-found">' + found.length + ' of ' + ids.length + ' found</span></div>';
+      note._nook = b;
+      note.addEventListener('click', ev => ev.stopPropagation());
+      note.addEventListener('keydown', ev => { if (ev.key === 'Escape') { ev.stopPropagation(); close(note, true); } });
+      $('.nk-close', note).addEventListener('click', () => close(note, true));
+      $('.nk-read', note).addEventListener('click', () => { close(note, false); openPaper(n.p, b); });
+      host.appendChild(note);
+      b.setAttribute('aria-expanded', 'true');
+      const r = note.getBoundingClientRect();
+      if (r.left < 12) note.style.right = (r.left - 12) + 'px';
+      open = note;
+      note.focus({ preventScroll: true });
+    });
+  });
+  document.addEventListener('click', () => { if (open) close(open, false); });
+})();
+
+/* ---------- Count-ups: numbers that arrive, then stay put ---------- */
+(function(){
+  const els = $$('[data-count]');
+  if (!els.length) return;
+  els.forEach(el => {
+    const final = el.textContent.trim();
+    el.innerHTML = '<span aria-hidden="true" class="cnt">' + esc(final) + '</span><span class="sr-only">' + esc(final) + '</span>';
+  });
+  if (calm() || !window.IntersectionObserver) return;
+  const run = el => {
+    const target = +el.dataset.count, suf = el.dataset.suffix || '', out = $('.cnt', el);
+    const dur = 1300, t0 = performance.now();
+    const step = now => {
+      const t = Math.min(1, (now - t0) / dur), v = Math.round(target * (1 - Math.pow(1 - t, 3)));
+      out.textContent = v.toLocaleString('en-US') + suf;
+      if (t < 1 && !calm()) requestAnimationFrame(step); else out.textContent = target.toLocaleString('en-US') + suf;
+    };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    io.unobserve(e.target); run(e.target);
+  }), { threshold: .6 });
+  els.forEach(el => { $('.cnt', el).textContent = '0' + (el.dataset.suffix || ''); io.observe(el); });
+})();
+
+/* ---------- Copy buttons ---------- */
+$$('[data-copy]').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.copy, done = () => {
+    const was = b.textContent; b.textContent = 'Copied';
+    const live = $('#copyStatus'); if (live) live.textContent = 'Copied ' + v + ' to the clipboard';
+    setTimeout(() => { b.textContent = was; if (live) live.textContent = ''; }, 1800);
+  };
+  if (navigator.clipboard) navigator.clipboard.writeText(v).then(done, done); else done();
+}));
+
+/* ---------- Reading ruler follows keyboard focus, too ---------- */
+document.addEventListener('focusin', e => {
+  if (!cfg.ruler || !e.target.getBoundingClientRect) return;
+  const r = e.target.getBoundingClientRect();
+  rulerY = r.top + r.height / 2; positionRuler();
+});
+})();
+</script>
+<script>
+/* ============================================================
+   THE ROUTE THROUGH THE PROGRAM
+   Each term is a stop. Choose one and the van drives there.
+   With motion reduced, it simply appears at the stop.
+   ============================================================ */
+(function(){
+'use strict';
+const box = document.getElementById('rp');
+if (!box) return;
+const $  = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const calm = () => document.documentElement.classList.contains('no-motion') ||
+  (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const DOM = ['Leadership', 'Policy', 'Analysis', 'Public service', 'Communication'];
+
+/* From the program of study. Dates only decide which stop is "now". */
+const TERMS = [
+  { t:'Spring', y:2025, start:'2025-01-06', end:'2025-05-01',
+    work:['I started the MPA in my first year as Accommodation Specialist at DSS, a role I began in August 2024.'],
+    ph:'INSERT: one or two lines on what you were working on at DSS this term.',
+    courses:[
+      { c:'PADM 6001', n:'Capstone Portfolio I', cr:1, i:'Dr. Matthew Mingus', d:[3], p:'padm-6001-comp',
+        w:'A competency exercise and “MPA and Beyond.” The baseline the rest of this portfolio is measured against.' },
+      { c:'PADM 6020', n:'Public Policy & Politics', cr:3, i:'Dr. Daniela Schroeter', d:[1], p:'padm-6020',
+        w:'A policy brief on the underdiagnosis of ADHD in women.' } ] },
+  { t:'Summer I', y:2025, start:'2025-05-04', end:'2025-06-30',
+    work:[], ph:'INSERT: what was happening with BroncoNav or at DSS while you wrote the grant proposal.',
+    courses:[
+      { c:'PADM 5830', n:'Grant Writing', cr:3, i:'Dr. Daniela Schroeter', d:[4], p:'padm-5830',
+        w:'A $30,000 BroncoNav proposal to the Kalamazoo Community Foundation.' } ] },
+  { t:'Fall', y:2025, start:'2025-08-25', end:'2025-12-20',
+    work:[], ph:'INSERT: one or two lines on what you were working on at DSS this term.',
+    courses:[
+      { c:'PADM 6000', n:'Fundamentals & Ethics of Public Service', cr:3, i:'Dr. Abby Kinch', d:[1,3], p:'padm-6000',
+        w:'An ethics futures analysis set in 2035, and a proposed Michigan Higher Education Accessibility Assurance Board.' },
+      { c:'PADM 6060', n:'Applied Research Methods', cr:3, i:'Dr. Daniela Schroeter', d:[2], p:'padm-6060',
+        w:'A mixed-methods needs assessment of accessibility at WMU outside the classroom.' } ] },
+  { t:'Spring', y:2026, start:'2026-01-05', end:'2026-04-30',
+    work:[], ph:'INSERT: one or two lines on what you were working on at DSS this term.',
+    courses:[
+      { c:'PADM 5120', n:'Public Budgeting & Accounting', cr:3, i:'Michael Hart', d:[2], p:'padm-5120',
+        w:'A review of the Village of Berrien Springs’ proposed 2025–2026 budget.' },
+      { c:'PADM 6070', n:'Quantitative Data Analysis', cr:3, i:'Dr. Gene McKay', d:[2], p:'padm-6070',
+        w:'Twenty years of SSDI and enrollment data, and a result that did not support the hypothesis.' } ] },
+  { t:'Summer II', y:2026, start:'2026-06-22', end:'2026-08-20',
+    work:[], ph:'INSERT: one or two lines on what you were working on at DSS this term.',
+    courses:[
+      { c:'PADM 6290', n:'Leadership & Supervision', cr:3, i:'Dr. Kelly Gesmundo Clarke', d:[0], p:'padm-6290',
+        w:'Sustaining effective leadership in urgent environments.' } ] },
+  { t:'Fall', y:2026, start:'2026-08-31', end:'2026-12-19',
+    work:['BroncoNav moved off Microsoft Bookings to its own platform, bronconav.com, on September 21, with recurring rides and a dedicated phone line.',
+          'More than 50 riders registered in the first month.'],
+    courses:[
+      { c:'PADM 6010', n:'Economic Principles for Public Service', cr:3, i:'Dr. Gene McKay', d:[1],
+        w:'Final paper, in progress this fall.' },
+      { c:'PADM 6400', n:'Managing Nonprofit Organizations', cr:3, i:'Dr. Gene McKay', d:[0],
+        w:'A research paper on supported employment, in progress this fall.' },
+      { c:'PADM 6800', n:'Capstone Portfolio II', cr:2, i:'Dr. Daniela Schroeter', d:[], all:true,
+        w:'This portfolio, which brings all five competency domains together.' } ] },
+  { grad:true, t:'Graduation', y:2026, start:'2026-12-19', end:'2026-12-19' }
+];
+const MILES = [
+  ['Proposal', '2026-09-26', 'September 26'],
+  ['Progress portfolio', '2026-10-24', 'October 24'],
+  ['Final portfolio', '2026-11-21', 'November 21'],
+  ['Graduation', '2026-12-19', 'December 2026']
+];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const day = s => new Date(s + 'T12:00:00');
+const today = new Date();
+const status = T => today > day(T.end) ? 'done' : today >= day(T.start) ? 'now' : 'next';
+let nowIdx = 0;
+TERMS.forEach((T, k) => { if (today >= day(T.start)) nowIdx = k; });
+const totalCr = TERMS.reduce((m, T) => m + (T.courses || []).reduce((a, c) => a + c.cr, 0), 0);
+const totalCourses = TERMS.reduce((m, T) => m + (T.courses || []).length, 0);
+const nTerms = TERMS.filter(T => !T.grad).length;
+
+/* stops */
+const stopsEl = $('#rpStops'), panel = $('#rpPanel'), van = $('#rpVan'), vanIn = $('.rp-van-in', van),
+      line = $('.rp-line', box), done = $('.rp-done', box), scroller = $('.rp-scroller', box), scroll = $('.rp-scroll', box);
+TERMS.forEach((T, k) => {
+  const st = T.grad ? 'next' : status(T);
+  const b = document.createElement('button');
+  b.type = 'button'; b.setAttribute('role', 'tab'); b.id = 'rpt-' + k;
+  b.className = 'rp-stop is-' + (T.grad ? (today > day(T.end) ? 'done' : 'next') : st) + (T.grad ? ' is-grad' : '');
+  b.setAttribute('aria-controls', 'rpPanel');
+  b.innerHTML = '<span class="rp-dot" aria-hidden="true"></span>' +
+    '<span class="rp-term">' + esc(T.grad ? 'Graduation' : T.t) + '</span>' +
+    '<span class="rp-year">' + (T.grad ? 'Dec 2026' : T.y) + '</span>' +
+    '<span class="rp-codes">' + (T.grad ? totalCr + ' credits' : T.courses.map(c => c.c.replace('PADM ', '')).join(' · ')) + '</span>' +
+    '<span class="sr-only">' + (T.grad ? '' : ', ' + (st === 'done' ? 'complete' : st === 'now' ? 'in progress' : 'upcoming')) + '</span>';
+  b.addEventListener('click', () => select(k, true));
+  stopsEl.appendChild(b);
+});
+const stops = [...stopsEl.children];
+stopsEl.addEventListener('keydown', e => {
+  const cur = stops.findIndex(s => s.getAttribute('aria-selected') === 'true');
+  const step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 1, ArrowUp: -1 };
+  let n = null;
+  if (e.key in step) n = Math.max(0, Math.min(stops.length - 1, cur + step[e.key]));
+  else if (e.key === 'Home') n = 0;
+  else if (e.key === 'End') n = stops.length - 1;
+  if (n === null) return;
+  e.preventDefault(); select(n, true); stops[n].focus();
+});
+
+/* geometry */
+const cx = k => stops[k].offsetLeft + stops[k].offsetWidth / 2;
+function layout(){
+  const a = cx(0), z = cx(stops.length - 1);
+  line.style.left = a + 'px'; line.style.width = (z - a) + 'px';
+}
+
+/* the van */
+let at = null, timer = 0, revealed = false;
+function vanTo(k){
+  const x = cx(k) - van.offsetWidth / 2;
+  const dist = at === null ? 0 : Math.abs(k - at);
+  const dur = (calm() || at === null || !revealed) ? 0 : 520 + 300 * dist;
+  if (at !== null && k !== at) vanIn.classList.toggle('flip', k < at);
+  van.style.transitionDuration = dur + 'ms';
+  van.style.transform = 'translateX(' + x.toFixed(1) + 'px)';
+  clearTimeout(timer);
+  if (dur) { van.classList.add('is-driving'); timer = setTimeout(() => { van.classList.remove('is-driving'); vanIn.classList.remove('flip'); }, dur + 40); }
+  else van.classList.remove('is-driving');
+  at = k;
+  return dur;
+}
+function fillTo(k, dur){
+  done.style.transitionDuration = (dur || 0) + 'ms';
+  done.style.width = Math.max(0, cx(k) - cx(0)) + 'px';
+}
+
+/* the panel */
+function domainPips(upto){
+  return DOM.map((name, di) => {
+    const pieces = [];
+    TERMS.forEach((T, k) => (T.courses || []).forEach(c => { if (c.d.includes(di)) pieces.push({ k, pend: status(T) !== 'done' }); }));
+    const got = pieces.filter(p => p.k <= upto).length;
+    return '<li><span>' + name + '</span><span class="rp-pips" aria-hidden="true">' +
+      pieces.map(p => '<span class="rp-pip' + (p.k <= upto ? ' on' : '') + (p.k === upto ? ' new' : '') + (p.pend ? ' pend' : '') + '"></span>').join('') +
+      '</span><span class="sr-only">: ' + got + ' of ' + pieces.length + ' courses so far</span></li>';
+  }).join('');
+}
+function totals(k){
+  const cr = TERMS.slice(0, k + 1).reduce((m, T) => m + (T.courses || []).reduce((a, c) => a + c.cr, 0), 0);
+  return '<div class="rp-card rp-tot"><p class="rp-k">Running total</p>' +
+    '<p class="rp-cred"><b>' + cr + '</b><span>of ' + totalCr + ' credits</span></p>' +
+    '<div class="rp-bar" aria-hidden="true"><span style="width:' + (cr / totalCr * 100).toFixed(1) + '%"></span></div>' +
+    '<ul class="rp-domlist" aria-label="Coursework by competency domain">' + domainPips(k) + '</ul>' +
+    '<p class="rp-note">Each dot is a course that builds a NASPAA domain. The capstone ties all five together.</p></div>';
+}
+function render(k){
+  const T = TERMS[k];
+  let main, side;
+  if (T.grad) {
+    const mile = MILES.map(m => {
+      const d = day(m[1]), isDone = today > d;
+      const isNext = !isDone && MILES.every(o => today > day(o[1]) || day(o[1]) >= d);
+      return '<li><span class="m ' + (isDone ? 'done' : isNext ? 'next' : '') + '">' + (isDone ? 'Done' : isNext ? 'Next' : 'Ahead') + '</span>' +
+        '<span><b>' + m[0] + '</b>, ' + m[2] + '</span></li>';
+    }).join('');
+    main = '<div class="rp-main"><div class="rp-head"><p class="rp-k">The last stop</p><h3>Graduation, December 2026</h3></div>' +
+      '<ul class="rp-sum"><li><b>' + totalCr + '</b><span>credits</span></li><li><b>' + totalCourses + '</b><span>courses</span></li>' +
+      '<li><b>' + nTerms + '</b><span>terms</span></li><li><b>5</b><span>NASPAA domains</span></li></ul>' +
+      '<p class="rp-k" style="margin-bottom:.6rem">Capstone milestones</p><ol class="rp-miles">' + mile + '</ol>' +
+      '<p>Where the route goes after this is in <a href="#forward">What I intend to do with this</a>.</p></div>';
+    side = '<div class="rp-side">' + totals(k) + '</div>';
+  } else {
+    const st = status(T);
+    const cr = T.courses.reduce((a, c) => a + c.cr, 0);
+    main = '<div class="rp-main"><div class="rp-head"><p class="rp-k">Term ' + (k + 1) + ' of ' + nTerms + ' · ' + cr + (cr === 1 ? ' credit' : ' credits') + '</p>' +
+      '<h3>' + esc(T.t + ' ' + T.y) + '</h3><span class="rp-status ' + st + '">' + (st === 'done' ? 'Complete' : st === 'now' ? 'In progress' : 'Upcoming') + '</span></div>' +
+      '<ol class="rp-courses">' + T.courses.map(c => {
+        const pend = st !== 'done' && !c.p;
+        return '<li class="rp-course' + (pend ? ' pending' : '') + '"><div class="rp-c-top"><span class="rp-code">' + c.c + '</span><span class="rp-cr">' + c.cr + (c.cr === 1 ? ' credit' : ' credits') + '</span></div>' +
+          '<p class="rp-c-title">' + esc(c.n) + '</p><p class="rp-c-inst">' + esc(c.i) + '</p>' +
+          '<p class="rp-c-work">' + esc(c.w) + '</p>' +
+          '<div class="rp-c-foot"><span class="rp-doms">' + (c.all ? '<span class="rp-dom">All five domains</span>' : c.d.map(di => '<span class="rp-dom">' + DOM[di] + '</span>').join('')) + '</span>' +
+          (c.p && (window.PAPERS || {})[c.p] ? '<button type="button" class="rp-read" data-paper="' + c.p + '" aria-haspopup="dialog">Read the paper<span class="sr-only">: ' + esc(c.n) + '</span></button>' : '') +
+          '</div></li>';
+      }).join('') + '</ol></div>';
+    side = '<div class="rp-side"><div class="rp-card rp-work"><p class="rp-k">At work that term</p>' +
+      T.work.map(p => '<p>' + esc(p) + '</p>').join('') + (T.ph ? '<p class="ph">' + esc(T.ph) + '</p>' : '') + '</div>' + totals(k) + '</div>';
+  }
+  panel.innerHTML = main + side;
+  panel.setAttribute('aria-labelledby', 'rpt-' + k);
+  $$('[data-paper]', panel).forEach(b => b.addEventListener('click', () => openPaper(b.dataset.paper, b)));
+  if (!calm()) { panel.classList.remove('rp-fade'); void panel.offsetWidth; panel.classList.add('rp-fade'); }
+}
+function select(k, user){
+  stops.forEach((s, j) => { s.setAttribute('aria-selected', String(j === k)); s.tabIndex = j === k ? 0 : -1; });
+  render(k);
+  vanTo(k);
+  if (scroller.scrollWidth > scroller.clientWidth)
+    scroller.scrollTo({ left: cx(k) - scroller.clientWidth / 2, behavior: user && !calm() ? 'smooth' : 'auto' });
+}
+
+/* first view: the van leaves the first stop and drives to today */
+layout();
+select(nowIdx, false);
+if (calm() || !window.IntersectionObserver) { revealed = true; fillTo(nowIdx, 0); vanTo(nowIdx); }
+else {
+  at = null; vanTo(0); fillTo(0, 0);
+  const io = new IntersectionObserver(es => {
+    if (!es[0].isIntersecting) return;
+    io.disconnect();
+    setTimeout(() => {
+      revealed = true;
+      const target = stops.findIndex(s => s.getAttribute('aria-selected') === 'true');
+      const dur = vanTo(target);
+      fillTo(nowIdx, dur || 0);
+    }, 350);
+  }, { threshold: .45 });
+  io.observe(scroll);
+}
+if (window.ResizeObserver) new ResizeObserver(() => {
+  layout();
+  const d = van.style.transitionDuration; van.style.transitionDuration = '0ms';
+  van.style.transform = 'translateX(' + (cx(at) - van.offsetWidth / 2).toFixed(1) + 'px)';
+  done.style.transitionDuration = '0ms';
+  done.style.width = (revealed ? Math.max(0, cx(nowIdx) - cx(0)) : 0) + 'px';
+  void van.offsetWidth; van.style.transitionDuration = d;
+}).observe(scroll);
+
+/* print: every term as a table */
+const pr = document.createElement('div');
+pr.className = 'rp-print';
+pr.innerHTML = '<table><thead><tr><th>Term</th><th>Course</th><th>Credits</th><th>Instructor</th><th>Work</th></tr></thead><tbody>' +
+  TERMS.filter(T => !T.grad).map(T => T.courses.map((c, j) => '<tr>' + (j === 0 ? '<td rowspan="' + T.courses.length + '">' + T.t + ' ' + T.y + '</td>' : '') +
+    '<td>' + c.c + ' ' + esc(c.n) + '</td><td>' + c.cr + '</td><td>' + esc(c.i) + '</td><td>' + esc(c.w) + '</td></tr>').join('')).join('') +
+  '</tbody></table>';
+box.appendChild(pr);
+})();
 </script>
 </body>
 </html>
