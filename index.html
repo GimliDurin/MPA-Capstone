@@ -1647,17 +1647,12 @@ html.contrast .hm-cap{color:#000}
 .rp-van-in.flip .rp-body:not(.rp-body-f){visibility:hidden}
 .rp-van-in.flip .rp-body-f{display:block}
 /* lead with the elevator shaft */
-.elev{display:grid;grid-template-columns:minmax(0,1fr) 15rem;gap:1.6rem;align-items:center;margin:2.2rem 0 0;padding:1.4rem 1.5rem;
+.elev{display:grid;grid-template-columns:minmax(0,1fr);gap:1.2rem;margin:2.2rem 0 0;padding:1.4rem 1.5rem;
   background:var(--card);border:1px solid var(--line);border-radius:10px}
 .elev .elev-h{margin:0 0 .5rem;font-size:1.35rem;line-height:1.25}
 .elev p{margin:0 0 .6rem}.elev p:last-child{margin:0}
-.elev svg{width:100%;height:auto;display:block}
-.elev .f{fill:none;stroke:var(--muted);stroke-width:2}
-.elev .shaft{fill:var(--gold)}
-.elev .cut{fill:none;stroke:var(--gold-deep);stroke-width:2.5;stroke-dasharray:5 4}
-.elev .lab{font:600 11px var(--body);fill:var(--ink);text-anchor:middle}
-@media (max-width:640px){.elev{grid-template-columns:1fr}.elev svg{max-width:16rem}}
-
+.elev-art{width:100%;max-width:640px;height:auto;display:block;margin:0 auto}
+.elev-art .elev-cap{font:600 13px var(--body);fill:var(--ink)}
 /* find an artifact */
 .af{margin-top:2rem}
 .af-doms{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.6rem}
@@ -2011,17 +2006,70 @@ html.dark .af-chip[aria-pressed="true"]{background:var(--gold);border-color:var(
           <p>One of the first things to go up in new construction is the elevator shaft. It would be nearly impossible to retrofit an elevator into an existing building.</p>
           <p>That is why accessibility has to come first. Built in from the start, it becomes part of the structure. Left for later, every fix means cutting through floors that are already finished.</p>
         </div>
-        <svg viewBox="0 0 240 156" role="img" aria-label="Two buildings. In the new one, the elevator shaft goes up first and the floors are built around it. In the finished one, a new shaft has to be cut through every floor.">
-          <rect class="shaft" x="52" y="18" width="18" height="112" rx="1"/>
-          <path class="f" d="M20 130 H102 M20 106 H102 M20 82 H102"/>
-          <path class="f" d="M20 58 H102 M20 34 H102" stroke-dasharray="3 5"/>
-          <path class="f" d="M20 130 V82 M102 130 V82"/>
-          <text class="lab" x="61" y="150">Built in first</text>
-          <rect class="f" x="138" y="18" width="84" height="112"/>
-          <path class="f" d="M138 40 H222 M138 62 H222 M138 84 H222 M138 106 H222"/>
-          <rect class="cut" x="171" y="18" width="18" height="112"/>
-          <text class="lab" x="180" y="150">Retrofitted later</text>
-        </svg>
+        <svg class="elev-art" viewBox="0 0 480 270" role="img" aria-label="Two scenes. On a new construction site, a crane works beside a concrete elevator shaft that is already standing while the floors are built around it. Beside it, a finished brick building has a rough shaft broken through every floor, with rubble and a caution barrier at the base.">
+  <defs>
+    <linearGradient id="evsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9E6EC"/><stop offset="1" stop-color="#F4F1EA"/></linearGradient>
+    <linearGradient id="evconc" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B7BCBA"/><stop offset=".55" stop-color="#D3D6D4"/><stop offset="1" stop-color="#A3A9A7"/></linearGradient>
+    <linearGradient id="evslab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7CBC9"/><stop offset="1" stop-color="#8F9895"/></linearGradient>
+    <pattern id="evbrick" width="16" height="8" patternUnits="userSpaceOnUse"><rect width="16" height="8" fill="#A65B3E"/><path d="M0 8 H16 M8 0 V4 M0 4 H16 M16 4 V8 M0 4 V8" stroke="#8E4A31" stroke-width="1"/></pattern>
+    <pattern id="evtie" width="10" height="12" patternUnits="userSpaceOnUse"><circle cx="5" cy="6" r=".9" fill="#8C9290"/></pattern>
+    <clipPath id="evL"><rect x="0" y="0" width="236" height="238" rx="8"/></clipPath>
+    <clipPath id="evR"><rect x="244" y="0" width="236" height="238" rx="8"/></clipPath>
+  </defs>
+  <!-- LEFT: new construction -->
+  <g clip-path="url(#evL)">
+    <rect width="236" height="238" fill="url(#evsky)"/>
+    <rect y="210" width="236" height="28" fill="#B8A68A"/><path d="M0 210 H236" stroke="#9C8B70" stroke-width="2"/>
+    <!-- crane -->
+    <g stroke="#D98A63" stroke-width="2" fill="none">
+      <path d="M190 210 V26 M200 210 V26"/>
+      <path d="M190 210 L200 196 L190 182 L200 168 L190 154 L200 140 L190 126 L200 112 L190 98 L200 84 L190 70 L200 56 L190 42 L200 28"/>
+      <path d="M46 26 H228 M46 32 H228"/><path d="M46 32 L56 26 L66 32 L76 26 L86 32 L96 26 L106 32 L116 26 L126 32 L136 26 L146 32 L156 26 L166 32 L176 26 L186 32"/>
+    </g>
+    <rect x="212" y="30" width="18" height="12" fill="#55605B"/><rect x="186" y="14" width="18" height="12" rx="1" fill="#9E4824"/>
+    <path d="M195 14 L150 26 M195 14 L228 26" stroke="#55605B" stroke-width="1.2"/>
+    <path d="M78 32 V88" stroke="#1C2321" stroke-width="1"/><path d="M73 88 h10 l-5 6 z" fill="#1C2321"/>
+    <rect x="56" y="94" width="44" height="5" fill="#5E6664"/>
+    <!-- concrete core: goes up first -->
+    <rect x="98" y="58" width="44" height="152" fill="url(#evconc)"/>
+    <rect x="98" y="58" width="44" height="152" fill="url(#evtie)"/>
+    <path d="M98 88 H142 M98 118 H142 M98 148 H142 M98 178 H142" stroke="#9EA4A2" stroke-width="1"/>
+    <path d="M102 58 V50 M108 58 V48 M114 58 V51 M120 58 V47 M126 58 V50 M132 58 V48 M138 58 V51" stroke="#7B5A48" stroke-width="1.3"/>
+    <rect x="112" y="150" width="16" height="22" fill="#6E7674"/>
+    <rect x="112" y="186" width="16" height="22" fill="#6E7674"/>
+    <!-- floors built around it -->
+    <g fill="url(#evslab)"><rect x="26" y="174" width="72" height="6"/><rect x="142" y="174" width="40" height="6"/>
+      <rect x="26" y="138" width="72" height="6"/><rect x="142" y="138" width="40" height="6"/></g>
+    <g fill="#5E6664"><rect x="30" y="144" width="4" height="66"/><rect x="62" y="144" width="4" height="66"/><rect x="172" y="144" width="4" height="66"/>
+      <rect x="30" y="110" width="4" height="28"/><rect x="62" y="114" width="4" height="24"/><rect x="172" y="110" width="4" height="28"/></g>
+    <path d="M26 138 L182 138" stroke="#4E5654" stroke-width="1"/>
+    <g fill="#2C3533"><circle cx="48" cy="166" r="2.6"/><rect x="46" y="168.5" width="4.2" height="5.5" rx="1"/><circle cx="160" cy="130" r="2.6"/><rect x="158" y="132.5" width="4.2" height="5.5" rx="1"/></g>
+    <rect x="46" y="163.4" width="4.6" height="1.6" fill="#E0A33B"/><rect x="157.8" y="127.4" width="4.6" height="1.6" fill="#E0A33B"/>
+  </g>
+  <!-- RIGHT: retrofit -->
+  <g clip-path="url(#evR)">
+    <rect x="244" width="236" height="238" fill="url(#evsky)"/>
+    <rect x="244" y="210" width="236" height="28" fill="#C9CDCA"/><path d="M244 210 H480" stroke="#A3B2A9" stroke-width="2"/>
+    <rect x="276" y="56" width="172" height="154" fill="url(#evbrick)"/>
+    <rect x="272" y="50" width="180" height="8" fill="#6F3A27"/>
+    <g fill="#CFE0E8" stroke="#6F3A27" stroke-width="1.5">
+      <rect x="288" y="70" width="22" height="26"/><rect x="322" y="70" width="22" height="26"/><rect x="380" y="70" width="22" height="26"/><rect x="414" y="70" width="22" height="26"/>
+      <rect x="288" y="112" width="22" height="26"/><rect x="322" y="112" width="22" height="26"/><rect x="380" y="112" width="22" height="26"/><rect x="414" y="112" width="22" height="26"/>
+      <rect x="288" y="154" width="22" height="26"/><rect x="414" y="154" width="22" height="26"/>
+    </g>
+    <rect x="322" y="172" width="22" height="38" fill="#4A2A1E"/>
+    <!-- the cut: a shaft forced through finished floors -->
+    <path d="M352 58 L356 64 L353 72 L357 80 L354 92 L358 104 L353 116 L357 130 L354 144 L358 158 L353 172 L357 186 L354 198 L357 210 H372 L375 198 L371 186 L375 172 L370 158 L374 144 L371 130 L375 116 L370 104 L374 92 L371 80 L375 72 L372 64 L376 58 Z" fill="#3B3431"/>
+    <g stroke="#B7BCBA" stroke-width="3"><path d="M350 100 H378 M350 142 H378 M350 184 H378" stroke-dasharray="4 3"/></g>
+    <rect x="349" y="40" width="30" height="176" fill="none" stroke="#9E4824" stroke-width="2" stroke-dasharray="6 4"/>
+    <path d="M334 210 Q344 196 356 204 Q366 192 380 206 Q390 200 396 210 Z" fill="#8C7B6A"/>
+    <g fill="#8C7B6A"><rect x="384" y="203" width="5" height="4" transform="rotate(20 386 205)"/><rect x="330" y="205" width="4" height="3"/></g>
+    <g transform="translate(286 196)"><rect x="0" y="6" width="52" height="5" fill="#E0A33B"/><path d="M6 6 l6 5 M18 6 l6 5 M30 6 l6 5 M42 6 l6 5" stroke="#1C2321" stroke-width="2.4"/><rect x="2" y="11" width="3" height="3" fill="#55605B"/><rect x="47" y="11" width="3" height="3" fill="#55605B"/></g>
+  </g>
+  <text x="118" y="258" text-anchor="middle" class="elev-cap">New building: the shaft goes up first</text>
+  <text x="362" y="258" text-anchor="middle" class="elev-cap">Existing building: cut through every floor</text>
+</svg>
+
       </aside>
     </div>
   </div>
